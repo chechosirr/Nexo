@@ -30,9 +30,22 @@ input:focus{border-color:#1f4e79;box-shadow:0 0 0 3px rgba(74,74,82,.12)}
 .hidden{display:none!important}
 footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px;margin-top:auto}
 </style>
+<style id="nx-header">
+header.top{justify-content:space-between}
+header.top .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Archivo',sans-serif;font-weight:900;font-size:27px;letter-spacing:5px;background:linear-gradient(115deg,#f2f8ff 0%,#9db9da 30%,#e9f3fe 52%,#557da6 78%,#c3d9ef 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 8px rgba(110,160,220,.35));white-space:nowrap;text-decoration:none}
+header.top .logo em,header.top .logo span{background:none!important;color:transparent!important;-webkit-text-fill-color:transparent;font-style:normal}
+.nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
+#menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
+header.top .menu,header.top .ddnav{display:block!important;background:linear-gradient(165deg,#17334f,#0c1e33)!important;border:1px solid #2b4d74!important;border-radius:18px;min-width:248px;box-shadow:0 22px 50px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-10px) scale(.98);transform-origin:top right;transition:opacity .22s ease,transform .22s ease,visibility .22s;overflow:hidden}
+header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
+header.top .menu a,header.top .ddnav a{display:block;padding:15px 22px;color:#eaf3ff!important;font-size:15.5px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
+header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
+header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
+</style>
 </head>
 <body>
 <header class="top">
+ <button class="nx-back" aria-label="Volver" onclick="nxBack()">&#8592;</button>
   <a class="logo" href="index.html">NE<em>XO</em></a>
 </header>
 <main>
@@ -107,5 +120,6 @@ if(btnSave) btnSave.onclick = function(){
     });
 };
 </script>
+<script>function nxBack(){try{if(window.history.length>1){history.back();return;}}catch(e){}var a=document.querySelector('header.top .logo');window.location.href=a?a.getAttribute('href'):'index.html';}</script>
 </body>
 </html>
