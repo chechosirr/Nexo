@@ -132,7 +132,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 #btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
 #btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
 </style>
-<style>.nexo-splash-name{font-family:'Caveat Brush',cursive!important;background:none!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:0!important;font-weight:400!important;font-size:clamp(72px,21vw,150px)!important}</style>
+<style>.nexo-splash-name{font-family:'Caveat Brush',cursive!important;background:none!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:0!important;font-weight:400!important;font-size:clamp(72px,21vw,150px)!important;filter:drop-shadow(0 0 16px rgba(190,215,255,.9)) drop-shadow(0 0 44px rgba(120,170,255,.55))}</style>
 </head>
 <body>
 <script>
@@ -142,6 +142,22 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
   var name=document.createElement('div'); name.className='nexo-splash-name'; name.textContent='Nexo';
   var tag=document.createElement('div'); tag.className='nexo-splash-tag'; tag.textContent='Compra y vende lo que quieras.';
   splash.appendChild(name); splash.appendChild(tag); document.body.appendChild(splash);
+  (function(){
+    var sc=document.createElement('canvas');
+    sc.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none';
+    var dpr2=Math.min(window.devicePixelRatio||1,2);
+    sc.width=window.innerWidth*dpr2; sc.height=window.innerHeight*dpr2;
+    var g=sc.getContext('2d'); g.scale(dpr2,dpr2);
+    for(var i=0;i<110;i++){
+      var x=Math.random()*window.innerWidth, y=Math.random()*window.innerHeight;
+      var r=Math.random()*1.3+0.3;
+      g.globalAlpha=0.25+Math.random()*0.6;
+      g.fillStyle=(Math.random()<0.12)?'#ffe9a8':'#ffffff';
+      g.beginPath(); g.arc(x,y,r,0,6.283); g.fill();
+    }
+    g.globalAlpha=1;
+    splash.insertBefore(sc, splash.firstChild);
+  })();
   var done=false, started=false, cvRef=null;
   function reveal(){ if(cvRef && cvRef.parentNode) cvRef.remove(); if(!splash.parentNode) return; splash.classList.add('nexo-fading'); setTimeout(function(){ if(splash.parentNode) splash.remove(); }, 320); }
   function finish(){ if(done) return; done=true; reveal(); }
@@ -153,7 +169,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
     var W=window.innerWidth, H=window.innerHeight, dpr=Math.min(window.devicePixelRatio||1, 2);
     var cv=document.createElement('canvas'); cvRef=cv;
     cv.width=W*dpr; cv.height=H*dpr;
-    cv.style.cssText='position:fixed;inset:0;z-index:210;pointer-events:none;width:'+W+'px;height:'+H+'px';
+    cv.style.cssText='position:fixed;inset:0;z-index:1100;pointer-events:none;width:'+W+'px;height:'+H+'px';
     document.body.appendChild(cv);
     var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
     var pad=30;
@@ -173,30 +189,62 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
     if(!pts.length){ cv.remove(); finish(); return; }
     var MAX=2600;
     if(pts.length>MAX){ var step=pts.length/MAX, tmp=[]; for(var i2=0;i2<pts.length;i2+=step) tmp.push(pts[Math.floor(i2)]); pts=tmp; }
-    var colors=['#e8f2fd','#a9c3e4','#5f89b5','#3d6a99','#d7e6f8'];
+    // Estelar (pedido de Sergio): sprites con resplandor —blanco, hielo,
+    // dorado y azul—, destellos en cruz que titilan y estelas suaves,
+    // como una estrella deshaciéndose en polvo de luz.
+    function makeSprite(rgb){
+      var s=document.createElement('canvas'); s.width=s.height=64;
+      var g=s.getContext('2d');
+      var grad=g.createRadialGradient(32,32,0,32,32,32);
+      grad.addColorStop(0,'rgba(255,255,255,1)');
+      grad.addColorStop(0.25,'rgba('+rgb+',0.95)');
+      grad.addColorStop(0.6,'rgba('+rgb+',0.28)');
+      grad.addColorStop(1,'rgba('+rgb+',0)');
+      g.fillStyle=grad; g.fillRect(0,0,64,64);
+      return s;
+    }
+    var sprites=[makeSprite('255,255,255'),makeSprite('207,230,255'),makeSprite('255,233,168'),makeSprite('157,185,218')];
+    var weights=[0.42,0.30,0.13,0.15];
+    function pickSprite(){ var r=Math.random(), acc=0; for(var i3=0;i3<weights.length;i3++){ acc+=weights[i3]; if(r<=acc) return i3; } return 0; }
     var parts=pts.map(function(p){
+      var sparkle=Math.random()<0.07;
       return { x0:p.x, y0:p.y,
         dx:(Math.random()*W)-p.x, dy:(Math.random()*H)-p.y,
-        dur:1100+Math.random()*1100, delay:Math.random()*250,
-        s:1.6+Math.random()*2.8, c:colors[Math.floor(Math.random()*colors.length)],
-        drift:(Math.random()-0.5)*30 };
+        dur:1400+Math.random()*1300, delay:Math.random()*300,
+        s:(sparkle? 10+Math.random()*10 : 3.5+Math.random()*7),
+        sp:pickSprite(), sparkle:sparkle,
+        tw:0.5+Math.random()*1.6, ph:Math.random()*6.283,
+        drift:(Math.random()-0.5)*36, rise:(Math.random()*-26) };
     });
     name.style.opacity='0';
-    var t0=performance.now(), TOTAL=2600;
+    var t0=performance.now(), TOTAL=3400;
+    function drawSparkle(x,y,r,alpha){
+      ctx.save(); ctx.translate(x,y); ctx.globalAlpha=alpha;
+      ctx.fillStyle='#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(0,-r); ctx.quadraticCurveTo(r*0.14,-r*0.14, r,0);
+      ctx.quadraticCurveTo(r*0.14,r*0.14, 0,r);
+      ctx.quadraticCurveTo(-r*0.14,r*0.14, -r,0);
+      ctx.quadraticCurveTo(-r*0.14,-r*0.14, 0,-r);
+      ctx.fill(); ctx.restore();
+    }
+    var firstFrame=true;
     function frame(now){
       var el=now-t0;
-      ctx.clearRect(0,0,W,H);
+      if(firstFrame){ ctx.clearRect(0,0,W,H); firstFrame=false; }
+      else { ctx.fillStyle='rgba(20,44,71,0.30)'; ctx.fillRect(0,0,W,H); }
       var alive=false;
       for(var i=0;i<parts.length;i++){
         var p=parts[i], lt=el-p.delay;
         if(lt<0){ alive=true; continue; }
         var k=lt/p.dur; if(k>=1) continue; alive=true;
         var e=1-Math.pow(1-k,3);
-        var x=p.x0+p.dx*e, y=p.y0+p.dy*e+p.drift*e*e;
-        ctx.globalAlpha=1-k;
-        ctx.fillStyle=p.c;
-        var s2=p.s*(1-k*0.6);
-        ctx.fillRect(x,y,s2,s2);
+        var x=p.x0+p.dx*e, y=p.y0+(p.dy+p.rise)*e+p.drift*e*e;
+        var tw=0.72+0.28*Math.sin(el*0.012*p.tw+p.ph);
+        var alpha=(1-k)*tw;
+        var s2=p.s*(1-k*0.35);
+        if(p.sparkle){ drawSparkle(x,y,s2*0.9,alpha); }
+        else { ctx.globalAlpha=alpha; ctx.drawImage(sprites[p.sp], x-s2/2, y-s2/2, s2, s2); }
       }
       ctx.globalAlpha=1;
       if(alive && el<TOTAL && !done){ requestAnimationFrame(frame); }
