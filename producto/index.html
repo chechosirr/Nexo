@@ -76,7 +76,7 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
 .menu a:last-child{border-bottom:0}
 .menu a:hover{background:rgba(0,0,0,.05)}
-body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}.login-cta-h{display:inline-block;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 50%,#7ba3cc 100%);color:#0a0c10 !important;font-weight:800;font-size:13px;padding:9px 15px;border-radius:999px;text-decoration:none;white-space:nowrap}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 </style>
 
 <style>
@@ -99,9 +99,10 @@ header.top .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50
 header.top .logo em,header.top .logo span{background:none!important;color:transparent!important;-webkit-text-fill-color:transparent;font-style:normal}
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
-header.top .menu,header.top .ddnav{display:block!important;background:linear-gradient(165deg,#17334f,#0c1e33)!important;border:1px solid #2b4d74!important;border-radius:18px;min-width:248px;box-shadow:0 22px 50px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-10px) scale(.98);transform-origin:top right;transition:opacity .22s ease,transform .22s ease,visibility .22s;overflow:hidden}
+header.top{z-index:300}
+header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:50vh;display:flex!important;flex-direction:column;justify-content:space-evenly;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .25s ease,transform .25s ease,visibility .25s;overflow:hidden;z-index:290}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
-header.top .menu a,header.top .ddnav a{display:block;padding:15px 22px;color:#eaf3ff!important;font-size:15.5px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
+header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
 header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
 </style>
@@ -120,24 +121,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 </nav>
   </div>
 </header>
-<script>
-(function(){
- try{
- var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
- if(s && s.access_token && s.user && s.user.id) return;
- var btn = document.getElementById('menu-btn');
- if(!btn) return;
- btn.style.display = 'none';
- var menu = document.getElementById('menu');
- if(menu) menu.style.display = 'none';
- var a = document.createElement('a');
- a.href = '../cuenta.html';
- a.textContent = 'Iniciar Sesión / Crear cuenta';
- a.className = 'login-cta-h';
- btn.parentNode.insertBefore(a, btn);
- }catch(e){}
-})();
-</script>
+
 <main id="main"><p class="empty">Cargando…</p></main>
 <footer>© 2026 Nexo · Compra y vende seguro</footer>
 <script>
@@ -248,7 +232,7 @@ function render(){
   }
   document.getElementById('btn-cart').onclick = function(){
     var b = this;
-    if(!sess){ location.href = '../cuenta.html?tipo=comprador'; return; }
+    if(!sess){ nxAvisoCompra(); return; }
     if(trow && !selTalla){ alert('Elige una talla primero.'); return; }
     b.disabled = true; b.textContent = 'Agregando…';
     fetch(SUPABASE_URL + '/rest/v1/cart_items', {
@@ -269,7 +253,7 @@ function render(){
   document.getElementById('btn-share').onclick = function(){ shareProd(PRODUCT.id, PRODUCT.titulo, PRODUCT.precio); };
   document.getElementById('btn-buy').onclick = function(){
     var b = this;
-    if(!sess){ location.href = '../cuenta.html?tipo=comprador'; return; }
+    if(!sess){ nxAvisoCompra(); return; }
     if(trow && !selTalla){ alert('Elige una talla primero.'); return; }
     b.disabled = true; b.textContent = 'Procesando…';
     fetch(SUPABASE_URL + '/rest/v1/cart_items', {
@@ -395,5 +379,16 @@ document.addEventListener('click', function(e){
 });
 </script>
 <script>function nxBack(){try{if(window.history.length>1){history.back();return;}}catch(e){}var a=document.querySelector('header.top .logo');window.location.href=a?a.getAttribute('href'):'index.html';}</script>
+
+<div id="nx-aviso" style="display:none;position:fixed;inset:0;background:rgba(6,17,30,.62);z-index:400;align-items:center;justify-content:center;padding:22px">
+ <div style="background:#ffffff;border-radius:20px;max-width:340px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35)">
+  <div style="font-size:34px">&#128274;</div>
+  <h3 style="margin:10px 0 8px;font-family:'Archivo',sans-serif;font-size:20px;color:#12263f">Necesitas una cuenta para comprar</h3>
+  <p style="margin:0 0 18px;color:#5a6b80;font-size:15px;line-height:1.45">Crea tu cuenta de NEXO o inicia sesi&#243;n para completar tu compra.</p>
+  <a href="../cuenta.html?tipo=comprador" style="display:block;background:linear-gradient(135deg,#2e6db0,#1f4e79);color:#ffffff;font-weight:800;text-decoration:none;border-radius:12px;padding:13px 16px">Crear cuenta / Iniciar sesi&#243;n</a>
+  <button onclick="document.getElementById('nx-aviso').style.display='none'" style="margin-top:10px;background:none;border:0;color:#5a6b80;font-weight:700;font-size:14.5px;cursor:pointer;padding:8px;font-family:inherit">Ahora no</button>
+ </div>
+</div>
+<script>function nxAvisoCompra(){var m=document.getElementById('nx-aviso');if(m){m.style.display='flex';}}</script>
 </body>
 </html>
