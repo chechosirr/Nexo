@@ -225,7 +225,7 @@ var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 /* sesión persistente: renueva el token automáticamente (igual que el resto del sitio) */
 (function(){
  try{
- var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
  if(!s || !s.access_token || !s.refresh_token) return;
  var exp = 0;
  if(s.expires_at) exp = s.expires_at * 1000;
@@ -235,8 +235,8 @@ var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
  method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
  body: JSON.stringify({ refresh_token: s.refresh_token })
  }).then(function(r){ return r.json(); }).then(function(ns){
- if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
- else { localStorage.removeItem('dominus_session'); }
+ if(ns && ns.access_token){ localStorage.setItem('nexo_session', JSON.stringify(ns)); location.reload(); }
+ else { localStorage.removeItem('nexo_session'); }
  }).catch(function(){});
  }catch(e){}
 })();
@@ -244,7 +244,7 @@ var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 function esc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function money(n){ return '$' + Number(n || 0).toFixed(2); }
 function fecha(iso){ try{ return new Date(iso).toLocaleString('es-NI', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }catch(e){ return iso || ''; } }
-function session(){ try{ return JSON.parse(localStorage.getItem('dominus_session') || 'null'); }catch(e){ return null; } }
+function session(){ try{ return JSON.parse(localStorage.getItem('nexo_session') || 'null'); }catch(e){ return null; } }
 function H(tok){ return { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' }; }
 function api(path, tok){
  return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: H(tok) }).then(function(r){
@@ -264,7 +264,7 @@ document.getElementById('menubtn').onclick = function(e){ e.stopPropagation(); d
 document.addEventListener('click', function(){ var n = document.getElementById('ddnav'); if(n) n.classList.remove('open'); });
 document.getElementById('logout').onclick = function(e){
  e.preventDefault();
- try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(err){}
+ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(err){}
  location.href = 'index.html';
 };
 
@@ -435,7 +435,7 @@ var ADMIN_ALERT_SHOWN = {};
 function adminAlertsMaybe(){
  if(ADMIN_ALERT_OPEN) return;
  var dec = {};
- try{ dec = JSON.parse(localStorage.getItem('dominus_admin_ped_dec') || '{}'); }catch(e){}
+ try{ dec = JSON.parse(localStorage.getItem('nexo_admin_ped_dec') || '{}'); }catch(e){}
  var data = hoyPedidosGrupos();
  var queue = [];
  data.groups.forEach(function(g){
@@ -487,7 +487,7 @@ function showAdminAlert(queue, dec){
  document.body.style.overflow = 'hidden';
  function decide(val){
  dec[it.key] = val;
- try{ localStorage.setItem('dominus_admin_ped_dec', JSON.stringify(dec)); }catch(e){}
+ try{ localStorage.setItem('nexo_admin_ped_dec', JSON.stringify(dec)); }catch(e){}
  ov.remove();
  document.body.style.overflow = '';
  queue.shift();
@@ -847,14 +847,15 @@ document.getElementById('menu-pass').onclick = function(e){
   if(!box.classList.contains('hidden')) window.scrollTo({ top: 0, behavior: 'smooth' });
   return false;
 };
-wireChangePass(function(){ return (S && S.user && S.user.email) || ''; }, function(j){ S = j; TOK = j.access_token; UID = j.user.id; try{ localStorage.setItem('dominus_session', JSON.stringify(j)); }catch(e){} });
+wireChangePass(function(){ return (S && S.user && S.user.email) || ''; }, function(j){ S = j; TOK = j.access_token; UID = j.user.id; try{ localStorage.setItem('nexo_session', JSON.stringify(j)); }catch(e){} });
 wireEmail(function(){ return TOK; }, function(){ return (S && S.user && S.user.email) || ''; });
 
 /* Puerta de acceso: cuentas con es_admin y también cuentas de comprador (pedido de Sergio 4-nov: «que el panel del administrador se pueda iniciar como cuenta de comprador también») */
 (function(){
  if(!TOK || !UID){ gateFail('No hay una sesión activa. Entra primero a tu cuenta.'); return; }
- api('profiles?user_id=eq.' + UID + '&select=tipo,es_admin,nombre', TOK).then(function(rows){
+ api('profiles?user_id=eq.' + UID + '&select=tipo,es_admin,sitio,nombre', TOK).then(function(rows){
  var p = rows && rows[0];
+ if(p && p.sitio && p.sitio !== 'nexo' && !p.es_admin){ gateFail('Esta cuenta no puede entrar a este panel.'); return; }
  if(!p || !(p.es_admin || p.tipo === 'comprador')){ gateFail('Esta cuenta no puede entrar al panel (solo administrador o comprador).'); return; }
  document.getElementById('who').textContent = 'Sesión de ' + (p.nombre || (S.user && S.user.email) || 'administrador');
  document.getElementById('gate').classList.add('hidden');

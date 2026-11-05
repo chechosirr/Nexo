@@ -98,7 +98,7 @@ if(btnSave) btnSave.onclick = function(){
         showErr((res.j && (res.j.msg || res.j.error_description)) || 'No se pudo guardar. El enlace pudo haber vencido: pide otro.');
         return;
       }
-      try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){}
+      try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){}
       document.getElementById('form-reset').classList.add('hidden');
       document.getElementById('reset-done').classList.remove('hidden');
     }).catch(function(){

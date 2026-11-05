@@ -291,7 +291,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 <script>
 (function(){
  try{
- var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
  if(s && s.access_token && s.user && s.user.id) return;
  var btn = document.getElementById('menu-btn');
  if(!btn) return;
@@ -318,7 +318,7 @@ var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 /* sesión persistente: renueva el token automáticamente */
 (function(){
   try{
-    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
     if(!s || !s.access_token || !s.refresh_token) return;
     var exp = 0;
     if(s.expires_at) exp = s.expires_at * 1000;
@@ -329,8 +329,8 @@ var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
       headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: s.refresh_token })
     }).then(function(r){ return r.json(); }).then(function(ns){
-      if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
-      else localStorage.removeItem('dominus_session');
+      if(ns && ns.access_token){ localStorage.setItem('nexo_session', JSON.stringify(ns)); location.reload(); }
+      else localStorage.removeItem('nexo_session');
     }).catch(function(){});
   }catch(e){}
 })();
@@ -341,7 +341,7 @@ function api(path){
   }).then(function(r){ if(!r.ok) throw new Error('API ' + r.status); return r.json(); });
 }
 function money(n){ return '$' + Number(n).toFixed(2); }
-function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('dominus_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
+function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('nexo_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
 function addToCart(pid, btn){
   var s = buyerSession();
   if(!s){ location.href = '../cuenta.html?tipo=comprador'; return; }
@@ -374,7 +374,7 @@ function reloadKeepEdit(){
   location.reload();
 }
 var SELLER = null, myRating = 5;
-function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('dominus_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
+function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('nexo_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
 function starsHTML(r){ var s = ''; for(var i = 1; i <= 5; i++) s += i <= Math.round(r) ? '★' : '☆'; return '<span class="stars">' + s + '</span>'; }
 function fetchProds(orderQ){
   return api('products?select=*,sellers!inner(slug)&activo=eq.true&sellers.slug=eq.' + encodeURIComponent(slug) + '&order=' + orderQ);
@@ -390,7 +390,7 @@ Promise.all([
     return;
   }
   SELLER = s;
-  var own = (function(){ try{ var sx = JSON.parse(localStorage.getItem('dominus_session')); return !!(sx && sx.user && sx.user.id === s.user_id); }catch(e){ return false; } })();
+  var own = (function(){ try{ var sx = JSON.parse(localStorage.getItem('nexo_session')); return !!(sx && sx.user && sx.user.id === s.user_id); }catch(e){ return false; } })();
   document.getElementById('title').textContent = s.nombre + ' — Nexo';
 
   var dashHTML = own ?
@@ -879,7 +879,7 @@ function loadProdList(){
 }
 function setupEditMode(){
   if(!SELLER) return;
-  var sx = null; try{ sx = JSON.parse(localStorage.getItem('dominus_session')); }catch(e){}
+  var sx = null; try{ sx = JSON.parse(localStorage.getItem('nexo_session')); }catch(e){}
   if(!(sx && sx.user && sx.user.id === SELLER.user_id)) return;
   var btn = document.createElement('button');
   btn.id = 'edit-toggle'; btn.textContent = 'Editar muro'; btn.style.display = 'none';
@@ -1119,7 +1119,7 @@ function deleteMyAccount(){
   var frase = prompt('Para confirmar, escribe ELIMINAR:');
   if(!frase || frase.trim().toUpperCase() !== 'ELIMINAR'){ alert('Cancelado. Tu cuenta sigue activa.'); return; }
   var finish = function(completa){
-    try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){}
+    try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){}
     alert(completa ? 'Tu cuenta fue eliminada.' : 'Tu comercio y tu perfil fueron eliminados.');
     location.href = '../index.html';
   };
@@ -1255,7 +1255,7 @@ function loadTodayOrders(){
       var isToday = function(iso){ var d = new Date(iso); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate(); };
       rows = (rows || []).filter(function(o){ return isToday(o.created_at); });
       if(!rows.length){ box.innerHTML = '<p style="color:var(--mut);font-size:14px">Hoy no tienes pedidos.</p>'; return; }
-      var storeKey = 'dominus_pedidos_' + SELLER.id;
+      var storeKey = 'nexo_pedidos_' + SELLER.id;
       var store = { base: null, dec: {} };
       try{ store = JSON.parse(localStorage.getItem(storeKey) || 'null') || store; }catch(e){}
       var groups = [], byK = {};
@@ -1314,7 +1314,7 @@ function checkNewOrders(tok){
     .then(function(r){ return r.json(); })
     .then(function(rows){
       if(!rows || !rows.length) return;
-      var storeKey = 'dominus_pedidos_' + SELLER.id;
+      var storeKey = 'nexo_pedidos_' + SELLER.id;
       var store = { base: null, dec: {} };
       try{ store = JSON.parse(localStorage.getItem(storeKey) || 'null') || store; }catch(e){}
       if(!store.base){
@@ -1641,24 +1641,25 @@ function routeMiCuenta(tipo, slug){
 }
 function goMiCuenta(){
   try{
-    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
     if(!(s && s.access_token)) return true;
 
     var uid = (s.user && s.user.id) || null;
     if(!uid) return true;
     var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
-    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin,sitio', { headers: H })
     .then(function(r){ return r.json(); })
     .then(function(rows){
-      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+ if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo' && !rows[0].es_admin){ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/cuenta.html'; return; }
       var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
-      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
       if(t === 'vendedor'){
         fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
         .then(function(r){ return r.json(); })
         .then(function(r2){
           var sl = (r2 && r2[0] && r2[0].slug) || null;
-          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          if(sl){ try{ localStorage.setItem('nexo_slug', sl); }catch(e){} }
           routeMiCuenta(t, sl);
         }).catch(function(){ routeMiCuenta(t, null); });
       } else {
@@ -1670,16 +1671,16 @@ function goMiCuenta(){
 }
 function doLogout(){
   try{
-    localStorage.removeItem('dominus_session');
-    localStorage.removeItem('dominus_tipo');
-    localStorage.removeItem('dominus_slug');
+    localStorage.removeItem('nexo_session');
+    localStorage.removeItem('nexo_tipo');
+    localStorage.removeItem('nexo_slug');
   }catch(e){}
   location.href = '/Nexo/index.html';
   return false;
 }
 (function(){
   try{
-    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
     if(s && s.access_token){
       var b = document.getElementById('menu-logout');
       if(b) b.style.display = 'block';

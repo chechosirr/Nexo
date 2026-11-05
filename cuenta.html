@@ -181,10 +181,10 @@ function doRefresh(s, cb){
   }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, st: r.status, j: j }; }); })
   .then(function(res){
     if(res.ok && res.j.access_token){
-      localStorage.setItem('dominus_session', JSON.stringify(res.j));
+      localStorage.setItem('nexo_session', JSON.stringify(res.j));
       cb(res.j, true);
     } else if(!res.ok && (res.st === 400 || res.st === 401)){
-      localStorage.removeItem('dominus_session');
+      localStorage.removeItem('nexo_session');
       cb(null, false);
     } else {
       cb(s, false);
@@ -200,7 +200,7 @@ function headers(token){
 }
 function showErr(m){ var e = document.getElementById('err'); e.textContent = m; e.style.display = 'block'; }
 function hideErr(){ document.getElementById('err').style.display = 'none'; }
-function saveSession(s){ localStorage.setItem('dominus_session', JSON.stringify(s)); }
+function saveSession(s){ localStorage.setItem('nexo_session', JSON.stringify(s)); }
 var FEATS = {
   comprador: 'Con tu cuenta de <b>comprador</b> puedes:<br>✓ Guardar tu carrito en todos tus dispositivos<br>✓ Comprar más rápido<br>✓ Dejar reseñas de empresas y productos',
   vendedor: 'Con tu cuenta de <b>vendedor</b> puedes:<br>✓ Crear tu muro personalizado<br>✓ Publicar productos con fotos y especificaciones<br>✓ Recibir reseñas de tus clientes'
@@ -250,9 +250,9 @@ function ensureSeller(s, empresa, ubic, wa){
 }
 function ensureProfile(s, name, extra){
   // busca perfil; si no existe lo crea con el tipo elegido
-  return api('profiles?user_id=eq.' + s.user.id + '&select=tipo', s.access_token).then(function(rows){
+  return api('profiles?user_id=eq.' + s.user.id + '&select=tipo,sitio', s.access_token).then(function(rows){
     if(rows && rows.length) return rows[0].tipo;
-    var body = { user_id: s.user.id, tipo: tipo, nombre: name || null };
+    var body = { user_id: s.user.id, tipo: tipo, nombre: name || null, sitio: 'nexo' };
     if(extra){ ['direccion','ciudad','departamento','pais','telefono','referencia','foto_referencia'].forEach(function(k){ if(extra[k]) body[k] = extra[k]; }); }
     return fetch(SUPABASE_URL + '/rest/v1/profiles', {
       method: 'POST', headers: headers(s.access_token),
@@ -261,11 +261,11 @@ function ensureProfile(s, name, extra){
   }).catch(function(){ return tipo; });
 }
 function goTo(t, s){
-  try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+  try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
   if(t === 'vendedor'){
     api('sellers?user_id=eq.' + s.user.id + '&select=id,slug', s.access_token).then(function(rows){
       if(rows && rows.length){
-        try{ localStorage.setItem('dominus_slug', rows[0].slug); }catch(e){}
+        try{ localStorage.setItem('nexo_slug', rows[0].slug); }catch(e){}
         location.href = 'vendedor/index.html?s=' + rows[0].slug + '&edit=1';
       } else {
         location.href = 'vendedor/cuenta.html';
@@ -285,8 +285,9 @@ document.getElementById('btn-in').onclick = function(){
   }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
     .then(function(res){
       if(!res.ok){ showErr(res.j.msg || 'No se pudo entrar. Revisa tus datos.'); return; }
-      api('profiles?user_id=eq.' + res.j.user.id + '&select=tipo,es_admin', res.j.access_token).then(function(rows){
-        if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} saveSession(res.j); location.href = 'admin.html'; return; }
+      api('profiles?user_id=eq.' + res.j.user.id + '&select=tipo,es_admin,sitio', res.j.access_token).then(function(rows){
+        if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} saveSession(res.j); location.href = 'admin.html'; return; }
+        if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo'){ showErr('No se pudo entrar. Revisa tus datos.'); return; }
         var real = (rows && rows[0] && rows[0].tipo) || null;
         if(real && real !== tipo){
           var otro = real === 'vendedor' ? 'Vendedor' : 'Comprador';
@@ -323,7 +324,7 @@ document.getElementById('btn-up').onclick = function(){
     method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass, data: { nombre: name } })
   }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
     .then(function(res){
-      if(!res.ok){ showErr(res.j.msg || 'No se pudo crear la cuenta.'); return; }
+      if(!res.ok){ if(/already|exists/i.test(res.j.msg || '')){ showErr('No se pudo crear la cuenta con ese correo.'); } else { showErr(res.j.msg || 'No se pudo crear la cuenta.'); } return; }
       var extra = {
         ciudad: ciu,
         departamento: dep,
@@ -401,24 +402,25 @@ function routeMiCuenta(tipo, slug){
 }
 function goMiCuenta(){
   try{
-    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
     if(!(s && s.access_token)) return true;
 
     var uid = (s.user && s.user.id) || null;
     if(!uid) return true;
     var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
-    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin,sitio', { headers: H })
     .then(function(r){ return r.json(); })
     .then(function(rows){
-      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+ if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo' && !rows[0].es_admin){ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/cuenta.html'; return; }
       var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
-      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
       if(t === 'vendedor'){
         fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
         .then(function(r){ return r.json(); })
         .then(function(r2){
           var sl = (r2 && r2[0] && r2[0].slug) || null;
-          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          if(sl){ try{ localStorage.setItem('nexo_slug', sl); }catch(e){} }
           routeMiCuenta(t, sl);
         }).catch(function(){ routeMiCuenta(t, null); });
       } else {
@@ -430,16 +432,16 @@ function goMiCuenta(){
 }
 function doLogout(){
   try{
-    localStorage.removeItem('dominus_session');
-    localStorage.removeItem('dominus_tipo');
-    localStorage.removeItem('dominus_slug');
+    localStorage.removeItem('nexo_session');
+    localStorage.removeItem('nexo_tipo');
+    localStorage.removeItem('nexo_slug');
   }catch(e){}
   location.href = '/Nexo/index.html';
   return false;
 }
 (function(){
   try{
-    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
     if(s && s.access_token){
       var b = document.getElementById('menu-logout');
       if(b) b.style.display = 'block';

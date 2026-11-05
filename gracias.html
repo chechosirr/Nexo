@@ -60,7 +60,7 @@
 <script>
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
 var g = null;
-try{ g = JSON.parse(localStorage.getItem('dominus_gracias') || 'null'); }catch(e){}
+try{ g = JSON.parse(localStorage.getItem('nexo_gracias') || 'null'); }catch(e){}
 if(g && g.codigo){
  document.getElementById('g-code').textContent = g.codigo;
  document.getElementById('g-codebox').style.display = 'block';
