@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Restablecer contraseña — Nexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--card:#ffffff;--line:#e2e5ea;--mut:#5a6270;--acc:#1f4e79;--err:#ff5d5d}
+body{background:#ffffff;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;color:#111111}
+.logo em{font-style:normal;background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 18px}
+.box{width:100%;max-width:480px}
+.box h1{font-size:26px;font-weight:900;margin-bottom:6px;text-align:center;color:#1f4e79}
+.box>p{color:var(--mut);font-size:14px;margin-bottom:22px;text-align:center}
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 26px;margin-top:18px}
+label{display:block;font-size:13px;font-weight:700;color:#111111;margin:16px 0 7px;letter-spacing:.3px}
+input{width:100%;background:#ffffff;border:1.5px solid #d0d4da;border-radius:14px;color:#111111;font-family:inherit;font-size:15px;padding:14px 16px;outline:none}
+input:focus{border-color:#1f4e79;box-shadow:0 0 0 3px rgba(74,74,82,.12)}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+.btn{display:block;width:100%;margin-top:20px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none}
+.err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.okmsg{display:none;background:rgba(150,185,225,.12);border:1px solid var(--acc);color:#1c7c43;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.hidden{display:none!important}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px;margin-top:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="index.html">NE<em>XO</em></a>
+</header>
+<main>
+  <div class="box">
+    <h1>Restablecer contraseña</h1>
+    <p>Crea una contraseña nueva para tu cuenta de Nexo.</p>
+    <div class="form-card">
+      <div id="form-reset" class="hidden">
+        <label>Nueva contraseña (mínimo 6 caracteres)</label>
+        <div class="passwrap"><input id="r-pass" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="r-pass">Ver</button></div>
+        <label>Confirma tu contraseña nueva</label>
+        <div class="passwrap"><input id="r-pass2" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="r-pass2">Ver</button></div>
+        <button class="btn" id="btn-save">Guardar contraseña nueva</button>
+      </div>
+      <div id="reset-done" class="hidden">
+        <div class="okmsg" style="display:block">Tu contraseña se actualizó. Ya puedes entrar con tu contraseña nueva.</div>
+        <a class="btn" href="cuenta.html">Ir a iniciar sesión</a>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+</main>
+<footer>© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+function showErr(m){ var e = document.getElementById('err'); e.textContent = m; e.style.display = 'block'; }
+Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+  b.onclick = function(){
+    var i = document.getElementById(b.getAttribute('data-for'));
+    if(!i) return;
+    var show = i.type === 'password';
+    i.type = show ? 'text' : 'password';
+    b.textContent = show ? 'Ocultar' : 'Ver';
+  };
+});
+var params = new URLSearchParams(location.hash.replace(/^#/, ''));
+var TOK = params.get('access_token');
+var errDesc = params.get('error_description');
+if(errDesc){
+  showErr('Este enlace ya no es válido (' + errDesc.replace(/\+/g, ' ') + '). Pide otro desde "¿Olvidaste tu contraseña?" en la pantalla de entrada.');
+} else if(TOK && params.get('type') === 'recovery'){
+  document.getElementById('form-reset').classList.remove('hidden');
+} else {
+  showErr('Este enlace no es válido o ya venció. Pide otro desde "¿Olvidaste tu contraseña?" en la pantalla de entrada.');
+}
+var btnSave = document.getElementById('btn-save');
+if(btnSave) btnSave.onclick = function(){
+  document.getElementById('err').style.display = 'none';
+  var p1 = document.getElementById('r-pass').value;
+  var p2 = document.getElementById('r-pass2').value;
+  if(p1.length < 6){ showErr('La contraseña debe tener mínimo 6 caracteres.'); return; }
+  if(p1 !== p2){ showErr('Las contraseñas no coinciden. Escríbela dos veces igual.'); return; }
+  btnSave.disabled = true; btnSave.textContent = 'Guardando…';
+  fetch(SUPABASE_URL + '/auth/v1/user', {
+    method: 'PUT',
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + TOK, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: p1 })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if(!res.ok){
+        btnSave.disabled = false; btnSave.textContent = 'Guardar contraseña nueva';
+        showErr((res.j && (res.j.msg || res.j.error_description)) || 'No se pudo guardar. El enlace pudo haber vencido: pide otro.');
+        return;
+      }
+      try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){}
+      document.getElementById('form-reset').classList.add('hidden');
+      document.getElementById('reset-done').classList.remove('hidden');
+    }).catch(function(){
+      btnSave.disabled = false; btnSave.textContent = 'Guardar contraseña nueva';
+      showErr('Error de conexión. Intenta de nuevo.');
+    });
+};
+</script>
+</body>
+</html>

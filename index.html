@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXO · Compra y vende seguro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5}
+body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
+a{color:inherit}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
+.logo em{font-style:normal;color:var(--acc)}
+.menu-wrap{position:relative;margin-left:auto}
+#menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:16px;min-width:200px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.16);z-index:50}
+.menu.open{display:block}
+.menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
+.menu a:last-child{border-bottom:0}
+.menu a:hover{background:rgba(150,185,225,.12)}
+.cbadge{display:none;background:var(--acc);color:#0a0c10;font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;margin-left:6px}
+.cbadge.show{display:inline-block}
+.navlinks{display:flex;gap:18px;font-size:14px}
+.navlinks a{text-decoration:none;color:var(--mut)}
+.navlinks a:hover{color:var(--txt)}
+.hero{position:relative;overflow:hidden;padding:70px 22px 60px;text-align:center}
+.hero:before{content:"";position:absolute;inset:-40%;background:radial-gradient(ellipse at 30% 20%,rgba(150,185,225,.28),transparent 55%),radial-gradient(ellipse at 75% 80%,rgba(150,185,225,.14),transparent 55%);pointer-events:none}
+.hero h1{position:relative;font-size:clamp(38px,9vw,84px);font-weight:900;line-height:1.02;letter-spacing:-1px}
+.hero h1 .hl{color:#111111!important;background:none!important;-webkit-background-clip:unset!important;background-clip:unset!important}
+.hero p{position:relative;color:var(--mut);font-size:16px;max-width:560px;margin:16px auto 26px}
+.cta-row{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:14px 30px;border-radius:999px;font-weight:800;font-size:15px;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-acc{background:var(--acc);color:#f2f4f8}
+.btn-ghost{border:1px solid var(--line);color:#f2f4f8;background:var(--card)}
+.hero-search{position:relative;display:flex;max-width:580px;margin:28px auto 0;background:#ffffff;border:2px solid #d0d4da;border-radius:18px;padding:6px;gap:6px;box-shadow:0 8px 30px rgba(0,0,0,.08)}.hero-search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#111111;font-size:17px;padding:14px 18px;font-family:inherit}.hero-search input::placeholder{color:#7d8590}.hero-search button{background:var(--acc);color:#0a0c10;border:0;border-radius:13px;font-weight:800;font-size:16px;padding:0 32px;cursor:pointer;font-family:inherit}.trust{position:relative;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--mut)}.sell-link{position:relative;margin-top:14px;font-size:13px;color:var(--mut)}.sell-link a{color:var(--acc);text-decoration:none;font-weight:700}.stats{position:relative;display:flex;gap:34px;justify-content:center;margin-top:38px;flex-wrap:wrap}
+.stat b{display:block;font-size:26px;font-weight:900;color:var(--acc)}
+.stat span{font-size:12px;color:var(--mut);letter-spacing:1px;text-transform:uppercase}
+main{max-width:1180px;margin:0 auto;padding:10px 18px 70px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:34px 0 16px}
+.sec-head h2{font-size:22px;font-weight:800}
+.chips{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:10px 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:#111111!important}
+.chip.on{background:var(--acc);color:#0a0c10;border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .18s,border-color .18s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-4px);border-color:#274b73}
+.card .ph{aspect-ratio:1;position:relative;overflow:hidden;background:#132a44}
+.card .ph img{width:100%;height:100%;object-fit:contain;display:block;background:#fff;padding:8px;box-sizing:border-box}
+.card .cat{position:absolute;top:10px;left:10px;background:rgba(8,9,13,.75);backdrop-filter:blur(6px);font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;color:#ffffff!important}
+.card-body{padding:10px;display:flex;flex-direction:column;gap:5px;flex:1}
+.card-title{font-size:14px;font-weight:700;line-height:1.35;color:#111111;min-height:2.7em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-seller{font-size:12px;color:var(--mut)}
+.card-seller a{color:var(--mut);text-decoration:none}
+.card-seller a:hover{color:var(--acc)}
+.card-price{font-size:19px;font-weight:900;margin-top:auto;padding-top:8px}
+.buy{margin-top:8px;display:block;text-align:center;background:var(--acc);color:#0a0c10;font-weight:800;font-size:14px;padding:12px;border-radius:12px;text-decoration:none}
+.sellers{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.seller-card{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-decoration:none;transition:transform .18s,border-color .18s}
+.seller-card:hover{transform:translateY(-3px);border-color:#274b73}
+.avatar{flex:0 0 56px;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--acc2),var(--acc));display:grid;place-content:center;font-weight:900;font-size:22px;color:#0a0c10;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.seller-card b{font-size:15px;display:flex;align-items:center;gap:6px}
+.verif{color:var(--acc);font-size:14px}
+.seller-card small{color:var(--mut);font-size:12px}
+.how{margin-top:40px;background:linear-gradient(135deg,#10263e,#0a1a2c);border:1px solid var(--line);border-radius:22px;padding:30px 26px}
+.how h2{font-size:22px;margin-bottom:18px;color:#ffffff!important}
+.how h2 .hl{color:#ffffff!important}
+.steps{display:grid;gap:16px}
+.step{display:flex;gap:14px}
+.n{flex:0 0 36px;height:36px;border-radius:12px;background:var(--acc);color:#0a0c10;font-weight:900;display:grid;place-content:center}
+.step p{font-size:14px;color:#ffffff!important;line-height:1.6;margin:0}
+.step p b{color:#ffffff!important}
+.sell-strip{margin-top:26px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px 26px;border-radius:18px;background:#0a1a2c;border:1px solid var(--line);font-size:15px;color:var(--mut)}.sell-strip b{color:var(--acc)}
+.sell h2{font-size:clamp(24px,5vw,36px);font-weight:900}
+.sell h2 .hl{color:var(--acc)}
+.sell p{color:var(--mut);font-size:15px;max-width:520px;margin:12px auto 22px}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:26px}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:44px 10px;font-size:15px}.sr-label{font-size:13px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin:0 0 12px}#sr-sellers .sellers{margin-bottom:6px}
+.loading{grid-column:1/-1;text-align:center;color:var(--mut);padding:44px 10px}
+@media(min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.steps{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){
+.hero{padding:56px 16px 40px}
+.hero h1{font-size:36px}
+.hero-search{margin:22px 2px 0}
+.hero-search input{font-size:16px;padding:12px 14px}
+.hero-search button{padding:0 20px;font-size:15px}
+.trust{gap:10px;font-size:12px}
+.card .buy{padding:12px;font-size:14px}
+.stat b{font-size:22px}
+.sell-strip{padding:18px}}
+
+/* ===== plateado metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.card-price{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#111111!important}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}.login-cta-h{display:inline-block;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 50%,#7ba3cc 100%);color:#0a0c10 !important;font-weight:800;font-size:13px;padding:9px 15px;border-radius:999px;text-decoration:none;white-space:nowrap}
+#q-btn{background:#1d4568 !important;border-color:#1d4568 !important;color:#fff !important}
+</style>
+
+<style>
+/* ===== Apertura NEXO (pedido de Sergio 2026-11-05): NEXO en el centro 3 s con su slogan, luego SE DESINTEGRA en partículas que se esparcen por toda la pantalla y revela la tienda ===== */
+#nexo-splash{position:fixed;inset:0;z-index:200;background:#142c47;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:14px}
+#nexo-splash .nexo-splash-name{font-family:Archivo,'Source Sans 3',sans-serif;font-weight:900;font-size:clamp(44px,13vw,96px);letter-spacing:6px;color:#f5f5f7;white-space:nowrap;transition:opacity .25s ease}
+#nexo-splash .nexo-splash-tag{font-family:'Source Sans 3',Archivo,sans-serif;font-weight:600;font-size:clamp(15px,4.2vw,22px);letter-spacing:.05em;color:#b9cfe6;white-space:nowrap;opacity:0;animation:nexoTagIn .9s ease .7s both;transition:opacity .35s ease}
+#nexo-splash .nexo-splash-tag.tag-out{animation:none;opacity:0}
+@keyframes nexoTagIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#nexo-splash.nexo-fading{opacity:0;transition:opacity .3s ease}
+@media (prefers-reduced-motion:reduce){#nexo-splash .nexo-splash-tag{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<script>
+/* Apertura NEXO: nombre en el centro 3 s con el slogan; después se DESINTEGRA en partículas azul metálico que se esparcen por toda la pantalla y revela la tienda. Tocar la pantalla salta la espera. Nunca atrapa al usuario: a los 8 s se quita igual. */
+(function(){
+  var splash=document.createElement('div'); splash.id='nexo-splash';
+  var name=document.createElement('div'); name.className='nexo-splash-name'; name.textContent='NEXO';
+  var tag=document.createElement('div'); tag.className='nexo-splash-tag'; tag.textContent='Compra y vende lo que quieras.';
+  splash.appendChild(name); splash.appendChild(tag); document.body.appendChild(splash);
+  var done=false, started=false, cvRef=null;
+  function reveal(){ if(cvRef && cvRef.parentNode) cvRef.remove(); if(!splash.parentNode) return; splash.classList.add('nexo-fading'); setTimeout(function(){ if(splash.parentNode) splash.remove(); }, 320); }
+  function finish(){ if(done) return; done=true; reveal(); }
+  function startFx(){
+    if(done) return;
+    var rect=name.getBoundingClientRect();
+    if(!rect.width){ finish(); return; }
+    var cs=getComputedStyle(name);
+    var W=window.innerWidth, H=window.innerHeight, dpr=Math.min(window.devicePixelRatio||1, 2);
+    var cv=document.createElement('canvas'); cvRef=cv;
+    cv.width=W*dpr; cv.height=H*dpr;
+    cv.style.cssText='position:fixed;inset:0;z-index:210;pointer-events:none;width:'+W+'px;height:'+H+'px';
+    document.body.appendChild(cv);
+    var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+    var pad=30;
+    var off=document.createElement('canvas');
+    off.width=Math.ceil(rect.width)+pad*2; off.height=Math.ceil(rect.height)+pad*2;
+    var octx=off.getContext('2d');
+    octx.font=cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+    octx.textAlign='center'; octx.textBaseline='middle';
+    try{ octx.letterSpacing=cs.letterSpacing; }catch(e){}
+    octx.fillStyle='#ffffff';
+    octx.fillText('NEXO', off.width/2, off.height/2+2);
+    var data=null;
+    try{ data=octx.getImageData(0,0,off.width,off.height).data; }catch(e){}
+    if(!data){ cv.remove(); finish(); return; }
+    var gap=5, pts=[];
+    for(var yy=0; yy<off.height; yy+=gap){ for(var xx=0; xx<off.width; xx+=gap){ if(data[(yy*off.width+xx)*4+3]>128) pts.push({x:rect.left-pad+xx, y:rect.top-pad+yy}); } }
+    if(!pts.length){ cv.remove(); finish(); return; }
+    var MAX=2600;
+    if(pts.length>MAX){ var step=pts.length/MAX, tmp=[]; for(var i2=0;i2<pts.length;i2+=step) tmp.push(pts[Math.floor(i2)]); pts=tmp; }
+    var colors=['#e8f2fd','#a9c3e4','#5f89b5','#3d6a99','#d7e6f8'];
+    var parts=pts.map(function(p){
+      return { x0:p.x, y0:p.y,
+        dx:(Math.random()*W)-p.x, dy:(Math.random()*H)-p.y,
+        dur:1100+Math.random()*1100, delay:Math.random()*250,
+        s:1.6+Math.random()*2.8, c:colors[Math.floor(Math.random()*colors.length)],
+        drift:(Math.random()-0.5)*30 };
+    });
+    name.style.opacity='0';
+    var t0=performance.now(), TOTAL=2600;
+    function frame(now){
+      var el=now-t0;
+      ctx.clearRect(0,0,W,H);
+      var alive=false;
+      for(var i=0;i<parts.length;i++){
+        var p=parts[i], lt=el-p.delay;
+        if(lt<0){ alive=true; continue; }
+        var k=lt/p.dur; if(k>=1) continue; alive=true;
+        var e=1-Math.pow(1-k,3);
+        var x=p.x0+p.dx*e, y=p.y0+p.dy*e+p.drift*e*e;
+        ctx.globalAlpha=1-k;
+        ctx.fillStyle=p.c;
+        var s2=p.s*(1-k*0.6);
+        ctx.fillRect(x,y,s2,s2);
+      }
+      ctx.globalAlpha=1;
+      if(alive && el<TOTAL && !done){ requestAnimationFrame(frame); }
+      else { if(cv.parentNode) cv.remove(); finish(); }
+    }
+    requestAnimationFrame(frame);
+    setTimeout(function(){ if(cv.parentNode) cv.remove(); finish(); }, TOTAL+700);
+  }
+  function disintegrate(){
+    if(done || started) return; started=true;
+    tag.classList.add('tag-out');
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ finish(); return; }
+    if(document.fonts && document.fonts.ready){
+      var raced=false;
+      document.fonts.ready.then(function(){ if(!raced){ raced=true; startFx(); } });
+      setTimeout(function(){ if(!raced){ raced=true; startFx(); } }, 500);
+    } else { startFx(); }
+  }
+  splash.addEventListener('click', finish);
+  setTimeout(disintegrate, 3000);
+  setTimeout(finish, 8000);
+})();
+</script>
+
+<header class="top">
+ <a class="logo" href="index.html">NE<em>XO</em></a>
+ <div class="menu-wrap">
+ <button id="menu-btn" aria-label="Menú">☰</button>
+ <nav class="menu" id="menu">
+ <a href="index.html">Inicio</a>
+ <a href="cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
+ <a href="comprador/perfil.html?ver=carrito">Carrito <span id="cart-count" class="cbadge"></span></a>
+ <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+</nav>
+ </div>
+</header>
+<script>
+(function(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(s && s.access_token && s.user && s.user.id) return;
+ var btn = document.getElementById('menu-btn');
+ if(!btn) return;
+ btn.style.display = 'none';
+ var menu = document.getElementById('menu');
+ if(menu) menu.style.display = 'none';
+ var a = document.createElement('a');
+ a.href = 'cuenta.html';
+ a.textContent = 'Iniciar Sesión / Crear cuenta';
+ a.className = 'login-cta-h';
+ btn.parentNode.insertBefore(a, btn);
+ }catch(e){}
+})();
+</script>
+<div class="hero">
+ <h1>Encuentra de todo.<br><span class="hl">Compra protegido.</span></h1>
+ <p>Miles de productos físicos de vendedores verificados. Pagas por PayPal y lo recibes con número de rastreo.</p>
+ <div class="cta-row">
+ <a class="btn btn-acc" href="productos/">Explorar productos</a>
+ </div>
+ <div class="hero-search">
+ <input id="q-hero" type="search" placeholder="¿Qué estás buscando hoy?">
+ <button id="q-btn">Buscar</button>
+ </div>
+ <div class="trust">
+ <span>✓ Pago protegido PayPal</span><span>✓ Envío con rastreo</span>
+ </div>
+ <p class="sell-link">¿Tienes un negocio? <a href="vendedor/cuenta.html">Vende en Nexo →</a></p>
+ <div class="stats">
+ <div class="stat"><b id="st-prod">–</b><span>Productos</span></div>
+ <div class="stat"><b id="st-sell">–</b><span>Vendedores</span></div>
+ </div>
+</div>
+<main>
+ <div class="sec-head" id="productos"><h2>Productos</h2></div>
+ <div class="chips" id="chips"></div>
+ <div class="grid" id="grid"><div class="loading">Cargando productos…</div></div>
+
+ <div class="how" id="como-funciona">
+ <h2>¿Cómo funciona <span class="hl">Nexo</span>?</h2>
+ <div class="steps">
+ <div class="step"><span class="n">1</span><p><b>Pagas por PayPal.</b> Tu dinero viaja protegido por la garantía de PayPal en cada compra.</p></div>
+ <div class="step"><span class="n">2</span><p><b>El vendedor envía</b> tu producto con número de rastreo para que lo sigas en camino.</p></div>
+ <div class="step"><span class="n">3</span><p><b>Lo recibes en tu puerta.</b> Simple, rápido y sin intermediarios raros.</p></div>
+ </div>
+ </div>
+
+
+ <div class="sell-strip" id="vender">
+ <span>¿Tienes un negocio? Abre tu muro y empieza a vender hoy. <b>Sin comisiones</b>: el comprador paga una pequeña tasa de servicio.</span>
+ <a class="btn btn-acc" href="vendedor/cuenta.html" style="padding:12px 26px;font-size:14px">Quiero vender</a>
+ </div>
+</main>
+<footer>© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+/* sesión persistente: renueva el token automáticamente */
+(function(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(!s || !s.access_token || !s.refresh_token) return;
+ var exp = 0;
+ if(s.expires_at) exp = s.expires_at * 1000;
+ else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+ if(!exp || Date.now() < exp - 120000) return;
+ fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+ method: 'POST',
+ headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+ body: JSON.stringify({ refresh_token: s.refresh_token })
+ }).then(function(r){ return r.json(); }).then(function(ns){
+ if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
+ else localStorage.removeItem('dominus_session');
+ }).catch(function(){});
+ }catch(e){}
+})();
+
+var WA_NUMBER = "15704698339";
+var SELLERS = {}, PRODUCTS = [];
+var activeCat = 'Todo';
+
+function api(path){
+ return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+ headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+ }).then(function(r){ if(!r.ok) throw new Error('API ' + r.status); return r.json(); });
+}
+function money(n){ return '$' + Number(n).toFixed(2); }
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function load(){
+ return Promise.all([
+ api('sellers?select=*&order=nombre'),
+ api('products?select=*,sellers!inner(slug,nombre)&activo=eq.true&order=created_at.desc')
+ ]).then(function(res){
+ res[0].forEach(function(s){ SELLERS[s.slug] = s; });
+ PRODUCTS = res[1];
+ document.getElementById('st-sell').textContent = res[0].length;
+ document.getElementById('st-prod').textContent = PRODUCTS.length;
+ renderChips(); renderGrid(); renderSellers(); updateCartBadge();
+ }).catch(function(){
+ document.getElementById('grid').innerHTML = '<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';
+ });
+}
+function cats(){
+ var s = {};
+ PRODUCTS.forEach(function(p){ s[p.categoria || 'General'] = 1; });
+ return ['Todo'].concat(Object.keys(s).sort());
+}
+function renderChips(){
+ var el = document.getElementById('chips');
+ el.innerHTML = cats().map(function(c){
+ return '<button class="chip' + (c === activeCat ? ' on' : '') + '" data-c="' + esc(c) + '">' + esc(c) + '</button>';
+ }).join('');
+ el.querySelectorAll('.chip').forEach(function(b){
+ b.onclick = function(){ activeCat = b.dataset.c; renderChips(); renderGrid(); };
+ });
+}
+function matchSellers(term){
+ term = term.toLowerCase();
+ return Object.keys(SELLERS).map(function(k){ return SELLERS[k]; }).filter(function(s){
+ return (s.nombre + ' ' + (s.descripcion || '') + ' ' + (s.ubicacion || '')).toLowerCase().indexOf(term) >= 0;
+ });
+}
+function sellerCard(s){
+ var n = PRODUCTS.filter(function(p){ return p.sellers && p.sellers.slug === s.slug; }).length;
+ var av = s.logo_url ? '<img src="' + esc(s.logo_url) + '" alt="">' : esc(s.nombre.charAt(0));
+ return '<a class="seller-card" href="vendedor/?s=' + esc(s.slug) + '"><span class="avatar">' + av + '</span>'
+ + '<span><b>' + esc(s.nombre) + (s.verificado ? ' <span class="verif">✓</span>' : '') + '</b><br>'
+ + '<small>' + n + ' productos' + (s.ubicacion ? ' · ' + esc(s.ubicacion) : '') + '</small></span></a>';
+}
+function productCard(p){
+ var s = p.sellers || {};
+ var img = p.imagen_url || '';
+ return '<div class="card"><a href="producto/?id=' + p.id + '" style="text-decoration:none;color:inherit;display:block"><div class="ph">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(p.titulo) + '" loading="lazy">' : '')
+ + '<span class="cat">' + esc(p.categoria || 'General') + '</span></div>'
+ + '<div class="card-body"><div class="card-title">' + esc(p.titulo) + '</div></a>'
+ + '<div class="card-seller">por <a href="vendedor/?s=' + esc(s.slug || '') + '">' + esc(s.nombre || '') + '</a></div>'
+ + '<div class="card-price">' + money(p.precio) + '</div>'
+ + '<a class="buy" href="producto/?id=' + p.id + '">Ver</a></div></div>';
+}
+function renderGrid(){
+ var term = (document.getElementById('q-hero').value || '').toLowerCase();
+ var g = document.getElementById('grid');
+ var list = PRODUCTS.filter(function(p){
+ var okC = activeCat === 'Todo' || (p.categoria || 'General') === activeCat;
+ var okQ = !term || (p.titulo + ' ' + (p.sellers ? p.sellers.nombre : '')).toLowerCase().indexOf(term) >= 0;
+ return okC && okQ;
+ });
+ if(!list.length){ g.innerHTML = '<div class="empty">No hay productos todavía. ¡Sé el primero en vender!</div>'; return; }
+ g.innerHTML = list.map(productCard).join('');
+}
+function renderSellers(){
+ var el = document.getElementById('sellers');
+ var keys = Object.keys(SELLERS);
+ if(!keys.length){ el.innerHTML = '<div class="empty">Muy pronto.</div>'; return; }
+ el.innerHTML = keys.map(function(k){ return sellerCard(SELLERS[k]); }).join('');
+}
+var qHero = document.getElementById('q-hero');
+function goProductSearch(){
+ var term = (qHero.value || '').trim();
+ location.href = 'productos/index.html' + (term ? '?q=' + encodeURIComponent(term) : '');
+}
+document.getElementById('q-btn').onclick = goProductSearch;
+qHero.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); goProductSearch(); } });
+qHero.addEventListener('input', renderGrid);
+document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
+document.addEventListener('click', function(){ document.getElementById('menu').classList.remove('open'); });
+function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('dominus_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
+function addToCart(pid, btn){
+ var s = buyerSession();
+ if(!s){ location.href = 'cuenta.html?tipo=comprador'; return; }
+ btn.disabled = true; btn.textContent = 'Agregando…';
+ fetch(SUPABASE_URL + '/rest/v1/cart_items', {
+ method: 'POST',
+ headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=representation' },
+ body: JSON.stringify({ user_id: s.user.id, product_id: pid, qty: 1 })
+ }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+ .then(function(res){
+ if(res.ok && res.j.length && res.j[0].qty > 1){
+ var row = res.j[0];
+ fetch(SUPABASE_URL + '/rest/v1/cart_items?id=eq.' + row.id, {
+ method: 'PATCH', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token, 'Content-Type': 'application/json' },
+ body: JSON.stringify({ qty: row.qty + 1 })
+ }).then(function(){ btn.textContent = '✓ En el carrito'; updateCartBadge(); });
+ } else {
+ btn.textContent = '✓ En el carrito'; updateCartBadge();
+ }
+ setTimeout(function(){ btn.disabled = false; btn.textContent = '+ Agregar al carrito'; }, 1500);
+ }).catch(function(){ btn.disabled = false; btn.textContent = '+ Agregar al carrito'; });
+}
+function updateCartBadge(){
+ var s = buyerSession();
+ var badge = document.getElementById('cart-count');
+ if(!s){ badge.classList.remove('show'); return; }
+ fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + s.user.id + '&select=id', {
+ headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token }
+ }).then(function(r){ return r.json(); }).then(function(rows){
+ if(rows && rows.length){ badge.textContent = rows.length; badge.classList.add('show'); }
+ else badge.classList.remove('show');
+ }).catch(function(){});
+}
+document.addEventListener('click', function(e){
+ var b = e.target.closest('.add-cart');
+ if(b) addToCart(b.dataset.pid, b);
+});
+load();
+function routeMiCuenta(tipo, slug){
+ if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+ else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
+ else { location.href = '/Nexo/comprador/perfil.html'; }
+}
+function goMiCuenta(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(!(s && s.access_token)) return true;
+
+ var uid = (s.user && s.user.id) || null;
+ if(!uid) return true;
+ var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
+ fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+ .then(function(r){ return r.json(); })
+ .then(function(rows){
+ if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+ var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
+ try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+ if(t === 'vendedor'){
+ fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
+ .then(function(r){ return r.json(); })
+ .then(function(r2){
+ var sl = (r2 && r2[0] && r2[0].slug) || null;
+ if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+ routeMiCuenta(t, sl);
+ }).catch(function(){ routeMiCuenta(t, null); });
+ } else {
+ routeMiCuenta(t, null);
+ }
+ }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+ return false;
+ }catch(e){ return true; }
+}
+function doLogout(){
+ try{
+ localStorage.removeItem('dominus_session');
+ localStorage.removeItem('dominus_tipo');
+ localStorage.removeItem('dominus_slug');
+ }catch(e){}
+ location.href = '/Nexo/index.html';
+ return false;
+}
+(function(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(s && s.access_token){
+ var b = document.getElementById('menu-logout');
+ if(b) b.style.display = 'block';
+ }
+ }catch(e){}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi panel — Nexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
+body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
+.logo em{font-style:normal;color:var(--acc)}
+.top-actions{display:flex;gap:10px;align-items:center}
+.link{color:var(--mut);text-decoration:none;font-size:13px}
+.link:hover{color:var(--acc)}
+.logout{background:none;border:1px solid var(--line);color:var(--mut);border-radius:999px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer}
+main{max-width:1000px;margin:0 auto;padding:26px 18px 70px}
+.welcome{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.welcome h1{font-size:26px;font-weight:900}
+.welcome h1 .hl{color:var(--acc)}
+.wall-link{display:inline-block;background:var(--card);border:1px solid var(--line);color:var(--txt);text-decoration:none;font-size:13px;font-weight:700;padding:10px 20px;border-radius:999px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 30px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stat b{display:block;font-size:24px;font-weight:900;color:var(--acc)}
+.stat span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:22px}
+.sec h2{font-size:19px;margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
+input,textarea,select{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:12px 14px;outline:none}
+input::placeholder,textarea::placeholder{color:#7d8590}
+input:focus,textarea:focus{border-color:var(--acc)}
+textarea{resize:vertical;min-height:70px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px 22px;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.5}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--txt);border-radius:12px;font-family:inherit;font-size:13px;padding:9px 16px;cursor:pointer}
+.preview-img{max-width:120px;border-radius:12px;margin-top:10px;display:none}
+.prod{display:flex;gap:14px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.prod.dragging{opacity:.4;border-color:var(--acc)}
+.drag{cursor:grab;color:var(--mut);font-size:18px;flex:0 0 auto;touch-action:none}
+.drag:active{cursor:grabbing}
+.prod img{width:64px;height:64px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;box-sizing:border-box;flex:0 0 64px}
+.prod .info{flex:1;min-width:0}
+.prod .info b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod .info small{color:var(--mut);font-size:12px}
+.prod .pa{font-weight:900;color:var(--acc)}
+.badge{font-size:11px;padding:4px 10px;border-radius:999px;background:#e8eaee;color:var(--mut)}
+.badge.off{background:rgba(255,93,93,.15);color:#b3261e}
+.prod .ops{display:flex;gap:8px}
+.err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:14px}
+.empty{color:var(--mut);font-size:14px;text-align:center;padding:20px}
+@media(max-width:640px){.cards{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:1fr}.prod .ops{flex-direction:column}}
+
+/* ===== plateado metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+
+.menu-wrap{position:relative;margin-left:auto}
+#menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:16px;min-width:200px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.16);z-index:50}
+.menu.open{display:block}
+.menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
+.menu a:last-child{border-bottom:0}
+.menu a:hover{background:rgba(0,0,0,.05)}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="../index.html">NE<em>XO</em></a>
+  <div class="top-actions">
+    <div class="menu-wrap">
+    <button id="menu-btn" aria-label="Menú">☰</button>
+    <nav class="menu" id="menu">
+      <a href="../index.html">Inicio</a>
+      <a href="../cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
+      <a href="../comprador/perfil.html?ver=carrito">Carrito</a>
+          <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+</nav>
+  </div>
+    <a id="btn-volver" href="../cuenta.html" style="background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;padding:9px 18px;font-family:inherit">← Volver</a>
+  </div>
+</header>
+<main id="main"><p class="empty">Cargando tu panel…</p></main>
+<footer style="border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px">© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+/* sesión persistente: renueva el token automáticamente */
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!s || !s.access_token || !s.refresh_token) return;
+    var exp = 0;
+    if(s.expires_at) exp = s.expires_at * 1000;
+    else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+    if(!exp || Date.now() < exp - 120000) return;
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    }).then(function(r){ return r.json(); }).then(function(ns){
+      if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
+      else localStorage.removeItem('dominus_session');
+    }).catch(function(){});
+  }catch(e){}
+})();
+
+var session = null, seller = null, products = [];
+function getSession(){ try { return JSON.parse(localStorage.getItem('dominus_session')); } catch(e){ return null; } }
+function h(token, json){
+  var x = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + token };
+  if(json) x['Content-Type'] = 'application/json';
+  return x;
+}
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n){ return '$' + Number(n).toFixed(2); }
+
+function renderAjustes(){
+  var mw = document.querySelector('.menu-wrap');
+  if(mw) mw.style.display = 'none';
+  var volver = document.getElementById('btn-volver');
+  if(volver) volver.href = 'index.html?s=' + encodeURIComponent(seller.slug);
+  document.getElementById('main').innerHTML =
+    '<div class="sec"><h2 style="color:#111111;font-size:24px;margin:0 0 4px">Ajustes de cuenta</h2>'
+    + '<p style="font-size:13px;color:#6a6a72;margin:0 0 8px">Actualiza tu correo electrónico y tu contraseña.</p>'
+    + '<label>Correo electrónico</label><input id="ce-mail" type="email" autocomplete="email">'
+    + '<p id="ce-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="ce-btn" style="width:100%">Guardar correo</button>'
+    + '<label>Contraseña actual</label><div class="passwrap"><input id="cp-cur" type="password" autocomplete="current-password"><button type="button" class="eye" data-for="cp-cur">Ver</button></div>'
+    + '<label>Contraseña nueva (mínimo 6 caracteres)</label><div class="passwrap"><input id="cp-new" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new">Ver</button></div>'
+    + '<label>Confirma la contraseña nueva</label><div class="passwrap"><input id="cp-new2" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new2">Ver</button></div>'
+    + '<p id="cp-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="cp-btn" style="width:100%">Cambiar contraseña</button></div>'
+    + '<div class="sec"><h2>Eliminar mi cuenta</h2><p style="font-size:14px;color:var(--mut);margin-bottom:12px">Si eliminas tu cuenta se borra tu comercio con todos tus productos y tu cuenta de acceso. No se puede deshacer.</p><button class="btn" id="btn-delacc" style="background:#b3261e!important;color:#fff!important;width:100%">Eliminar mi cuenta</button></div>';
+  var delBtn = document.getElementById('btn-delacc'); if(delBtn) delBtn.onclick = deleteMyAccountPanel;
+  wireChangePass(function(){ return session.user.email; }, function(j){ session = j; try{ localStorage.setItem('dominus_session', JSON.stringify(j)); }catch(e){} });
+  wireEmail(function(){ return session.access_token; }, function(){ return session.user.email; });
+}
+function boot(){
+  session = getSession();
+  if(!session || !session.access_token){ location.href = 'cuenta.html'; return; }
+  fetch(SUPABASE_URL + '/auth/v1/user', { headers: h(session.access_token) }).then(function(r){
+    if(!r.ok){ localStorage.removeItem('dominus_session'); location.href = 'cuenta.html'; return null; }
+    return fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + session.user.id + '&select=*&limit=1', { headers: h(session.access_token) }).then(function(x){ return x.json(); });
+  }).then(function(rows){
+    if(!rows) return;
+    if(!rows.length){ location.href = 'cuenta.html'; return; }
+    seller = rows[0];
+    if(new URLSearchParams(location.search).get('ajustes') === '1'){ renderAjustes(); return; }
+    location.href = 'index.html?s=' + seller.slug + '&edit=1';
+  });
+}
+function loadProducts(){
+  function q(o){ return fetch(SUPABASE_URL + '/rest/v1/products?seller_id=eq.' + seller.id + '&select=*&order=' + o, { headers: h(session.access_token) }).then(function(r){ if(!r.ok) throw 0; return r.json(); }); }
+  q('orden.asc,created_at.desc').catch(function(){ return q('created_at.desc'); })
+    .then(function(rows){ products = rows || []; render(); });
+}
+function render(){
+  var active = products.filter(function(p){ return p.activo; });
+  document.getElementById('main').innerHTML =
+    '<div class="welcome"><h1>Hola, <span class="hl">' + esc(seller.nombre) + '</span></h1>'
+    + '<a class="wall-link" href="index.html?s=' + esc(seller.slug) + '&preview=1" target="_blank">👁 Vista previa</a></div>'
+    + '<div class="cards"><div class="stat"><b>' + products.length + '</b><span>Productos</span></div>'
+    + '<div class="stat"><b>' + active.length + '</b><span>Activos</span></div>'
+    + '<div class="stat"><b>$1.00</b><span>Tasa de servicio</span></div></div>'
+    + '<div class="sec"><h2>Mi muro</h2>'
+    + '<div class="row2"><div><label>Foto de perfil</label><input id="w-logo" type="file" accept="image/*">'
+    + (seller.logo_url ? '<img src="' + esc(seller.logo_url) + '" style="width:72px;height:72px;border-radius:50%;object-fit:cover;margin-top:8px">' : '') + '</div>'
+    + '<div><label>Foto de portada</label><input id="w-cover" type="file" accept="image/*">'
+    + (seller.cover_url ? '<img src="' + esc(seller.cover_url) + '" style="width:100%;max-width:220px;height:70px;object-fit:cover;border-radius:10px;margin-top:8px">' : '') + '</div></div>'
+    + '<label>Nombre del negocio</label><input id="w-nombre" value="' + esc(seller.nombre) + '">'
+    + '<label>Descripción</label><textarea id="w-desc">' + esc(seller.descripcion || '') + '</textarea>'
+    + '<label>Descripción larga (acerca de tu empresa, se muestra arriba en tu muro)</label><textarea id="w-about" style="min-height:110px" placeholder="Cuenta la historia de tu empresa, qué te hace diferente…">' + esc(seller.descripcion_larga || '') + '</textarea>'
+    + '<div class="row2"><div><label>Ubicación <small style="color:var(--mut)">(sale de tus datos de envío: ciudad y país; no se edita aquí)</small></label><input id="w-ubica" value="' + esc(seller.ubicacion || '') + '" readonly style="opacity:.65"></div>'
+    + '<div><label>WhatsApp <small style="color:var(--mut)">(privado)</small></label><input id="w-wa" value="' + esc(seller.whatsapp || '') + '"></div></div>'
+    + '<div class="err" id="w-err"></div>'
+    + '<button class="btn" id="w-btn">Guardar cambios</button></div>'
+    + '<div class="sec"><h2>Subir producto</h2>'
+    + '<label>Título *</label><input id="f-titulo" placeholder="Ej: Audífonos Bluetooth Pro">'
+    + '<div class="row2"><div><label>Precio (USD) *</label><input id="f-precio" type="number" min="0" step="0.01" placeholder="49.99"></div>'
+    + '<div><label>Categoría</label><input id="f-cat" placeholder="Ej: Electrónica"></div></div>'
+    + '<label>Descripción</label><textarea id="f-desc" placeholder="Detalles, estado, qué incluye…"></textarea>'
+    + '<label>Especificaciones</label><textarea id="f-specs" placeholder="Medidas, materiales, modelo, garantía…"></textarea>'
+    + '<label>Foto *</label><input id="f-img" type="file" accept="image/*">'
+    + '<img class="preview-img" id="f-prev">'
+    + '<div class="err" id="f-err"></div>'
+    + '<button class="btn" id="f-btn">Publicar producto</button></div>'
+    + '<div class="sec"><h2>Mis productos</h2><div id="plist"></div></div>'
+    + '<div class="sec"><h2>Reseñas <span class="hl">recibidas</span></h2><div id="rl-list"><p class="empty">Cargando…</p></div></div>'
+    + '<div class="sec"><h2>Ajustes de cuenta</h2>'
+    + '<label>Correo electrónico</label><input id="ce-mail" type="email" autocomplete="email">'
+    + '<p id="ce-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="ce-btn">Guardar correo</button>'
+    + '<label>Contraseña actual</label><div class="passwrap"><input id="cp-cur" type="password" autocomplete="current-password"><button type="button" class="eye" data-for="cp-cur">Ver</button></div>'
+    + '<label>Contraseña nueva (mínimo 6 caracteres)</label><div class="passwrap"><input id="cp-new" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new">Ver</button></div>'
+    + '<label>Confirma la contraseña nueva</label><div class="passwrap"><input id="cp-new2" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new2">Ver</button></div>'
+    + '<p id="cp-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="cp-btn">Cambiar contraseña</button>'
+    + '<h3 style="font-size:17px;margin:26px 0 8px;color:#b3261e">Eliminar mi cuenta</h3><p style="font-size:14px;color:var(--mut);margin-bottom:12px">Si eliminas tu cuenta se borra tu comercio con todos tus productos y tu cuenta de acceso. No se puede deshacer.</p><button class="btn" id="btn-delacc" style="background:#b3261e!important;color:#fff!important">Eliminar mi cuenta</button></div>';
+  renderList();
+  document.getElementById('f-img').addEventListener('change', function(){
+    var f = this.files[0];
+    if(f){ var r = new FileReader(); r.onload = function(e){ var im = document.getElementById('f-prev'); im.src = e.target.result; im.style.display = 'block'; }; r.readAsDataURL(f); }
+  });
+  document.getElementById('f-btn').onclick = publishProduct;
+  var _bo = document.getElementById('btn-out'); if(_bo) _bo.onclick = function(){ localStorage.removeItem('dominus_session'); location.href = 'cuenta.html'; };
+  document.getElementById('w-btn').onclick = saveWall;
+  document.getElementById('btn-delacc').onclick = deleteMyAccountPanel;
+  wireChangePass(function(){ return session.user.email; }, function(j){ session = j; try{ localStorage.setItem('dominus_session', JSON.stringify(j)); }catch(e){} });
+  wireEmail(function(){ return session.access_token; }, function(){ return session.user.email; });
+}
+function werr(m){ var e = document.getElementById('w-err'); e.textContent = m; e.style.display = 'block'; }
+function uploadImage(file, kind){
+  var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  var path = seller.slug + '/' + kind + '-' + Date.now() + '.' + ext;
+  return fetch(SUPABASE_URL + '/storage/v1/object/product-images/' + path, {
+    method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': file.type || 'image/jpeg' },
+    body: file
+  }).then(function(r){ if(!r.ok) throw new Error('img'); return SUPABASE_URL + '/storage/v1/object/public/product-images/' + path; });
+}
+function saveWall(){
+  var e = document.getElementById('w-err'); e.style.display = 'none';
+  var btn = document.getElementById('w-btn'); btn.disabled = true; btn.textContent = 'Guardando…';
+  var jobs = [];
+  var logoFile = document.getElementById('w-logo').files[0];
+  var coverFile = document.getElementById('w-cover').files[0];
+  if(logoFile) jobs.push(uploadImage(logoFile, 'profile'));
+  if(coverFile) jobs.push(uploadImage(coverFile, 'cover'));
+  Promise.all(jobs).then(function(urls){
+    var i = 0, patch = {
+      nombre: document.getElementById('w-nombre').value.trim() || seller.nombre,
+      descripcion: document.getElementById('w-desc').value.trim() || null,
+      descripcion_larga: document.getElementById('w-about').value.trim() || null,
+      ubicacion: document.getElementById('w-ubica').value.trim() || null,
+      whatsapp: document.getElementById('w-wa').value.trim() || null
+    };
+    if(logoFile) patch.logo_url = urls[i++];
+    if(coverFile) patch.cover_url = urls[i++];
+    return fetch(SUPABASE_URL + '/rest/v1/sellers?id=eq.' + seller.id, {
+      method: 'PATCH', headers: h(session.access_token, true), body: JSON.stringify(patch)
+    });
+  }).then(function(r){ if(!r.ok) throw new Error('db'); return loadProducts(); })
+    .then(function(){
+      return fetch(SUPABASE_URL + '/rest/v1/sellers?id=eq.' + seller.id + '&select=*&limit=1', { headers: h(session.access_token) }).then(function(x){ return x.json(); });
+    }).then(function(rows){ seller = rows[0]; render(); })
+    .catch(function(){ werr('No se pudo guardar. Intenta de nuevo.'); btn.disabled = false; btn.textContent = 'Guardar cambios'; });
+}
+function starsHTML(r){ var s = ''; for(var i = 1; i <= 5; i++) s += i <= Math.round(r) ? '★' : '☆'; return '<span style="color:#f5b301;letter-spacing:2px">' + s + '</span>'; }
+function loadReviews(){
+  var el = document.getElementById('rl-list');
+  if(!el) return;
+  fetch(SUPABASE_URL + '/rest/v1/seller_reviews?seller_id=eq.' + seller.id + '&select=*&order=created_at.desc', { headers: h(session.access_token) })
+    .then(function(r){ return r.json(); }).then(function(rows){
+      if(!rows.length){ el.innerHTML = '<p class="empty">Aún no recibes reseñas.</p>'; return; }
+      var avg = rows.reduce(function(a, r){ return a + r.rating; }, 0) / rows.length;
+      el.innerHTML = '<p style="margin-bottom:14px"><b style="font-size:26px">' + avg.toFixed(1) + '</b> ' + starsHTML(avg) + ' <small style="color:var(--mut)">(' + rows.length + ')</small></p>'
+        + rows.slice(0, 10).map(function(r){
+            return '<div style="border-top:1px solid var(--line);padding:12px 0"><b style="font-size:14px">' + esc(r.nombre || 'Comprador') + '</b> <small style="color:var(--mut)">' + new Date(r.created_at).toLocaleDateString('es') + '</small><div>' + starsHTML(r.rating) + '</div><p style="font-size:14px;color:#d4d9e2;margin-top:6px">' + esc(r.comentario || '') + '</p></div>';
+          }).join('');
+    }).catch(function(){ el.innerHTML = '<p class="empty">No se pudieron cargar.</p>'; });
+}
+
+function wireEmail(getTok, getEmail){
+  var btn = document.getElementById('ce-btn'); if(!btn) return;
+  var inp = document.getElementById('ce-mail');
+  var msg = document.getElementById('ce-msg');
+  if(inp && getEmail()) inp.value = getEmail();
+  btn.onclick = function(){
+    var em = inp.value.trim();
+    if(!em || em.indexOf('@') < 0){ msg.style.color = '#b3261e'; msg.textContent = 'Escribe un correo válido.'; return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/user', { method: 'PUT', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + getTok(), 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        btn.disabled = false; btn.textContent = 'Guardar correo';
+        if(res.ok){ msg.style.color = '#1c7c43'; msg.textContent = 'Te envié un correo de confirmación a ' + em + '. Ábrelo y toca el enlace para que el cambio se aplique.'; }
+        else { msg.style.color = '#b3261e'; msg.textContent = 'No se pudo cambiar el correo. Intenta de nuevo.'; }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Guardar correo'; msg.style.color = '#b3261e'; msg.textContent = 'Error de conexión. Intenta de nuevo.'; });
+  };
+}
+function wireChangePass(getEmail, setSession){
+  Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+    if(b._w) return; b._w = 1;
+    b.onclick = function(){
+      var i = document.getElementById(b.getAttribute('data-for'));
+      if(!i) return;
+      var s = i.type === 'password';
+      i.type = s ? 'text' : 'password';
+      b.textContent = s ? 'Ocultar' : 'Ver';
+    };
+  });
+  var btn = document.getElementById('cp-btn');
+  if(!btn) return;
+  btn.onclick = function(){
+    var msg = document.getElementById('cp-msg');
+    function err(m){ msg.style.color = '#b3261e'; msg.textContent = m; }
+    var cur = document.getElementById('cp-cur').value;
+    var nw = document.getElementById('cp-new').value;
+    var nw2 = document.getElementById('cp-new2').value;
+    if(!cur){ err('Escribe tu contraseña actual.'); return; }
+    if(nw.length < 6){ err('La contraseña nueva debe tener mínimo 6 caracteres.'); return; }
+    if(nw !== nw2){ err('Las contraseñas nuevas no coinciden.'); return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: getEmail(), password: cur })
+    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        if(!res.ok){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('La contraseña actual no es correcta.'); return null; }
+        setSession(res.j);
+        return fetch(SUPABASE_URL + '/auth/v1/user', {
+          method: 'PUT',
+          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + res.j.access_token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: nw })
+        }).then(function(r){ return { ok: r.ok }; });
+      })
+      .then(function(r2){
+        if(!r2) return;
+        btn.disabled = false; btn.textContent = 'Cambiar contraseña';
+        if(r2.ok){
+          msg.style.color = '#1c7c43'; msg.textContent = 'Contraseña actualizada.';
+          document.getElementById('cp-cur').value = '';
+          document.getElementById('cp-new').value = '';
+          document.getElementById('cp-new2').value = '';
+        } else { err('No se pudo actualizar. Intenta de nuevo.'); }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('Error de conexión. Intenta de nuevo.'); });
+  };
+}
+
+function renderList(){
+  var el = document.getElementById('plist');
+  if(!products.length){ el.innerHTML = '<p class="empty">Aún no tienes productos. ¡Sube el primero!</p>'; return; }
+  el.innerHTML = '<p style="font-size:12px;color:var(--mut);margin-bottom:10px">Arrastra <b>⠿</b> para reordenar cómo se ven en tu muro.</p>' + products.map(function(p){
+    return '<div class="prod" draggable="true" data-pid="' + p.id + '">'
+      + '<span class="drag" title="Arrastrar para reordenar">⠿</span>'
+      + (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="">' : '')
+      + '<div class="info"><b>' + esc(p.titulo) + '</b><small>' + esc(p.categoria || 'General') + '</small> '
+      + '<span class="badge' + (p.activo ? '' : ' off') + '">' + (p.activo ? 'Activo' : 'Pausado') + '</span>'
+      + (p.fijado ? ' <span class="badge">📌 Fijado</span>' : '')
+      + (p.destacado ? ' <span class="badge">⭐ Destacado</span>' : '') + '</div>'
+      + '<span class="pa">' + money(p.precio) + '</span>'
+      + '<div class="ops"><button class="btn-ghost" data-pin="' + p.id + '">' + (p.fijado ? 'Quitar 📌' : '📌 Fijar') + '</button>'
+      + '<button class="btn-ghost" data-feat="' + p.id + '">' + (p.destacado ? 'Quitar ⭐' : '⭐ Destacar') + '</button>'
+      + '<button class="btn-ghost" data-act="' + p.id + '">' + (p.activo ? 'Pausar' : 'Activar') + '</button>'
+      + '<button class="btn-ghost" data-del="' + p.id + '">Eliminar</button></div></div>';
+  }).join('');
+  el.querySelectorAll('[data-act]').forEach(function(b){ b.onclick = function(){ toggleProduct(b.dataset.act); }; });
+  el.querySelectorAll('[data-del]').forEach(function(b){ b.onclick = function(){ if(confirm('¿Eliminar este producto?')) delProduct(b.dataset.del); }; });
+  el.querySelectorAll('[data-pin]').forEach(function(b){ b.onclick = function(){ togglePin(b.dataset.pin); }; });
+  el.querySelectorAll('[data-feat]').forEach(function(b){ b.onclick = function(){ toggleFeat(b.dataset.feat); }; });
+  initDrag(el);
+  loadReviews();
+}
+var dragPid = null;
+function initDrag(el){
+  el.querySelectorAll('.prod').forEach(function(row){
+    row.addEventListener('dragstart', function(){ dragPid = row.dataset.pid; row.classList.add('dragging'); });
+    row.addEventListener('dragend', function(){ row.classList.remove('dragging'); });
+    row.addEventListener('dragover', function(e){ e.preventDefault(); });
+    row.addEventListener('drop', function(e){
+      e.preventDefault();
+      if(!dragPid || dragPid === row.dataset.pid) return;
+      var rows = Array.prototype.slice.call(el.querySelectorAll('.prod'));
+      var from = rows.find(function(r){ return r.dataset.pid === dragPid; });
+      var to = row;
+      el.insertBefore(from, to);
+      saveOrder();
+    });
+  });
+}
+function saveOrder(){
+  var ids = Array.prototype.map.call(document.querySelectorAll('#plist .prod'), function(r){ return r.dataset.pid; });
+  var jobs = ids.map(function(id, i){
+    var p = products.find(function(x){ return x.id === id; });
+    if(p && p.orden !== i) return fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, {
+      method: 'PATCH', headers: h(session.access_token, true), body: JSON.stringify({ orden: i })
+    });
+    return null;
+  }).filter(Boolean);
+  Promise.all(jobs).then(loadProducts);
+}
+function togglePin(id){
+  var p = products.find(function(x){ return x.id === id; });
+  fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, {
+    method: 'PATCH', headers: h(session.access_token, true), body: JSON.stringify({ fijado: !p.fijado })
+  }).then(loadProducts);
+}
+function toggleFeat(id){
+  var p = products.find(function(x){ return x.id === id; });
+  if(!p.destacado && products.filter(function(x){ return x.destacado; }).length >= 3){
+    alert('Solo puedes destacar 3 productos. Quita uno para destacar otro.');
+    return;
+  }
+  fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, {
+    method: 'PATCH', headers: h(session.access_token, true), body: JSON.stringify({ destacado: !p.destacado })
+  }).then(loadProducts);
+}
+function ferr(m){ var e = document.getElementById('f-err'); e.textContent = m; e.style.display = 'block'; }
+function publishProduct(){
+  var e = document.getElementById('f-err'); e.style.display = 'none';
+  var titulo = document.getElementById('f-titulo').value.trim();
+  var precio = parseFloat(document.getElementById('f-precio').value);
+  var file = document.getElementById('f-img').files[0];
+  if(!titulo){ ferr('Ponle un título a tu producto.'); return; }
+  if(!(precio > 0)){ ferr('Pon un precio válido.'); return; }
+  if(!file){ ferr('Sube una foto de tu producto.'); return; }
+  var btn = document.getElementById('f-btn'); btn.disabled = true; btn.textContent = 'Subiendo…';
+  var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  var path = seller.slug + '/' + Date.now() + '.' + ext;
+  fetch(SUPABASE_URL + '/storage/v1/object/product-images/' + path, {
+    method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': file.type || 'image/jpeg' },
+    body: file
+  }).then(function(r){
+    if(!r.ok) throw new Error('img');
+    var imgUrl = SUPABASE_URL + '/storage/v1/object/public/product-images/' + path;
+    return fetch(SUPABASE_URL + '/rest/v1/products', {
+      method: 'POST', headers: h(session.access_token, true),
+      body: JSON.stringify({ seller_id: seller.id, titulo: titulo, descripcion: document.getElementById('f-desc').value.trim() || null, especificaciones: document.getElementById('f-specs').value.trim() || null,
+        precio: precio, categoria: document.getElementById('f-cat').value.trim() || 'General', imagen_url: imgUrl, orden: products.length,
+        activo: true })
+    });
+  }).then(function(r){ if(!r.ok) throw new Error('db'); loadProducts(); })
+    .catch(function(){ ferr('No se pudo publicar. Intenta de nuevo.'); btn.disabled = false; btn.textContent = 'Publicar producto'; });
+}
+function toggleProduct(id){
+  var p = products.find(function(x){ return x.id === id; });
+  fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, {
+    method: 'PATCH', headers: h(session.access_token, true), body: JSON.stringify({ activo: !p.activo })
+  }).then(loadProducts);
+}
+function delProduct(id){
+  fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, { method: 'DELETE', headers: h(session.access_token) }).then(loadProducts);
+}
+function deleteMyAccountPanel(){
+  if(!session || !session.access_token || !seller){ alert('Entra a tu cuenta primero.'); return; }
+  if(!confirm('¿Eliminar tu cuenta de Nexo?\n\nSe borrará tu comercio "' + seller.nombre + '" con todos tus productos y tu cuenta de acceso. Esto NO se puede deshacer.')) return;
+  var frase = prompt('Para confirmar, escribe ELIMINAR:');
+  if(!frase || frase.trim().toUpperCase() !== 'ELIMINAR'){ alert('Cancelado. Tu cuenta sigue activa.'); return; }
+  var tok = session.access_token;
+  var finish = function(completa){
+    try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){}
+    alert(completa ? 'Tu cuenta fue eliminada.' : 'Tu comercio y tu perfil fueron eliminados.');
+    location.href = '../index.html';
+  };
+  fetch(SUPABASE_URL + '/rest/v1/rpc/eliminar_mi_cuenta', { method: 'POST', headers: h(tok, true), body: JSON.stringify({}) })
+    .then(function(r){
+      if(r.ok){ finish(true); return; }
+      fetch(SUPABASE_URL + '/rest/v1/sellers?id=eq.' + seller.id, { method: 'DELETE', headers: h(tok) })
+        .then(function(){ return fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + seller.user_id, { method: 'DELETE', headers: h(tok) }); })
+        .then(function(){ finish(false); })
+        .catch(function(){ alert('No se pudo eliminar. Intenta de nuevo.'); });
+    })
+    .catch(function(){ alert('No se pudo eliminar. Revisa tu conexión.'); });
+}
+boot();
+
+document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
+document.addEventListener('click', function(){ var m = document.getElementById('menu'); if(m) m.classList.remove('open'); });
+function routeMiCuenta(tipo, slug){
+  if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+  else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
+  else { location.href = '/Nexo/comprador/perfil.html'; }
+}
+function goMiCuenta(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!(s && s.access_token)) return true;
+
+    var uid = (s.user && s.user.id) || null;
+    if(!uid) return true;
+    var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
+      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      if(t === 'vendedor'){
+        fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
+        .then(function(r){ return r.json(); })
+        .then(function(r2){
+          var sl = (r2 && r2[0] && r2[0].slug) || null;
+          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          routeMiCuenta(t, sl);
+        }).catch(function(){ routeMiCuenta(t, null); });
+      } else {
+        routeMiCuenta(t, null);
+      }
+    }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+    return false;
+  }catch(e){ return true; }
+}
+function doLogout(){
+  try{
+    localStorage.removeItem('dominus_session');
+    localStorage.removeItem('dominus_tipo');
+    localStorage.removeItem('dominus_slug');
+  }catch(e){}
+  location.href = '/Nexo/index.html';
+  return false;
+}
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(s && s.access_token){
+      var b = document.getElementById('menu-logout');
+      if(b) b.style.display = 'block';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

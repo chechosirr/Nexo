@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administración — Nexo</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--dark:#142c47;--line:#e3e6ea;--txt:#101216;--mut:#6a6a72;--soft:#f4f4f6;--ok:#1c7c43;--warn:#9a6a00;--bad:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--txt);background:#fff}
+h1,h2,h3,.logo{font-family:Archivo,Arial,sans-serif}
+header.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:12px 18px;background:var(--dark);border-bottom:1px solid #000}
+.logo{color:#fff;font-weight:800;font-size:1.3rem;letter-spacing:.06em;text-decoration:none}
+.logo span{color:#c7ccd4}
+.menuwrap{position:relative;margin-left:auto}
+#menubtn{background:none;border:1px solid #44464c;color:#fff;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit;line-height:1}
+.ddnav{display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0e2237;border:1px solid #2b3049;border-radius:16px;min-width:210px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.45);z-index:80}
+.ddnav.open{display:block}
+.ddnav a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;color:#f2f4f8;border-bottom:1px solid #1b3a56}
+.ddnav a:last-child{border-bottom:0}
+.ddnav a:hover{background:rgba(150,185,225,.08)}
+main{max-width:1060px;margin:0 auto;padding:22px 16px 60px}
+.sub{color:var(--mut);margin:4px 0 18px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 18px}
+.tabs button{border:1.5px solid var(--dark);background:#fff;color:var(--dark);border-radius:999px;padding:9px 10px;font-family:inherit;font-weight:700;cursor:pointer;width:100%}
+.tabs button.on{background:var(--dark);color:#fff}
+.ped-filtros{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.ped-f{border:1.5px solid var(--dark);background:#fff;color:var(--dark);border-radius:999px;padding:9px 18px;font-family:inherit;font-weight:700;cursor:pointer}
+.ped-f.on{background:var(--dark);color:#fff}
+.ped-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
+.ped-card.bad{background:#eefaf1;border-color:#1c7c43}
+.ped-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--txt);margin-bottom:8px}
+.ped-chip{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;background:#eceff3;color:#44484f;white-space:nowrap}
+.ped-card.bad .ped-chip{background:#1c7c43;color:#fff}
+.ped-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ped-btn{padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:.85rem;font-weight:700;font-family:inherit;color:var(--txt)}
+.ped-btn.acc{background:#1c7c43;border-color:#1c7c43;color:#fff}
+.ord-ov{position:fixed;inset:0;z-index:400;background:#fff;overflow-y:auto;padding:26px 20px 30px;display:flex;flex-direction:column}
+.ord-x{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #d0d4da;background:#fff;font-size:19px;cursor:pointer;color:#111;font-family:inherit}
+.ord-tag{display:inline-block;align-self:flex-start;background:#1c7c43;color:#fff;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:5px 12px;margin-top:38px}
+.ord-h{font-size:27px;font-weight:900;margin:12px 0 4px;color:#111}
+.ord-fecha{color:#6a6a72;font-size:14px;margin:0 0 18px}
+.ord-items{border:1px solid #e2e5ea;border-radius:14px;padding:6px 14px}
+.ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef0f3;font-size:15px;color:#111}
+.ord-item:last-child{border-bottom:0}
+.ord-item small{color:#6a6a72}
+.ord-total{display:flex;justify-content:space-between;font-size:19px;margin:16px 2px;color:#111}
+.ord-buyer{background:#f7f8fa;border:1px solid #e2e5ea;border-radius:14px;padding:14px 16px;margin-top:6px;color:#111;font-size:15px}
+.ord-buyer h3{font-size:15px;margin:0 0 8px}
+.ord-buyer p{margin:4px 0}
+.ord-note{color:#44484f;font-size:14px;margin:14px 2px 0}
+.ord-more{color:#6a6a72;font-size:13px;margin-top:8px}
+.ord-copy{margin-top:14px;width:100%;padding:15px;border:0;border-radius:14px;background:#142c47;color:#fff;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.ord-accept{margin-top:10px;width:100%;padding:18px;border:0;border-radius:14px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-family:inherit;font-size:19px;font-weight:900;cursor:pointer}
+.ped-item{display:flex;justify-content:space-between;gap:10px;font-size:15px;color:var(--txt);padding:4px 0}
+.ped-total{display:flex;justify-content:space-between;font-size:17px;color:var(--txt);border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
+.ped-contact{display:block;margin-top:12px;text-align:center;background:var(--ok);color:#fff;font-weight:800;border-radius:12px;padding:13px;text-decoration:none}
+.mes{font-size:17px;font-weight:800;margin:24px 0 8px;text-transform:capitalize}
+.mes .mut{text-transform:none;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:8px}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card b{display:block;font-size:1.5rem;font-family:Archivo,Arial,sans-serif}
+.card small{color:var(--mut);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:700}
+.b-activo{background:#e2f3e8;color:var(--ok)}
+.b-pausado{background:#fdf0d3;color:var(--warn)}
+.b-bloqueado{background:#fbe3e1;color:var(--bad)}
+.b-off{background:#ececf0;color:#55555c}
+.btn{border:0;border-radius:999px;padding:6px 13px;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;margin:2px 2px 2px 0}
+.btn-dark{background:var(--dark);color:#fff}
+.btn-warn{background:#f2c94c;color:#231d00}
+.btn-bad{background:var(--bad);color:#fff}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-light{background:#ececf0;color:var(--txt)}
+.rowitem{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:9px}
+.rowitem img{width:52px;height:52px;object-fit:contain;border-radius:10px;background:#fff;padding:2px;box-sizing:border-box}
+.rowitem .grow{flex:1;min-width:0}
+.rowitem .grow b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mut{color:var(--mut);font-size:.85rem}
+.search{width:100%;padding:11px 16px;border:1.5px solid var(--dark);border-radius:999px;font-family:inherit;font-size:1rem;margin:0 0 14px}
+.ddwrap{position:relative;display:inline-block}
+.ddmenu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--line);border-radius:14px;min-width:230px;box-shadow:0 14px 40px rgba(0,0,0,.18);z-index:60;overflow:hidden;text-align:left}
+.ddmenu button{display:block;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 16px;font-family:inherit;font-size:.92rem;font-weight:600;color:var(--txt);cursor:pointer;text-align:left}
+.ddmenu button:last-child{border-bottom:0}
+.ddmenu button:hover{background:var(--soft)}
+.ddmenu button.danger{color:var(--bad)}
+.datos{display:none;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:-3px 0 9px;font-size:.9rem;line-height:1.55}
+.datos.open{display:block}
+.datos a{color:var(--dark);font-weight:700}
+.gate{max-width:440px;margin:70px auto;text-align:center;padding:0 16px}
+.gate a{color:var(--dark);font-weight:700}
+.hidden{display:none}
+@media(max-width:640px){ table,thead,tbody,tr,th,td{display:block} thead{display:none} td{border:0;padding:3px 8px} tr{border-bottom:1px solid var(--line);padding:8px 0} }
+#pass-box{max-width:560px;margin:16px auto 0;padding:0 16px}
+#pass-box .card{border:1.5px solid var(--line,#d8dce3);border-radius:16px;padding:6px 18px 18px}
+#pass-box label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
+#pass-box input{width:100%;padding:12px 14px;border:1.5px solid #c9ced6;border-radius:12px;font-size:15px;font-family:inherit}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+#cp-btn{margin-top:16px;background:var(--dark);color:#fff;border:0;border-radius:12px;padding:12px 22px;font-weight:800;font-family:inherit;cursor:pointer}
+</style>
+
+<style>
+/* ===== Admin en escritorio: pestañas como paneles cuadro, 5 por fila ===== */
+@media (min-width:900px){
+  main{max-width:1440px}
+  .tabs{grid-template-columns:repeat(5,1fr);gap:clamp(12px,1.6vw,22px)}
+  .tabs button{border-radius:20px;border:1.5px solid var(--line);min-height:clamp(92px,14vh,126px);padding:16px 12px;font-size:clamp(.98rem,1.8vh,1.14rem);box-shadow:0 10px 26px rgba(17,17,20,.05);transition:transform .15s ease,box-shadow .2s ease}
+  .tabs button:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(17,17,20,.11)}
+  .tabs button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+}
+</style>
+
+<style>
+.qbtn{border:1.5px solid var(--dark);background:var(--dark);color:#fff;border-radius:999px;padding:0 20px;font-family:inherit;font-weight:700;cursor:pointer;font-size:.95rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="index.html">DOMIN<span>US</span></a>
+  <div class="menuwrap">
+    <button id="menubtn" aria-label="Menú">☰</button>
+    <nav class="ddnav" id="ddnav">
+      <a href="index.html">Inicio</a>
+      <a href="index.html">Tienda</a>
+      <a href="#" id="menu-pass">Ajustes de cuenta</a>
+      <a href="#" id="logout" style="color:#ff7b7b">Cerrar sesión</a>
+    </nav>
+  </div>
+</header>
+<div id="pass-box" class="hidden">
+  <div class="card">
+    <h2 style="margin:14px 0 4px;font-size:20px">Ajustes de cuenta</h2>
+    <label>Correo electrónico</label>
+    <input id="ce-mail" type="email" autocomplete="email">
+    <p id="ce-msg" style="font-size:13px;margin-top:10px"></p>
+    <button id="ce-btn">Guardar correo</button>
+    <label>Contraseña actual</label>
+    <div class="passwrap"><input id="cp-cur" type="password" autocomplete="current-password"><button type="button" class="eye" data-for="cp-cur">Ver</button></div>
+    <label>Contraseña nueva (mínimo 6 caracteres)</label>
+    <div class="passwrap"><input id="cp-new" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new">Ver</button></div>
+    <label>Confirma la contraseña nueva</label>
+    <div class="passwrap"><input id="cp-new2" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new2">Ver</button></div>
+    <p id="cp-msg" style="font-size:13px;margin-top:10px"></p>
+    <button id="cp-btn">Cambiar contraseña</button>
+  </div>
+</div>
+
+<div class="gate" id="gate">
+  <h1>Administración</h1>
+  <p class="sub" id="gate-msg">Comprobando tu acceso…</p>
+  <p><a href="cuenta.html">Ir a Mi cuenta</a></p>
+</div>
+
+<main class="hidden" id="panel">
+  <h1 style="margin:0">Panel de administrador</h1>
+  <p class="sub" id="who">—</p>
+  <div class="tabs">
+    <button data-tab="resumen" class="on">Resumen</button>
+    <button data-tab="revendedores">Revendedores</button>
+    <button data-tab="compradores">Compradores</button>
+    <button data-tab="inventario">Inventario revendedores</button>
+    <button data-tab="ventas">Ventas revendedores</button>
+    <button data-tab="historial">Historial revendedores</button>
+    <button data-tab="pedidos">Pedidos de hoy</button>
+  </div>
+
+  <section id="tab-resumen">
+    <div class="cards">
+      <div class="card"><b id="r-total">$0.00</b><small>Total vendido (marketplace)</small></div>
+      <div class="card"><b id="r-ventas">0</b><small>Transacciones</small></div>
+      <div class="card"><b id="r-sellers">0</b><small>Revendedores asociados</small></div>
+      <div class="card"><b id="r-prods">0</b><small>Artículos en inventario</small></div>
+    </div>
+    <p class="mut">Los vendedores pausados o bloqueados desaparecen del sitio público junto con sus artículos. Los artículos bloqueados no puede desbloquearlos ni el propio vendedor.</p>
+    <p id="mi-muro"></p>
+  </section>
+
+  <section id="tab-pedidos" class="hidden">
+    <div class="ped-filtros">
+      <button id="ped-f-todos" class="ped-f on">Todos los pedidos</button>
+      <button id="ped-f-sin" class="ped-f">Sin aceptar</button>
+    </div>
+    <div id="ped-list"><p class="mut">Cargando pedidos…</p></div>
+  </section>
+
+  <section id="tab-ventas" class="hidden">
+    <div id="ventas-list"><p class="mut">Cargando ventas…</p></div>
+  </section>
+
+  <section id="tab-revendedores" class="hidden">
+    <input class="search" id="sel-q" type="search" placeholder="Buscar revendedor por nombre, ciudad, tipo, WhatsApp o PayPal…">
+    <div id="sellers-list"><p class="mut">Cargando revendedores…</p></div>
+  </section>
+
+  <section id="tab-compradores" class="hidden">
+    <input class="search" id="buy-q" type="search" placeholder="Buscar comprador por nombre, teléfono, ciudad o correo…">
+    <button class="qgo" type="button" onclick="renderBuyers()" style="background:#1d4568;color:#fff;border:1px solid #1d4568;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;margin:0 0 12px">Buscar</button>
+    <div id="buyers-list"><p class="mut">Cargando compradores…</p></div>
+  </section>
+
+  <section id="tab-historial" class="hidden">
+    <input class="search" id="hist-q" type="search" placeholder="Buscar en el historial por producto, categoría o revendedor…">
+    <p class="mut" style="margin:0 0 12px">Todos los productos que han subido los revendedores, del más reciente al más antiguo.</p>
+    <div id="hist-list"><p class="mut">Cargando historial…</p></div>
+  </section>
+
+  <section id="tab-inventario" class="hidden">
+    <input class="search" id="inv-q" type="search" placeholder="Buscar artículo o comercio…">
+    <div id="inv-list"><p class="mut">Cargando inventario…</p></div>
+  </section>
+</main>
+
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+/* sesión persistente: renueva el token automáticamente (igual que el resto del sitio) */
+(function(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(!s || !s.access_token || !s.refresh_token) return;
+ var exp = 0;
+ if(s.expires_at) exp = s.expires_at * 1000;
+ else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+ if(!exp || Date.now() < exp - 120000) return;
+ fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+ method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+ body: JSON.stringify({ refresh_token: s.refresh_token })
+ }).then(function(r){ return r.json(); }).then(function(ns){
+ if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
+ else { localStorage.removeItem('dominus_session'); }
+ }).catch(function(){});
+ }catch(e){}
+})();
+
+function esc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n){ return '$' + Number(n || 0).toFixed(2); }
+function fecha(iso){ try{ return new Date(iso).toLocaleString('es-NI', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }catch(e){ return iso || ''; } }
+function session(){ try{ return JSON.parse(localStorage.getItem('dominus_session') || 'null'); }catch(e){ return null; } }
+function H(tok){ return { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' }; }
+function api(path, tok){
+ return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: H(tok) }).then(function(r){
+ if(!r.ok) throw new Error('api ' + r.status); return r.json();
+ });
+}
+function patch(tabla, id, body, tok){
+ return fetch(SUPABASE_URL + '/rest/v1/' + tabla + '?id=eq.' + id, {
+ method: 'PATCH', headers: Object.assign(H(tok), { 'Prefer': 'return=representation' }), body: JSON.stringify(body)
+ }).then(function(r){ if(!r.ok) throw new Error('patch ' + r.status); return r.json(); });
+}
+
+var S = session(), TOK = S && S.access_token, UID = S && S.user && S.user.id;
+var DATA = { orders: [], sellers: [], products: [], profiles: {}, estados: {}, correos: {}, rastreo: {}, entrega: {} };
+
+document.getElementById('menubtn').onclick = function(e){ e.stopPropagation(); document.getElementById('ddnav').classList.toggle('open'); };
+document.addEventListener('click', function(){ var n = document.getElementById('ddnav'); if(n) n.classList.remove('open'); });
+document.getElementById('logout').onclick = function(e){
+ e.preventDefault();
+ try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(err){}
+ location.href = 'index.html';
+};
+
+function gateFail(msg){
+ document.getElementById('gate-msg').textContent = msg;
+}
+
+function rpc(nombre, body){
+ return fetch(SUPABASE_URL + '/rest/v1/rpc/' + nombre, {
+ method: 'POST', headers: H(TOK), body: JSON.stringify(body)
+ }).then(function(r){ if(!r.ok) throw new Error('rpc ' + r.status); return r; });
+}
+function datoLine(k, v){ return '<div style="margin:2px 0"><b>' + esc(k) + ':</b> ' + esc(v) + '</div>'; }
+function toggleDatosEl(id){ var d = document.getElementById(id); if(d) d.classList.toggle('open'); }
+function rastreoDe(detalle, codigo){
+ if(codigo) return codigo;
+ var mm = /Rastreo: (DM-[A-Z0-9]+)/.exec(detalle || '');
+ return mm ? mm[1] : '';
+}
+var BTNMINI = 'margin-top:5px;padding:3px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:.8rem;font-weight:600';
+document.addEventListener('click', function(){ document.querySelectorAll('.ddmenu').forEach(function(m){ m.classList.add('hidden'); }); });
+
+function estadoBadge(e){ return '<span class="badge b-' + esc(e || 'activo') + '">' + esc(e || 'activo') + '</span>'; }
+
+function cargar(){
+ return Promise.all([
+ api('orders?select=id,titulo,precio,qty,paypal_order_id,created_at,buyer_id,seller_id,sellers(nombre,slug)&order=created_at.desc&limit=500', TOK).catch(function(){ return []; }),
+ api('sellers?select=*&order=created_at.desc', TOK),
+ api('products?select=id,titulo,precio,categoria,imagen_url,activo,bloqueado,seller_id,created_at,sellers(nombre,slug)&order=created_at.desc&limit=1000', TOK),
+ api('profiles?select=*', TOK).catch(function(){ return []; }),
+ api('orders?select=id,estado', TOK).catch(function(){ return []; }),
+ fetch(SUPABASE_URL + '/rest/v1/rpc/correos_usuarios', { method: 'POST', headers: H(TOK), body: '{}' }).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+ api('orders?select=paypal_order_id,codigo_rastreo&codigo_rastreo=not.is.null&limit=1000', TOK).catch(function(){ return []; }),
+ api('orders?select=id,entrega', TOK).catch(function(){ return []; })
+ ]).then(function(res){
+ DATA.orders = res[0]; DATA.sellers = res[1]; DATA.products = res[2];
+ (res[3] || []).forEach(function(p){ DATA.profiles[p.user_id] = p; });
+ (res[4] || []).forEach(function(o){ DATA.estados[o.id] = o.estado; });
+ (res[5] || []).forEach(function(u){ DATA.correos[u.user_id] = u.email; });
+ (Array.isArray(res[6]) ? res[6] : []).forEach(function(o){ if(o.paypal_order_id && o.codigo_rastreo) DATA.rastreo[o.paypal_order_id] = o.codigo_rastreo; });
+ (res[7] || []).forEach(function(o){ if(o.entrega) DATA.entrega[o.id] = o.entrega; });
+ renderResumen(); renderVentas(); renderPedidos(); renderSellers(); renderBuyers(); renderHistorial(); renderInv(document.getElementById('inv-q').value || '');
+ adminAlertsMaybe();
+ });
+}
+
+function renderResumen(){
+ var total = DATA.orders.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ document.getElementById('r-total').textContent = money(total);
+ document.getElementById('r-ventas').textContent = DATA.orders.length;
+ document.getElementById('r-sellers').textContent = DATA.sellers.length;
+ document.getElementById('r-prods').textContent = DATA.products.length;
+  var mio = DATA.sellers.filter(function(s){ return s.user_id === UID; })[0];
+ if(mio){
+ document.getElementById('mi-muro').innerHTML = '<a href="vendedor/index.html?s=' + encodeURIComponent(mio.slug) + '&edit=1" style="color:var(--dark);font-weight:700">Ver mi muro de vendedor →</a>';
+ }
+}
+
+var MESES_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function gruposPorMes(rows, getF){
+ var orden = [], mapa = {};
+ rows.forEach(function(r){
+ var d = new Date(getF(r));
+ if(isNaN(d)) return;
+ var k = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
+ if(!mapa[k]){ mapa[k] = { nombre: MESES_ES[d.getMonth()] + ' de ' + d.getFullYear(), rows: [] }; orden.push(mapa[k]); }
+ mapa[k].rows.push(r);
+ });
+ return orden;
+}
+var PED_FILTRO = 'todos';
+var PED_COPY = {};
+function copiarTexto(txt, el){
+ var done = function(){ if(el){ var o = el.textContent; el.textContent = '✓ Copiado'; setTimeout(function(){ el.textContent = o; }, 1600); } };
+ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(function(){ copiarFallback(); }); }
+ else { copiarFallback(); }
+ function copiarFallback(){
+  var ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  ta.remove(); done();
+ }
+}
+function copiarPedido(key){ var t = PED_COPY[key]; if(t) copiarTexto(t, document.querySelector('[data-copy="' + key + '"]')); }
+function adminAceptarGrupo(paypal, sellerId, firstId){
+ var q = paypal ? ('paypal_order_id=eq.' + encodeURIComponent(paypal) + '&seller_id=eq.' + encodeURIComponent(sellerId)) : ('id=eq.' + encodeURIComponent(firstId));
+ fetch(SUPABASE_URL + '/rest/v1/orders?' + q, { method: 'PATCH', headers: H(TOK), body: JSON.stringify({ estado: 'aceptado', estado_at: new Date().toISOString() }) })
+ .then(function(r){
+  if(!r.ok) throw new Error('patch ' + r.status);
+  (DATA.orders || []).forEach(function(o){ if((paypal && o.paypal_order_id === paypal && o.seller_id === sellerId) || (!paypal && String(o.id) === String(firstId))) DATA.estados[o.id] = 'aceptado'; });
+  renderPedidos();
+ })
+ .catch(function(){ alert('No se pudo marcar como aceptado. Revisa tu conexión e inténtalo de nuevo.'); });
+}
+function hoyPedidosGrupos(){
+ var now = new Date();
+ var isToday = function(iso){ var d = new Date(iso); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate(); };
+ var rows = (DATA.orders || []).filter(function(o){ return isToday(o.created_at); });
+ var groups = [], byK = {};
+ rows.forEach(function(o){
+ var gk = (o.paypal_order_id || ('row-' + o.id)) + '|' + o.seller_id;
+ if(!byK[gk]){ byK[gk] = { key: gk, items: [], seller_id: o.seller_id, buyer_id: o.buyer_id, created_at: o.created_at, paypal: o.paypal_order_id }; groups.push(byK[gk]); }
+ byK[gk].items.push(o);
+ });
+ groups.forEach(function(g){ g.aceptado = g.items.every(function(o){ return (DATA.estados[o.id] || o.estado) === 'aceptado'; }); });
+ return { groups: groups };
+}
+function copiaGrupo(g){
+ var seller = DATA.sellers.filter(function(x){ return x.id === g.seller_id; })[0] || {};
+ var vend = (g.items[0].sellers && g.items[0].sellers.nombre) || seller.nombre || '—';
+ var prof = DATA.profiles[g.buyer_id] || {};
+ var comp = prof.nombre || ('Cliente ' + String(g.buyer_id || '').slice(0, 8));
+ var ent = DATA.entrega[g.items[0].id] || [prof.direccion, prof.ciudad, prof.departamento, prof.pais].filter(Boolean).join(', ');
+ var total = g.items.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ return 'PEDIDO NEXO · COMERCIOS\n'
+ + g.items.map(function(o){ return o.titulo + ' ×' + (o.qty || 1) + ' — ' + money(Number(o.precio || 0) * Number(o.qty || 1)); }).join('\n')
+ + '\nTotal: ' + money(total)
+ + '\nVendedor: ' + vend
+ + '\nComprador: ' + comp + (prof.telefono ? ' · Tel: ' + prof.telefono : '')
+ + (ent ? '\nEntrega: ' + ent : '')
+ + (DATA.rastreo[g.paypal] ? '\nRastreo: ' + DATA.rastreo[g.paypal] : '')
+ + (g.paypal ? '\nPayPal: ' + g.paypal : '');
+}
+function renderPedidos(){
+ var box = document.getElementById('ped-list');
+ if(!box) return;
+ PED_COPY = {};
+ var data = hoyPedidosGrupos();
+ var groups = data.groups;
+ if(PED_FILTRO === 'sin'){ groups = groups.filter(function(g){ return !g.aceptado; }); }
+ if(!groups.length){
+ box.innerHTML = '<p class="mut">' + (PED_FILTRO === 'sin' ? 'Todos los pedidos de hoy ya fueron aceptados.' : 'Hoy no hay pedidos todavía.') + '</p>';
+ return;
+ }
+ var html = '';
+ groups.forEach(function(g){
+ var ac = g.aceptado;
+ var seller = DATA.sellers.filter(function(x){ return x.id === g.seller_id; })[0] || {};
+ var vend = (g.items[0].sellers && g.items[0].sellers.nombre) || seller.nombre || '—';
+ var prof = DATA.profiles[g.buyer_id] || {};
+ var comp = prof.nombre || ('Cliente ' + String(g.buyer_id || '').slice(0, 8));
+ var dir = DATA.entrega[g.items[0].id] || [prof.direccion, prof.ciudad, prof.departamento, prof.pais].filter(Boolean).join(', ');
+ var total = g.items.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ var hora = new Date(g.created_at).toLocaleTimeString('es-NI', { hour: 'numeric', minute: '2-digit' });
+ var wa = String(seller.whatsapp || '').replace(/[^0-9]/g, '');
+ if(wa.length === 8) wa = '505' + wa;
+ var msg = 'Hola ' + (seller.nombre || '') + ', tienes un pedido sin aceptar en NEXO: ' + g.items.map(function(o){ return o.titulo + ' ×' + (o.qty || 1); }).join(', ') + ' (total ' + money(total) + '). Entra a tu panel y acéptalo para preparar el producto, por favor.';
+ var key = 'g-' + g.key;
+ PED_COPY[key] = copiaGrupo(g);
+ html += '<div class="ped-card' + (ac ? '' : ' bad') + '">'
+ + '<div class="ped-head"><span><b>' + esc(vend) + '</b> · ' + esc(hora) + '</span><span class="ped-chip">' + (ac ? 'Aceptado' : 'Sin aceptar') + '</span></div>'
+ + g.items.map(function(o){ return '<div class="ped-item"><span><b>' + esc(o.titulo) + '</b> <span class="mut">×' + (o.qty || 1) + '</span></span><b>' + money(Number(o.precio || 0) * Number(o.qty || 1)) + '</b></div>'; }).join('')
+ + '<div class="ped-total"><span>Total</span><b>' + money(total) + '</b></div>'
+ + '<p class="mut" style="margin-top:8px">Comprador: ' + esc(comp) + (prof.telefono ? ' · Tel: ' + esc(prof.telefono) : '') + (dir ? '<br><b>Entrega:</b> ' + esc(dir) : '') + (DATA.rastreo[g.paypal] ? '<br>Rastreo: <b>' + esc(DATA.rastreo[g.paypal]) + '</b>' : '') + '</p>'
+ + '<div class="ped-actions">'
+ + (ac ? '' : '<button class="ped-btn acc" onclick="adminAceptarGrupo(\'' + esc(g.paypal || '') + '\',\'' + esc(g.seller_id) + '\',\'' + esc(g.items[0].id) + '\')">Aceptar pedido</button>')
+ + '<button class="ped-btn" data-copy="' + esc(key) + '" onclick="copiarPedido(\'' + esc(key) + '\')">Copiar datos</button>'
+ + (!ac && wa ? '<a class="ped-btn" style="text-decoration:none" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">WhatsApp al vendedor</a>' : '')
+ + '</div>'
+ + '</div>';
+ });
+ box.innerHTML = html;
+}
+/* ===== Alerta de pedidos nuevos (pantalla completa) ===== */
+var ADMIN_ALERT_OPEN = false;
+var ADMIN_ALERT_SHOWN = {};
+function adminAlertsMaybe(){
+ if(ADMIN_ALERT_OPEN) return;
+ var dec = {};
+ try{ dec = JSON.parse(localStorage.getItem('dominus_admin_ped_dec') || '{}'); }catch(e){}
+ var data = hoyPedidosGrupos();
+ var queue = [];
+ data.groups.forEach(function(g){
+ if(g.aceptado || dec['ord:' + g.key] || ADMIN_ALERT_SHOWN['ord:' + g.key]) return;
+ queue.push({ kind: 'ord', key: 'ord:' + g.key, created_at: g.created_at, g: g });
+ });
+ queue.sort(function(a, b){ return new Date(a.created_at) - new Date(b.created_at); });
+ if(queue.length) showAdminAlert(queue, dec);
+}
+function showAdminAlert(queue, dec){
+ ADMIN_ALERT_OPEN = true;
+ var it = queue[0];
+ ADMIN_ALERT_SHOWN[it.key] = true;
+ var ov = document.createElement('div');
+ ov.className = 'ord-ov';
+ var fecha, itemsHtml, totalHtml, buyerHtml, copyTxt, tag;
+ if(it.kind === 'ord'){
+ var g = it.g;
+ var seller = DATA.sellers.filter(function(x){ return x.id === g.seller_id; })[0] || {};
+ var vend = (g.items[0].sellers && g.items[0].sellers.nombre) || seller.nombre || '—';
+ var prof = DATA.profiles[g.buyer_id] || {};
+ var comp = prof.nombre || ('Cliente ' + String(g.buyer_id || '').slice(0, 8));
+ var dir = DATA.entrega[g.items[0].id] || [prof.direccion, prof.ciudad, prof.departamento, prof.pais].filter(Boolean).join(', ');
+ var total = g.items.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ var d = new Date(g.created_at);
+ fecha = d.toLocaleDateString('es-NI', { day: 'numeric', month: 'long' }) + ' · ' + d.toLocaleTimeString('es-NI', { hour: 'numeric', minute: '2-digit' }) + (g.paypal ? ' · PayPal ' + g.paypal : '');
+ itemsHtml = g.items.map(function(o){ return '<div class="ord-item"><div><b>' + esc(o.titulo) + '</b><br><small>' + (o.qty || 1) + ' × ' + money(o.precio) + '</small></div><b>' + money(Number(o.precio || 0) * Number(o.qty || 1)) + '</b></div>'; }).join('');
+ totalHtml = money(total);
+ buyerHtml = '<p><b>Comprador:</b> ' + esc(comp) + '</p>'
+ + '<p><b>Teléfono:</b> ' + esc(prof.telefono || 'Sin registrar') + '</p>'
+ + '<p><b>Dirección de entrega:</b> ' + esc(dir || 'Sin registrar') + '</p>'
+ + '<p><b>Vendedor:</b> ' + esc(vend) + '</p>'
+ + (DATA.rastreo[g.paypal] ? '<p><b>Rastreo:</b> ' + esc(DATA.rastreo[g.paypal]) + '</p>' : '');
+ copyTxt = copiaGrupo(g);
+ tag = 'Nuevo pedido · NEXO';
+ }
+ ov.innerHTML =
+ '<button class="ord-x" aria-label="Cerrar">✕</button>'
+ + '<span class="ord-tag">' + esc(tag) + '</span>'
+ + '<h2 class="ord-h">¡Tienes un pedido nuevo!</h2>'
+ + '<p class="ord-fecha">' + esc(fecha) + '</p>'
+ + '<div class="ord-items">' + itemsHtml + '</div>'
+ + '<div class="ord-total"><span>Total</span><b>' + esc(totalHtml) + '</b></div>'
+ + '<div class="ord-buyer"><h3>Datos del pedido</h3>' + buyerHtml + '</div>'
+ + (queue.length > 1 ? '<p class="ord-more">Al cerrar este quedan ' + (queue.length - 1) + ' pedido(s) más por revisar.</p>' : '')
+ + '<button class="ord-copy">Copiar código y datos</button>'
+ + '<button class="ord-accept">Aceptar</button>';
+ document.body.appendChild(ov);
+ document.body.style.overflow = 'hidden';
+ function decide(val){
+ dec[it.key] = val;
+ try{ localStorage.setItem('dominus_admin_ped_dec', JSON.stringify(dec)); }catch(e){}
+ ov.remove();
+ document.body.style.overflow = '';
+ queue.shift();
+ if(queue.length) showAdminAlert(queue, dec);
+ else { ADMIN_ALERT_OPEN = false; renderPedidos(); adminAlertsMaybe(); }
+ }
+ ov.querySelector('.ord-copy').onclick = function(){ copiarTexto(copyTxt, this); };
+ ov.querySelector('.ord-x').onclick = function(){ decide('omitido'); };
+ ov.querySelector('.ord-accept').onclick = function(){
+ adminAceptarGrupo(it.g.paypal || '', it.g.seller_id, it.g.items[0].id);
+ decide('aceptado');
+ };
+}
+function renderVentas(){
+ var box = document.getElementById('ventas-list');
+ if(!DATA.orders.length){ box.innerHTML = '<p class="mut">Todavía no hay ventas registradas en el marketplace.</p>'; return; }
+ var grupos = gruposPorMes(DATA.orders, function(o){ return o.created_at; });
+ box.innerHTML = grupos.map(function(g){
+ var total = g.rows.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ var rows = g.rows.map(function(o){
+ var vend = (o.sellers && o.sellers.nombre) || '—';
+ var prof = DATA.profiles[o.buyer_id] || {};
+ var comp = prof.nombre || ('Cliente ' + String(o.buyer_id || '').slice(0, 8));
+ var mail = DATA.correos[o.buyer_id] || '';
+ var dirC = [prof.direccion, [prof.ciudad, prof.departamento].filter(Boolean).join(', '), prof.pais].filter(Boolean).join(' · ');
+ var datosC = '<div class="datos" id="compra-' + o.id + '">'
+ + (prof.nombre ? datoLine('Nombre', prof.nombre) : '')
+ + (mail ? '<div style="margin:2px 0"><b>Correo:</b> <a href="mailto:' + esc(mail) + '">' + esc(mail) + '</a></div>' : '')
+ + (prof.telefono ? '<div style="margin:2px 0"><b>Teléfono:</b> <a href="https://wa.me/' + esc(String(prof.telefono).replace(/[^0-9]/g, '')) + '" target="_blank" rel="noopener">' + esc(prof.telefono) + '</a></div>' : '')
+ + (dirC ? datoLine('Dirección de entrega', dirC) : '')
+ + (prof.referencia ? datoLine('Referencia', prof.referencia) : '')
+ + (!prof.nombre && !mail && !prof.telefono && !dirC ? '<span class="mut">Este comprador no tiene datos de perfil guardados.</span>' : '')
+ + '</div>';
+ var rast = DATA.rastreo[o.paypal_order_id] || '—';
+ return '<tr><td>' + fecha(o.created_at) + '</td><td><b>' + esc(o.titulo) + '</b><br><span class="mut">×' + (o.qty || 1) + '</span></td>'
+ + '<td>' + money(Number(o.precio || 0) * Number(o.qty || 1)) + '</td><td>' + esc(vend) + '</td>'
+ + '<td>' + esc(comp) + '<br><button style="' + BTNMINI + '" onclick="toggleDatosEl(\'compra-' + o.id + '\')">Ver datos</button>' + datosC + '</td>'
+ + '<td><b>' + esc(rast) + '</b></td>'
+ + '<td class="mut">' + esc(o.paypal_order_id || '—') + '</td></tr>';
+ }).join('');
+ return '<h3 class="mes">' + g.nombre + ' <span class="mut">· ' + money(total) + ' · ' + g.rows.length + (g.rows.length === 1 ? ' venta' : ' ventas') + '</span></h3>'
+ + '<table><thead><tr><th>Fecha</th><th>Artículo</th><th>Monto</th><th>Vendedor</th><th>Comprador</th><th>Rastreo</th><th>Pedido PayPal</th></tr></thead><tbody>' + rows + '</tbody></table>';
+ }).join('');
+}
+function sellerProds(sid){ return DATA.products.filter(function(p){ return p.seller_id === sid; }); }
+
+function renderSellers(){
+ var box = document.getElementById('sellers-list');
+ if(!DATA.sellers.length){ box.innerHTML = '<p class="mut">No hay revendedores registrados.</p>'; return; }
+ var q = ((document.getElementById('sel-q') || {}).value || '').toLowerCase();
+ var lista = DATA.sellers.filter(function(s){
+ if(!q) return true;
+ return ((s.nombre || '') + ' ' + (s.ubicacion || '') + ' ' + (s.tipo_empresa || '') + ' ' + (s.whatsapp || '') + ' ' + (s.paypal_email || '') + ' ' + (DATA.correos[s.user_id] || '') + ' ' + (s.slug || '')).toLowerCase().indexOf(q) >= 0;
+ });
+ if(!lista.length){ box.innerHTML = '<p class="mut">Ningún revendedor coincide con esa búsqueda.</p>'; return; }
+ box.innerHTML = lista.map(function(s){
+ var prods = sellerProds(s.id);
+ var est = s.estado || 'activo';
+ var p = DATA.profiles[s.user_id] || {};
+ var wa = String(s.whatsapp || '').replace(/[^0-9]/g, '');
+ var datos = '<div class="datos" id="datos-' + s.id + '">'
+ + datoLine('Negocio', s.nombre)
+ + datoLine('Estado', est)
+ + (s.ubicacion ? datoLine('Ubicación', s.ubicacion) : '')
+ + (s.tipo_empresa ? datoLine('Tipo de empresa', s.tipo_empresa) : '')
+ + (s.whatsapp ? '<div style="margin:2px 0"><b>WhatsApp:</b> <a href="https://wa.me/' + wa + '" target="_blank" rel="noopener">' + esc(s.whatsapp) + '</a></div>' : '')
+ + (s.paypal_email ? datoLine('PayPal', s.paypal_email) : '')
+ + (DATA.correos[s.user_id] ? '<div style="margin:2px 0"><b>Correo:</b> <a href="mailto:' + esc(DATA.correos[s.user_id]) + '">' + esc(DATA.correos[s.user_id]) + '</a></div>' : '')
+ + (p.nombre ? datoLine('Nombre de la cuenta', p.nombre) : '')
+ + ((p.ciudad || p.departamento || p.pais) ? datoLine('Ciudad', [p.ciudad, p.departamento, p.pais].filter(Boolean).join(', ')) : '')
+ + (p.direccion ? datoLine('Dirección', p.direccion) : '')
+ + (p.referencia ? datoLine('Referencia', p.referencia) : '')
+ + datoLine('Productos', prods.length)
+ + datoLine('Registrado', fecha(s.created_at))
+ + (s.descripcion ? datoLine('Descripción', s.descripcion) : '')
+ + '</div>';
+ var menu = '<span class="ddwrap"><button class="btn btn-dark" data-menu="' + s.id + '">Acciones ▾</button>'
+ + '<span class="ddmenu hidden" id="menu-' + s.id + '">'
+ + '<button data-act="datos" data-seller="' + s.id + '">Ver datos de contacto</button>'
+ + (est === 'activo'
+ ? '<button data-act="pausar" data-seller="' + s.id + '">Pausar cuenta</button>'
+ : '<button data-act="reactivar" data-seller="' + s.id + '">Reactivar cuenta</button>')
+ + '<button data-act="clave" data-seller="' + s.id + '">Restablecer contraseña</button>'
+ + '<button data-act="eliminar" data-seller="' + s.id + '" class="danger">Eliminar cuenta</button>'
+ + '</span></span>';
+ return '<div><div class="rowitem">' + (s.logo_url ? '<img src="' + esc(s.logo_url) + '" alt="">' : '<img alt="">')
+ + '<div class="grow"><b>' + esc(s.nombre) + '</b><span class="mut">' + esc(s.ubicacion || '') + (s.tipo_empresa ? ' · ' + esc(s.tipo_empresa) : '') + ' · ' + prods.length + ' artículos</span></div>'
+ + estadoBadge(est) + menu + '</div>' + datos + '</div>';
+ }).join('');
+ box.querySelectorAll('[data-menu]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var m = document.getElementById('menu-' + b.getAttribute('data-menu'));
+ var was = m.classList.contains('hidden');
+ box.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(was) m.classList.remove('hidden');
+ };
+ });
+ box.querySelectorAll('[data-act]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var id = b.getAttribute('data-seller'), act = b.getAttribute('data-act');
+ var s = DATA.sellers.filter(function(x){ return x.id === id; })[0];
+ box.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(act === 'datos'){
+ var d = document.getElementById('datos-' + id);
+ if(d) d.classList.toggle('open');
+ return;
+ }
+ if(act === 'pausar' || act === 'reactivar'){
+ var est = act === 'pausar' ? 'pausado' : 'activo';
+ patch('sellers', id, { estado: est }, TOK).then(function(){ if(s) s.estado = est; renderSellers(); })
+ .catch(function(){ alert('No se pudo aplicar el cambio. Intenta de nuevo.'); });
+ return;
+ }
+ if(act === 'clave'){
+ if(!s || !s.user_id){ alert('Este comercio no tiene cuenta de acceso vinculada.'); return; }
+ var n1 = prompt('Contraseña NUEVA para ' + s.nombre + ' (mínimo 6 caracteres):');
+ if(!n1) return;
+ if(n1.length < 6){ alert('Debe tener mínimo 6 caracteres. No se cambió nada.'); return; }
+ var n2 = prompt('Repite la contraseña nueva:');
+ if(n2 !== n1){ alert('No coinciden. No se cambió nada.'); return; }
+ rpc('admin_restablecer_clave', { p_user_id: s.user_id, p_nueva: n1 }).then(function(){
+ alert('Contraseña actualizada para ' + s.nombre + '. Entrégasela por un canal seguro (por ejemplo, su WhatsApp).');
+ }).catch(function(){ alert('No se pudo cambiar. ¿Ya corriste el SQL supabase-cambiar-clave.sql en Supabase? Sin ese SQL esta opción no funciona.'); });
+ return;
+ }
+ if(act === 'eliminar'){
+ if(!confirm('¿Eliminar la cuenta de ' + (s ? s.nombre : 'este vendedor') + '?\n\nSe borra su comercio, todos sus productos y su cuenta de acceso. Esto NO se puede deshacer.')) return;
+ if(!confirm('Confirma una vez más: eliminar definitivamente a ' + (s ? s.nombre : 'este vendedor') + '.')) return;
+ rpc('eliminar_cuenta_vendedor', { p_seller_id: id }).then(function(){
+ DATA.sellers = DATA.sellers.filter(function(x){ return x.id !== id; });
+ DATA.products = DATA.products.filter(function(x){ return x.seller_id !== id; });
+ renderSellers(); renderResumen(); renderInv(document.getElementById('inv-q').value || '');
+ alert('Cuenta eliminada: ' + (s ? s.nombre : ''));
+ }).catch(function(){ alert('No se pudo eliminar la cuenta. Si es la primera vez, corre en Supabase el SQL supabase-eliminar-cuentas.sql y vuelve a intentarlo.'); });
+ }
+ };
+ });
+}
+
+function renderInv(q){
+ var box = document.getElementById('inv-list');
+ q = (q || '').toLowerCase();
+ var list = DATA.products.filter(function(p){
+ if(!q) return true;
+ var vend = (p.sellers && p.sellers.nombre) || '';
+ return (p.titulo + ' ' + vend + ' ' + (p.categoria || '')).toLowerCase().indexOf(q) >= 0;
+ });
+ if(!list.length){ box.innerHTML = '<p class="mut">Sin artículos para mostrar.</p>'; return; }
+ box.innerHTML = list.map(function(p){
+ var vend = (p.sellers && p.sellers.nombre) || '—';
+ var badges = (p.activo ? '' : '<span class="badge b-pausado">pausado</span> ') + (p.bloqueado ? '<span class="badge b-bloqueado">bloqueado</span>' : '');
+ var botones = '';
+ if(p.bloqueado) botones = '<button class="btn btn-ok" data-prod="' + p.id + '" data-acc="desbloquear">Desbloquear</button>';
+ else {
+ botones = (p.activo ? '<button class="btn btn-warn" data-prod="' + p.id + '" data-acc="pausar">Pausar</button>' : '<button class="btn btn-ok" data-prod="' + p.id + '" data-acc="reactivar">Reactivar</button>')
+ + '<button class="btn btn-bad" data-prod="' + p.id + '" data-acc="bloquear">Bloquear</button>';
+ }
+ return '<div class="rowitem">' + (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="">' : '<img alt="">')
+ + '<div class="grow"><b>' + esc(p.titulo) + '</b><span class="mut">' + money(p.precio) + ' · ' + esc(p.categoria || 'General') + ' · ' + esc(vend) + '</span></div>'
+ + '<span>' + badges + '</span><span>' + botones + '</span></div>';
+ }).join('');
+ Array.prototype.forEach.call(box.querySelectorAll('[data-prod]'), function(b){
+ b.onclick = function(){
+ var id = b.getAttribute('data-prod'), acc = b.getAttribute('data-acc');
+ var p = DATA.products.filter(function(x){ return x.id === id; })[0];
+ var body = null;
+ if(acc === 'pausar') body = { activo: false };
+ if(acc === 'reactivar') body = { activo: true };
+ if(acc === 'bloquear'){ if(!confirm('¿Bloquear "' + (p ? p.titulo : 'este artículo') + '"? Solo tú podrás desbloquearlo.')) return; body = { bloqueado: true }; }
+ if(acc === 'desbloquear') body = { bloqueado: false };
+ if(!body) return;
+ patch('products', id, body, TOK).then(function(){
+ if(p){ if(body.activo !== undefined) p.activo = body.activo; if(body.bloqueado !== undefined) p.bloqueado = body.bloqueado; }
+ renderInv(document.getElementById('inv-q').value || ''); renderResumen();
+ }).catch(function(){ alert('No se pudo aplicar el cambio. Intenta de nuevo.'); });
+ };
+ });
+}
+
+/* Los buscadores ahora buscan al presionar su botón Buscar (ver script al final). */
+document.getElementById('ped-f-todos').addEventListener('click', function(){ PED_FILTRO = 'todos'; document.getElementById('ped-f-todos').classList.add('on'); document.getElementById('ped-f-sin').classList.remove('on'); renderPedidos(); });
+document.getElementById('ped-f-sin').addEventListener('click', function(){ PED_FILTRO = 'sin'; document.getElementById('ped-f-sin').classList.add('on'); document.getElementById('ped-f-todos').classList.remove('on'); renderPedidos(); });
+
+/* ===== Compradores: datos, pausa y eliminación (solo administrador) ===== */
+function buyerOrders(uid){ return DATA.orders.filter(function(o){ return o.buyer_id === uid; }); }
+function patchProfile(uid, body){
+ return fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid, {
+ method: 'PATCH', headers: Object.assign(H(TOK), { 'Prefer': 'return=representation' }), body: JSON.stringify(body)
+ }).then(function(r){ if(!r.ok) throw new Error('patch ' + r.status); return r.json(); });
+}
+function renderBuyers(){
+ var box = document.getElementById('buyers-list');
+ if(!box) return;
+ var lista0 = Object.keys(DATA.profiles).map(function(k){ return DATA.profiles[k]; }).filter(function(p){ return p.tipo === 'comprador'; });
+ if(!lista0.length){ box.innerHTML = '<p class="mut">No hay compradores registrados.</p>'; return; }
+ var q = ((document.getElementById('buy-q') || {}).value || '').toLowerCase();
+ var lista = lista0.filter(function(p){
+ if(!q) return true;
+ return ((p.nombre || '') + ' ' + (p.telefono || '') + ' ' + (p.ciudad || '') + ' ' + (p.pais || '') + ' ' + (DATA.correos[p.user_id] || '')).toLowerCase().indexOf(q) >= 0;
+ });
+ if(!lista.length){ box.innerHTML = '<p class="mut">Ningún comprador coincide con esa búsqueda.</p>'; return; }
+ box.innerHTML = lista.map(function(p){
+ var ords = buyerOrders(p.user_id);
+ var total = ords.reduce(function(a, o){ return a + Number(o.precio || 0) * Number(o.qty || 1); }, 0);
+ var est = p.estado || 'activo';
+ var tel = String(p.telefono || '').replace(/[^0-9]/g, '');
+ var datos = '<div class="datos" id="bdatos-' + p.user_id + '">'
+ + datoLine('Nombre', p.nombre || '—')
+ + (DATA.correos[p.user_id] ? '<div style="margin:2px 0"><b>Correo:</b> <a href="mailto:' + esc(DATA.correos[p.user_id]) + '">' + esc(DATA.correos[p.user_id]) + '</a></div>' : '')
+ + (p.telefono ? '<div style="margin:2px 0"><b>Teléfono:</b> <a href="https://wa.me/' + tel + '" target="_blank" rel="noopener">' + esc(p.telefono) + '</a></div>' : '')
+ + (p.direccion ? datoLine('Dirección', p.direccion) : '')
+ + ((p.ciudad || p.departamento || p.pais) ? datoLine('Ciudad', [p.ciudad, p.departamento, p.pais].filter(Boolean).join(', ')) : '')
+ + (p.referencia ? datoLine('Referencia', p.referencia) : '')
+ + datoLine('Pedidos en Comercios', ords.length + ' · ' + money(total))
+ + datoLine('Estado', est)
+ + datoLine('Registrado', fecha(p.created_at))
+ + '</div>';
+ var menu = '<span class="ddwrap"><button class="btn btn-dark" data-bmenu="' + p.user_id + '">Acciones ▾</button>'
+ + '<span class="ddmenu hidden" id="bmenu-' + p.user_id + '">'
+ + '<button data-bact="datos" data-buyer="' + p.user_id + '">Ver datos</button>'
+ + (est === 'activo'
+ ? '<button data-bact="pausar" data-buyer="' + p.user_id + '">Pausar</button>'
+ : '<button data-bact="reactivar" data-buyer="' + p.user_id + '">Reactivar</button>')
+ + '<button data-bact="eliminar" data-buyer="' + p.user_id + '" class="danger">Eliminar</button>'
+ + '</span></span>';
+ return '<div><div class="rowitem"><img alt="">'
+ + '<div class="grow"><b>' + esc(p.nombre || DATA.correos[p.user_id] || 'Comprador') + '</b><span class="mut">' + esc([p.ciudad, p.pais].filter(Boolean).join(', ')) + (ords.length ? ' · ' + ords.length + ' pedido(s)' : '') + '</span></div>'
+ + estadoBadge(est) + menu + '</div>' + datos + '</div>';
+ }).join('');
+ box.querySelectorAll('[data-bmenu]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var m = document.getElementById('bmenu-' + b.getAttribute('data-bmenu'));
+ var was = m.classList.contains('hidden');
+ box.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(was) m.classList.remove('hidden');
+ };
+ });
+ box.querySelectorAll('[data-bact]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var uid = b.getAttribute('data-buyer'), act = b.getAttribute('data-bact');
+ var p = DATA.profiles[uid];
+ box.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(act === 'datos'){
+ var d = document.getElementById('bdatos-' + uid);
+ if(d) d.classList.toggle('open');
+ return;
+ }
+ if(act === 'pausar' || act === 'reactivar'){
+ var est = act === 'pausar' ? 'pausado' : 'activo';
+ patchProfile(uid, { estado: est }).then(function(){ if(p) p.estado = est; renderBuyers(); })
+ .catch(function(){ alert('No se pudo aplicar el cambio. ¿Ya corriste el SQL supabase-compradores-admin.sql en Supabase? Sin ese SQL, Pausar no funciona.'); });
+ return;
+ }
+ if(act === 'eliminar'){
+ var nombre = (p && p.nombre) || 'este comprador';
+ if(!confirm('¿Eliminar la cuenta de ' + nombre + '?\n\nSe borra su cuenta de acceso, su perfil, sus direcciones y su carrito. Esto NO se puede deshacer.')) return;
+ if(!confirm('Confirma una vez más: eliminar definitivamente a ' + nombre + '.')) return;
+ rpc('eliminar_cuenta_comprador', { p_user_id: uid }).then(function(){
+ delete DATA.profiles[uid];
+ renderBuyers();
+ }).catch(function(){ alert('No se pudo eliminar. ¿Ya corriste el SQL supabase-compradores-admin.sql en Supabase? Sin ese SQL esta opción no funciona.'); });
+ return;
+ }
+ };
+ });
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(b){
+ b.onclick = function(){
+ Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(x){ x.classList.remove('on'); });
+ b.classList.add('on');
+ ['resumen','pedidos','ventas','revendedores','compradores','historial','inventario'].forEach(function(t){
+ document.getElementById('tab-' + t).classList.toggle('hidden', t !== b.getAttribute('data-tab'));
+ });
+ if(b.getAttribute('data-tab') === 'pedidos'){ renderPedidos(); adminAlertsMaybe(); }
+ };
+});
+
+function wireEmail(getTok, getEmail){
+  var btn = document.getElementById('ce-btn'); if(!btn) return;
+  var inp = document.getElementById('ce-mail');
+  var msg = document.getElementById('ce-msg');
+  if(inp && getEmail()) inp.value = getEmail();
+  btn.onclick = function(){
+    var em = inp.value.trim();
+    if(!em || em.indexOf('@') < 0){ msg.style.color = '#ff8a8a'; msg.textContent = 'Escribe un correo válido.'; return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/user', { method: 'PUT', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + getTok(), 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        btn.disabled = false; btn.textContent = 'Guardar correo';
+        if(res.ok){ msg.style.color = '#7bc47f'; msg.textContent = 'Te envié un correo de confirmación a ' + em + '. Ábrelo y toca el enlace para que el cambio se aplique.'; }
+        else { msg.style.color = '#ff8a8a'; msg.textContent = 'No se pudo cambiar el correo. Intenta de nuevo.'; }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Guardar correo'; msg.style.color = '#ff8a8a'; msg.textContent = 'Error de conexión. Intenta de nuevo.'; });
+  };
+}
+function wireChangePass(getEmail, setSession){
+  Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+    if(b._w) return; b._w = 1;
+    b.onclick = function(){
+      var i = document.getElementById(b.getAttribute('data-for'));
+      if(!i) return;
+      var s = i.type === 'password';
+      i.type = s ? 'text' : 'password';
+      b.textContent = s ? 'Ocultar' : 'Ver';
+    };
+  });
+  var btn = document.getElementById('cp-btn');
+  if(!btn) return;
+  btn.onclick = function(){
+    var msg = document.getElementById('cp-msg');
+    function err(m){ msg.style.color = '#d33'; msg.textContent = m; }
+    var cur = document.getElementById('cp-cur').value;
+    var nw = document.getElementById('cp-new').value;
+    var nw2 = document.getElementById('cp-new2').value;
+    if(!cur){ err('Escribe tu contraseña actual.'); return; }
+    if(nw.length < 6){ err('La contraseña nueva debe tener mínimo 6 caracteres.'); return; }
+    if(nw !== nw2){ err('Las contraseñas nuevas no coinciden.'); return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: getEmail(), password: cur })
+    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        if(!res.ok){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('La contraseña actual no es correcta.'); return null; }
+        setSession(res.j);
+        return fetch(SUPABASE_URL + '/auth/v1/user', {
+          method: 'PUT',
+          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + res.j.access_token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: nw })
+        }).then(function(r){ return { ok: r.ok }; });
+      })
+      .then(function(r2){
+        if(!r2) return;
+        btn.disabled = false; btn.textContent = 'Cambiar contraseña';
+        if(r2.ok){
+          msg.style.color = '#2e7d32'; msg.textContent = 'Contraseña actualizada.';
+          document.getElementById('cp-cur').value = '';
+          document.getElementById('cp-new').value = '';
+          document.getElementById('cp-new2').value = '';
+        } else { err('No se pudo actualizar. Intenta de nuevo.'); }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('Error de conexión. Intenta de nuevo.'); });
+  };
+}
+document.getElementById('menu-pass').onclick = function(e){
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('ddnav').classList.remove('open');
+  var box = document.getElementById('pass-box');
+  box.classList.toggle('hidden');
+  if(!box.classList.contains('hidden')) window.scrollTo({ top: 0, behavior: 'smooth' });
+  return false;
+};
+wireChangePass(function(){ return (S && S.user && S.user.email) || ''; }, function(j){ S = j; TOK = j.access_token; UID = j.user.id; try{ localStorage.setItem('dominus_session', JSON.stringify(j)); }catch(e){} });
+wireEmail(function(){ return TOK; }, function(){ return (S && S.user && S.user.email) || ''; });
+
+/* Puerta de acceso: cuentas con es_admin y también cuentas de comprador (pedido de Sergio 4-nov: «que el panel del administrador se pueda iniciar como cuenta de comprador también») */
+(function(){
+ if(!TOK || !UID){ gateFail('No hay una sesión activa. Entra primero a tu cuenta.'); return; }
+ api('profiles?user_id=eq.' + UID + '&select=tipo,es_admin,nombre', TOK).then(function(rows){
+ var p = rows && rows[0];
+ if(!p || !(p.es_admin || p.tipo === 'comprador')){ gateFail('Esta cuenta no puede entrar al panel (solo administrador o comprador).'); return; }
+ document.getElementById('who').textContent = 'Sesión de ' + (p.nombre || (S.user && S.user.email) || 'administrador');
+ document.getElementById('gate').classList.add('hidden');
+ document.getElementById('panel').classList.remove('hidden');
+ cargar().catch(function(){ gateFail('No se pudieron cargar los datos. Revisa tu conexión.'); document.getElementById('gate').classList.remove('hidden'); document.getElementById('panel').classList.add('hidden'); });
+ }).catch(function(){ gateFail('No se pudo comprobar el acceso (¿ya corriste el SQL de administrador en Supabase?).'); });
+})();
+</script>
+
+<script>
+(function(){
+  function armSearch(id, fn){
+    var inp = document.getElementById(id); if(!inp) return;
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:8px;align-items:stretch;margin:0 0 14px';
+    inp.parentNode.insertBefore(wrap, inp);
+    inp.style.margin = '0'; inp.style.flex = '1'; inp.style.minWidth = '0';
+    wrap.appendChild(inp);
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'qbtn'; b.textContent = 'Buscar';
+    b.addEventListener('click', fn);
+    wrap.appendChild(b);
+    inp.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); fn(); } });
+  }
+  armSearch('inv-q', function(){ renderInv(document.getElementById('inv-q').value || ''); });
+  armSearch('sel-q', function(){ renderSellers(); });
+  armSearch('buy-q', function(){ renderBuyers(); });
+  armSearch('hist-q', function(){ renderHistorial(); });
+})();
+</script>
+</body>
+</html>

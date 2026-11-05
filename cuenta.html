@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crear cuenta — Nexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--err:#ff5d5d}
+body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
+.logo em{font-style:normal;color:var(--acc)}
+.back{color:var(--mut);text-decoration:none;font-size:14px}
+main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 18px}
+.box{width:100%;max-width:480px}
+.box h1{font-size:26px;font-weight:900;margin-bottom:6px;text-align:center}
+.box h1 .hl{color:var(--acc)}
+.box>p{color:var(--mut);font-size:14px;margin-bottom:22px;text-align:center}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.type-card{background:#e8eaee;border:2px solid #e8eaee;border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .15s;color:#1f4e79;font-size:15px;font-weight:700}
+.type-card:hover{border-color:#274b73}
+.type-card.on{border-color:#1f4e79;background:#1f4e79;color:#ffffff;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.type-card .ico{font-size:40px;display:block;margin-bottom:10px}
+.type-card b{font-size:16px;display:block;margin-bottom:6px}
+{color:var(--mut);font-size:12px;line-height:1.5;display:block}
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 26px;margin-top:18px}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:22px}
+.tabs button{flex:1;background:none;border:0;color:var(--mut);font-family:inherit;font-weight:800;font-size:14px;padding:11px;border-radius:9px;cursor:pointer}
+.tabs button.on{background:var(--acc);color:#f2f4f8}
+label{display:block;font-size:13px;font-weight:700;color:#111111;margin:16px 0 7px;letter-spacing:.3px}
+input,textarea{width:100%;background:#ffffff;border:1.5px solid #d0d4da;border-radius:14px;color:#111111;font-family:inherit;font-size:15px;padding:14px 16px;outline:none;box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus{border-color:#1f4e79;box-shadow:0 0 0 3px rgba(74,74,82,.12)}
+input::placeholder,textarea::placeholder{color:#9aa0a8}
+textarea{resize:vertical;min-height:70px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.btn{width:100%;margin-top:20px;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer}
+.err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.okmsg{display:none;background:rgba(150,185,225,.12);border:1px solid var(--acc);color:#1c7c43;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.hidden{display:none!important}
+.feat{margin-top:16px;font-size:13px;color:var(--mut);line-height:1.8}
+.feat b{color:var(--mut)}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
+@media(max-width:480px){.type-grid{grid-template-columns:1fr}}
+
+/* ===== plateado metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+
+.menu-wrap{position:relative;margin-left:auto}
+#menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:16px;min-width:200px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.16);z-index:50}
+.menu.open{display:block}
+.menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
+.menu a:last-child{border-bottom:0}
+.menu a:hover{background:rgba(0,0,0,.05)}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+.forgot{display:block;text-align:center;margin-top:14px;color:#5a6270;font-size:14px;font-weight:700;text-decoration:none}
+.forgot:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="index.html">NE<em>XO</em></a>
+  <div class="menu-wrap">
+    <button id="menu-btn" aria-label="Menú">☰</button>
+    <nav class="menu" id="menu">
+      <a href="index.html">Inicio</a>
+      <a href="cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
+      <a href="comprador/perfil.html?ver=carrito">Carrito</a>
+          <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+</nav>
+  </div>
+</header>
+<main>
+  <div class="box">
+    <h1 style="color:#1f4e79">Elige tu tipo de cuenta:</h1>
+    
+    <div class="type-grid">
+      <div class="type-card on" id="t-comprador"><b>Comprador</b></div>
+      <div class="type-card" id="t-vendedor"><b>Vendedor</b></div>
+    </div>
+    <div class="form-card">
+      <div class="tabs">
+        <button id="tab-in" class="on">Entrar</button>
+        <button id="tab-up">Crear cuenta</button>
+      </div>
+      <div id="form-in">
+        <label>Correo electrónico</label>
+        <input id="in-email" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+        <label>Contraseña</label>
+        <div class="passwrap"><input id="in-pass" type="password" placeholder="••••••••" autocomplete="current-password"><button type="button" class="eye" data-for="in-pass">Ver</button></div>
+        <button class="btn" id="btn-in">Entrar</button>
+        <a href="#" class="forgot" id="link-forgot">¿Olvidaste tu contraseña?</a>
+      </div>
+      <div id="form-up" class="hidden">
+        <label>Tu nombre</label>
+        <input id="up-name" type="text" placeholder="Ej: María Pérez" autocomplete="name">
+        <div id="up-empresa-wrap" class="hidden">
+          <label>Nombre de la empresa *</label>
+          <input id="up-empresa" type="text" placeholder="Ej: Tech Zone">
+        </div>
+        <label>Correo electrónico</label>
+        <input id="up-email" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+        <label>Contraseña (mínimo 6 caracteres)</label>
+        <div class="passwrap"><input id="up-pass" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="up-pass">Ver</button></div>
+        <label>Confirma tu contraseña</label>
+        <div class="passwrap"><input id="up-pass2" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="up-pass2">Ver</button></div>
+
+        <label>Referencia del local o casa</label>
+        <textarea id="up-ref" rows="2" placeholder="Ej: Casa azul de dos pisos, frente al parque central"></textarea>
+        <label>Foto del local o casa <small style="color:var(--mut)">(opcional)</small></label>
+        <input id="up-foto-ref" type="file" accept="image/*">
+        <div class="form-row">
+          <div><label>Ciudad *</label>
+          <input id="up-ciudad" type="text" placeholder="Ej: Estelí" autocomplete="address-level2" required></div>
+          <div><label>Departamento *</label>
+          <input id="up-depto" type="text" placeholder="Ej: Estelí" autocomplete="address-level1" required></div>
+        </div>
+        <div class="form-row">
+          <div><label>País *</label>
+          <input id="up-pais" type="text" placeholder="Ej: Nicaragua" autocomplete="country-name" required></div>
+          <div><label>Número de WhatsApp *</label>
+          <div style="display:flex;gap:8px"><select id="up-cod" aria-label="Código de país" style="width:104px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"><option value="+505">+505</option><option value="+1">+1</option></select>
+          <input id="up-tel" type="tel" placeholder="Ej: 8888 8888" autocomplete="tel" required style="flex:1;min-width:0"></div></div>
+        </div>
+        <p style="font-size:12px;color:#9aa0a8;margin:6px 0 0">(privado: solo tú y Nexo lo ven)</p>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:16px 0 2px;cursor:pointer;text-align:left">
+          <input type="checkbox" id="up-acepta" style="width:18px;height:18px;margin-top:2px;flex:none;width:18px">
+          <span>Acepto las <a href="politicas.html" target="_blank" rel="noopener">políticas y términos de Nexo</a></span>
+        </label>
+        <button class="btn" id="btn-up">Crear mi cuenta</button>
+      </div>
+      <div class="feat" id="feat"></div>
+      <div class="err" id="err"></div>
+      <div class="okmsg" id="okmsg"></div>
+    </div>
+  </div>
+</main>
+<footer>© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+function telConCodigo(v){
+  var d = (v || '').replace(/[^\d+]/g, '');
+  var n = d.replace(/\D/g, '').length;
+  return d.charAt(0) === '+' && n >= 7 && n <= 15;
+}
+var TEL_MSG = 'El teléfono debe llevar el código de país: +505 (Nicaragua) o +1 (Estados Unidos). Ej: +505 8888 8888.';
+function splitTel(v){
+  v = (v || '').trim();
+  if(v.indexOf('+505') === 0) return { cod: '+505', num: v.slice(4).trim() };
+  if(v.indexOf('+1') === 0) return { cod: '+1', num: v.slice(2).trim() };
+  return { cod: '', num: v };
+}
+function joinTel(cod, num){
+  num = (num || '').trim();
+  if(!num) return '';
+  return num.charAt(0) === '+' ? num : (cod || '+505') + ' ' + num;
+}
+/* sesión persistente: renueva el token automáticamente (sin borrar ante fallos de red) */
+function getExp(s){
+  if(s.expires_at) return s.expires_at * 1000;
+  try{ return JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){ return 0; }
+}
+function doRefresh(s, cb){
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: s.refresh_token })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, st: r.status, j: j }; }); })
+  .then(function(res){
+    if(res.ok && res.j.access_token){
+      localStorage.setItem('dominus_session', JSON.stringify(res.j));
+      cb(res.j, true);
+    } else if(!res.ok && (res.st === 400 || res.st === 401)){
+      localStorage.removeItem('dominus_session');
+      cb(null, false);
+    } else {
+      cb(s, false);
+    }
+  }).catch(function(){ cb(s, false); });
+}
+
+var tipo = 'comprador';
+function headers(token){
+  var h = { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' };
+  if(token) h['Authorization'] = 'Bearer ' + token;
+  return h;
+}
+function showErr(m){ var e = document.getElementById('err'); e.textContent = m; e.style.display = 'block'; }
+function hideErr(){ document.getElementById('err').style.display = 'none'; }
+function saveSession(s){ localStorage.setItem('dominus_session', JSON.stringify(s)); }
+var FEATS = {
+  comprador: 'Con tu cuenta de <b>comprador</b> puedes:<br>✓ Guardar tu carrito en todos tus dispositivos<br>✓ Comprar más rápido<br>✓ Dejar reseñas de empresas y productos',
+  vendedor: 'Con tu cuenta de <b>vendedor</b> puedes:<br>✓ Crear tu muro personalizado<br>✓ Publicar productos con fotos y especificaciones<br>✓ Recibir reseñas de tus clientes'
+};
+function setTipo(t){
+  tipo = t;
+  document.getElementById('t-comprador').classList.toggle('on', t === 'comprador');
+  document.getElementById('t-vendedor').classList.toggle('on', t === 'vendedor');
+  document.getElementById('feat').innerHTML = FEATS[t];
+  document.getElementById('up-empresa-wrap').classList.toggle('hidden', t !== 'vendedor');
+}
+document.getElementById('t-comprador').onclick = function(){ setTipo('comprador'); };
+document.getElementById('t-vendedor').onclick = function(){ setTipo('vendedor'); };
+var qp = new URLSearchParams(location.search);
+if(qp.get('tipo') === 'vendedor') setTipo('vendedor'); else setTipo('comprador');
+
+var tabIn = document.getElementById('tab-in'), tabUp = document.getElementById('tab-up');
+tabIn.onclick = function(){ tabIn.classList.add('on'); tabUp.classList.remove('on'); document.getElementById('form-in').classList.remove('hidden'); document.getElementById('form-up').classList.add('hidden'); hideErr(); };
+tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); document.getElementById('form-up').classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr(); };
+
+function api(path, token){
+  return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: headers(token) }).then(function(r){
+    if(!r.ok) throw new Error('api'); return r.json();
+  });
+}
+
+function slugifyNom(t){
+  return (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'empresa';
+}
+function ensureSeller(s, empresa, ubic, wa){
+  if(!empresa) return Promise.resolve();
+  return api('sellers?user_id=eq.' + s.user.id + '&select=id', s.access_token).then(function(rows){
+    if(rows && rows.length) return;
+    var base = slugifyNom(empresa);
+    var intento = function(slug){
+      return fetch(SUPABASE_URL + '/rest/v1/sellers', {
+        method: 'POST', headers: headers(s.access_token),
+        body: JSON.stringify({ user_id: s.user.id, slug: slug, nombre: empresa, verificado: false, ubicacion: ubic || null, whatsapp: wa || null })
+      }).then(function(r){
+        if(r.ok) return;
+        if(r.status === 409) return intento(base + '-' + Math.floor(100 + Math.random() * 900));
+        return;
+      }).catch(function(){});
+    };
+    return intento(base);
+  }).catch(function(){});
+}
+function ensureProfile(s, name, extra){
+  // busca perfil; si no existe lo crea con el tipo elegido
+  return api('profiles?user_id=eq.' + s.user.id + '&select=tipo', s.access_token).then(function(rows){
+    if(rows && rows.length) return rows[0].tipo;
+    var body = { user_id: s.user.id, tipo: tipo, nombre: name || null };
+    if(extra){ ['direccion','ciudad','departamento','pais','telefono','referencia','foto_referencia'].forEach(function(k){ if(extra[k]) body[k] = extra[k]; }); }
+    return fetch(SUPABASE_URL + '/rest/v1/profiles', {
+      method: 'POST', headers: headers(s.access_token),
+      body: JSON.stringify(body)
+    }).then(function(){ return tipo; }).catch(function(){ return tipo; });
+  }).catch(function(){ return tipo; });
+}
+function goTo(t, s){
+  try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+  if(t === 'vendedor'){
+    api('sellers?user_id=eq.' + s.user.id + '&select=id,slug', s.access_token).then(function(rows){
+      if(rows && rows.length){
+        try{ localStorage.setItem('dominus_slug', rows[0].slug); }catch(e){}
+        location.href = 'vendedor/index.html?s=' + rows[0].slug + '&edit=1';
+      } else {
+        location.href = 'vendedor/cuenta.html';
+      }
+    }).catch(function(){ location.href = 'vendedor/cuenta.html'; });
+  } else {
+    location.href = 'comprador/perfil.html';
+  }
+}
+document.getElementById('btn-in').onclick = function(){
+  hideErr();
+  var email = document.getElementById('in-email').value.trim();
+  var pass = document.getElementById('in-pass').value;
+  if(!email || !pass){ showErr('Escribe tu correo y contraseña.'); return; }
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if(!res.ok){ showErr(res.j.msg || 'No se pudo entrar. Revisa tus datos.'); return; }
+      api('profiles?user_id=eq.' + res.j.user.id + '&select=tipo,es_admin', res.j.access_token).then(function(rows){
+        if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} saveSession(res.j); location.href = 'admin.html'; return; }
+        var real = (rows && rows[0] && rows[0].tipo) || null;
+        if(real && real !== tipo){
+          var otro = real === 'vendedor' ? 'Vendedor' : 'Comprador';
+          showErr('Esta cuenta es de ' + otro.toLowerCase() + '. Selecciona "' + otro + '" arriba para entrar.');
+          return;
+        }
+        saveSession(res.j);
+        ensureProfile(res.j).then(function(tp){ goTo(tp, res.j); });
+      }).catch(function(){ showErr('Error de conexión. Intenta de nuevo.'); });
+    }).catch(function(){ showErr('Error de conexión. Intenta de nuevo.'); });
+};
+document.getElementById('up-pais').addEventListener('input', function(){
+  document.getElementById('up-cod').value = /unidos|usa|eeuu|united/i.test(this.value) ? '+1' : '+505';
+});
+document.getElementById('btn-up').onclick = function(){
+  hideErr();
+  if(!document.getElementById('up-acepta').checked){ showErr('Debes aceptar las políticas y términos de Nexo para crear tu cuenta.'); return; }
+  var name = document.getElementById('up-name').value.trim();
+  var email = document.getElementById('up-email').value.trim();
+  var pass = document.getElementById('up-pass').value;
+  if(!name){ showErr('Escribe tu nombre.'); return; }
+  if(!email || pass.length < 6){ showErr('Escribe un correo válido y una contraseña de mínimo 6 caracteres.'); return; }
+  var pass2 = document.getElementById('up-pass2').value;
+  if(pass !== pass2){ showErr('Las contraseñas no coinciden. Escríbela dos veces igual.'); return; }
+  var empresa = document.getElementById('up-empresa').value.trim();
+  if(tipo === 'vendedor' && !empresa){ showErr('Escribe el nombre de tu empresa (es obligatorio para vendedores).'); return; }
+  var ciu = document.getElementById('up-ciudad').value.trim();
+  var dep = document.getElementById('up-depto').value.trim();
+  var pai = document.getElementById('up-pais').value.trim();
+  var tel = joinTel(document.getElementById('up-cod').value, document.getElementById('up-tel').value);
+  if(!ciu || !dep || !pai || !tel){ showErr('Completa ciudad, departamento, país y número de WhatsApp (son obligatorios).'); return; }
+  if(!telConCodigo(tel)){ showErr(TEL_MSG); return; }
+  fetch(SUPABASE_URL + '/auth/v1/signup', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass, data: { nombre: name } })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if(!res.ok){ showErr(res.j.msg || 'No se pudo crear la cuenta.'); return; }
+      var extra = {
+        ciudad: ciu,
+        departamento: dep,
+        pais: pai,
+        telefono: tel,
+        referencia: document.getElementById('up-ref').value.trim() || null
+      };
+      var done = function(s){
+        saveSession(s);
+        var fotoFile = document.getElementById('up-foto-ref').files[0];
+        var proceed = function(){
+          ensureProfile(s, name, extra).then(function(){
+            return ensureSeller(s, tipo === 'vendedor' ? empresa : null, (extra.ciudad && extra.pais) ? (extra.ciudad + ', ' + extra.pais) : null, extra.telefono || null);
+          }).then(function(){
+            if(tipo === 'vendedor'){ location.href = 'vendedor/cuenta.html'; }
+            else { goTo(tipo, s); }
+          });
+        };
+        if(fotoFile){
+          var ext = (fotoFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+          var path = 'referencias/' + s.user.id + '-' + Date.now() + '.' + ext;
+          fetch(SUPABASE_URL + '/storage/v1/object/product-images/' + path, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token, 'Content-Type': fotoFile.type || 'image/jpeg' },
+            body: fotoFile
+          }).then(function(r){ if(!r.ok) throw 0; return SUPABASE_URL + '/storage/v1/object/public/product-images/' + path; })
+          .then(function(url){ extra.foto_referencia = url; proceed(); })
+          .catch(function(){ proceed(); });
+        } else { proceed(); }
+      };
+      if(res.j.session) done(res.j.session);
+      else {
+        // Sin sesión inmediata: entrar de una vez con la contraseña recién creada
+        fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+          method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass })
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+          .then(function(r2){
+            if(r2.ok && r2.j.access_token) done(r2.j);
+            else { var e = document.getElementById('okmsg'); e.textContent = 'Cuenta creada. Ahora entra con tu correo y contraseña.'; e.style.display = 'block'; tabIn.onclick(); }
+          }).catch(function(){ var e = document.getElementById('okmsg'); e.textContent = 'Cuenta creada. Ahora entra con tu correo y contraseña.'; e.style.display = 'block'; tabIn.onclick(); });
+      }
+    }).catch(function(){ showErr('Error de conexión. Intenta de nuevo.'); });
+};
+
+
+Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+  b.onclick = function(){
+    var i = document.getElementById(b.getAttribute('data-for'));
+    if(!i) return;
+    var show = i.type === 'password';
+    i.type = show ? 'text' : 'password';
+    b.textContent = show ? 'Ocultar' : 'Ver';
+  };
+});
+document.getElementById('link-forgot').onclick = function(){
+  hideErr();
+  var email = document.getElementById('in-email').value.trim();
+  if(!email || email.indexOf('@') < 0){ showErr('Escribe tu correo arriba y vuelve a tocar "¿Olvidaste tu contraseña?".'); return false; }
+  fetch(SUPABASE_URL + '/auth/v1/recover', {
+    method: 'POST', headers: headers(),
+    body: JSON.stringify({ email: email, redirect_to: 'https://chechosirr.github.io/Nexo/restablecer.html' })
+  }).then(function(){
+    var m = document.getElementById('okmsg');
+    m.textContent = 'Si ese correo tiene cuenta, te enviamos un enlace para crear una contraseña nueva. Revisa tu correo (y el spam).';
+    m.style.display = 'block';
+  }).catch(function(){ showErr('Error de conexión. Intenta de nuevo.'); });
+  return false;
+};
+document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
+document.addEventListener('click', function(){ var m = document.getElementById('menu'); if(m) m.classList.remove('open'); });
+function routeMiCuenta(tipo, slug){
+  if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+  else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
+  else { location.href = '/Nexo/comprador/perfil.html'; }
+}
+function goMiCuenta(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!(s && s.access_token)) return true;
+
+    var uid = (s.user && s.user.id) || null;
+    if(!uid) return true;
+    var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
+      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      if(t === 'vendedor'){
+        fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
+        .then(function(r){ return r.json(); })
+        .then(function(r2){
+          var sl = (r2 && r2[0] && r2[0].slug) || null;
+          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          routeMiCuenta(t, sl);
+        }).catch(function(){ routeMiCuenta(t, null); });
+      } else {
+        routeMiCuenta(t, null);
+      }
+    }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+    return false;
+  }catch(e){ return true; }
+}
+function doLogout(){
+  try{
+    localStorage.removeItem('dominus_session');
+    localStorage.removeItem('dominus_tipo');
+    localStorage.removeItem('dominus_slug');
+  }catch(e){}
+  location.href = '/Nexo/index.html';
+  return false;
+}
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(s && s.access_token){
+      var b = document.getElementById('menu-logout');
+      if(b) b.style.display = 'block';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi perfil — Nexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--err:#ff5d5d}
+body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
+.logo em{font-style:normal;color:var(--acc)}
+.top-actions{display:flex;gap:10px;align-items:center;margin-left:auto}
+.link{color:var(--mut);text-decoration:none;font-size:13px}
+.logout{background:none;border:1px solid var(--line);color:var(--mut);border-radius:999px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:26px 18px 70px}
+.profile-card{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:22px}
+.avatar{flex:0 0 64px;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#3d7ab5);display:grid;place-content:center;font-weight:900;font-size:26px;color:#fff}
+.profile-card h1{font-size:20px}
+.profile-card small{color:var(--mut);font-size:13px}
+.welcome{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.welcome h1{font-size:26px;font-weight:900}
+.welcome h1 .hl{color:var(--acc)}
+.wall-link{display:inline-block;background:var(--card);border:1px solid var(--line);color:var(--txt);text-decoration:none;font-size:13px;font-weight:700;padding:10px 20px;border-radius:999px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 30px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stat b{display:block;font-size:24px;font-weight:900;color:var(--acc)}
+.stat span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:22px}
+.sec h2{font-size:19px;margin-bottom:14px}
+.acc-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;background:none;border:0;font-family:inherit;font-size:19px;font-weight:800;color:var(--txt);cursor:pointer;padding:0;text-align:left}
+.acc-body{display:none;margin-top:16px}
+.sec.open .acc-body{display:block}
+.acc-chev{color:var(--mut);font-size:15px;transition:transform .2s ease;flex:0 0 auto}
+.sec.open .acc-chev{transform:rotate(180deg)}
+.acc-note{font-size:13px;color:var(--mut);margin-bottom:14px}
+.aj-group{background:#f7f8fa;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.aj-group:last-child{margin-bottom:0}
+.dir-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;background:#f7f8fa}
+.dir-card.prin{border-color:#142c47}
+.dir-badge{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;background:#142c47;color:#fff;white-space:nowrap}
+.dir-ops{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.dir-op{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--txt)}
+.dir-op.danger{color:#b3261e;border-color:#e5b4b0}
+.dir-check{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:14px 0 4px;background:#f7f8fa}
+.dir-opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:14px;cursor:pointer;margin-bottom:8px;color:var(--txt)}
+.dir-opt.sel{border-color:#142c47;background:#eceff3}
+.aj-h{font-size:15px;font-weight:800;margin-bottom:10px}
+.sec h2 .hl{color:var(--acc)}
+.item{display:flex;gap:14px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.item img{width:64px;height:64px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;box-sizing:border-box;flex:0 0 64px}
+.item .info{flex:1;min-width:0}
+.item .info b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .info small{color:var(--mut);font-size:12px}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:16px;cursor:pointer;font-family:inherit}
+.qty b{min-width:20px;text-align:center}
+.item .pa{font-weight:900;color:var(--acc);min-width:70px;text-align:right}
+.rm{background:none;border:0;color:var(--mut);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline}
+.total{display:flex;justify-content:space-between;align-items:center;margin:16px 0;font-size:18px;font-weight:900}
+.total span:last-child{color:var(--acc);font-size:24px}
+.btn{display:block;width:100%;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
+.btn-wa{background:#22c55e}
+.empty{color:var(--mut);font-size:14px;text-align:center;padding:24px}
+.sell-box{text-align:center;font-size:14px;color:var(--mut)}
+.sell-box a{color:var(--acc);font-weight:700;text-decoration:none}
+.err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:14px}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
+
+/* ===== plateado metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+
+.menu-wrap{position:relative;margin-left:auto}
+#menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:16px;min-width:200px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.16);z-index:50}
+.menu.open{display:block}
+.menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
+.menu a:last-child{border-bottom:0}
+.menu a:hover{background:rgba(0,0,0,.05)}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+.login-cta-h{display:inline-block;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 50%,#7ba3cc 100%);color:#0a0c10 !important;font-weight:800;font-size:13px;padding:9px 15px;border-radius:999px;text-decoration:none;white-space:nowrap}
+</style>
+
+<style>
+/* ===== Mi cuenta en escritorio: paneles tipo cuadro en filas de dos, a toda pantalla ===== */
+@media (min-width:900px){
+  main{max-width:1440px;width:100%;align-self:stretch;margin:0 auto;padding:34px 26px 80px}
+  #main{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-flow:dense;gap:clamp(12px,1.6vw,22px);align-items:start}
+  .welcome{grid-column:1/-1;margin-bottom:2px}
+  .sec{margin-bottom:0;border-radius:24px;box-shadow:0 12px 34px rgba(17,17,20,.06);transition:transform .2s ease,box-shadow .2s ease}
+  .sec:not(.open){min-height:clamp(130px,20vh,190px);display:flex;padding:0}
+  .sec:not(.open) .acc-head{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;text-align:center;font-size:clamp(1.02rem,2vh,1.28rem);padding:16px 10px}
+  .sec:not(.open):hover{transform:translateY(-4px);box-shadow:0 22px 46px rgba(17,17,20,.12)}
+  .sec.open{grid-column:1/-1}
+  .sec.sell-box{grid-column:1/-1;min-height:0;display:block;padding:20px 22px;text-align:center}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="../index.html">NE<em>XO</em></a>
+  <div class="top-actions">
+    <div class="menu-wrap">
+    <button id="menu-btn" aria-label="Menú">☰</button>
+    <nav class="menu" id="menu">
+      <a href="../index.html">Inicio</a>
+      <a href="../cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
+      <a href="../comprador/perfil.html?ver=carrito">Carrito</a>
+          <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+</nav>
+  </div>
+  </div>
+</header>
+<script>
+(function(){
+ try{
+ var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+ if(s && s.access_token && s.user && s.user.id) return;
+ var btn = document.getElementById('menu-btn');
+ if(!btn) return;
+ btn.style.display = 'none';
+ var menu = document.getElementById('menu');
+ if(menu) menu.style.display = 'none';
+ var a = document.createElement('a');
+ a.href = '../cuenta.html';
+ a.textContent = 'Iniciar Sesión / Crear cuenta';
+ a.className = 'login-cta-h';
+ btn.parentNode.insertBefore(a, btn);
+ }catch(e){}
+})();
+</script>
+<main id="main"><p class="empty">Cargando…</p></main>
+<footer>© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+var PAYPAL_CLIENT_ID = "BAAxRwrBgVX0LQCQlIC6qPmtzh-87LsKLBvcSlTcXQRqOEJNUhpzNhCdzw-l25nJnuIsJi_8d-uhBBx2mY";
+/* sesión persistente: renueva el token automáticamente */
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!s || !s.access_token || !s.refresh_token) return;
+    var exp = 0;
+    if(s.expires_at) exp = s.expires_at * 1000;
+    else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+    if(!exp || Date.now() < exp - 120000) return;
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    }).then(function(r){ return r.json(); }).then(function(ns){
+      if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
+      else localStorage.removeItem('dominus_session');
+    }).catch(function(){});
+  }catch(e){}
+})();
+
+var WA_NUMBER = "15704698339";
+var session = null, cart = [];
+function getSession(){ try { return JSON.parse(localStorage.getItem('dominus_session')); } catch(e){ return null; } }
+function h(token){
+  return { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+}
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n){ return '$' + Number(n).toFixed(2); }
+
+function deleteMyAccountBuyer(){
+  if(!session || !session.access_token){ alert('Entra a tu cuenta primero.'); return; }
+  if(!confirm('¿Eliminar tu cuenta de Nexo?\n\nSe borrará tu perfil, tu carrito y tu cuenta de acceso. Esto NO se puede deshacer.')) return;
+  var frase = prompt('Para confirmar, escribe ELIMINAR:');
+  if(!frase || frase.trim().toUpperCase() !== 'ELIMINAR'){ alert('Cancelado. Tu cuenta sigue activa.'); return; }
+  var tok = session.access_token, uid = session.user.id;
+  var finish = function(completa){
+    try{ localStorage.removeItem('dominus_session'); localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){}
+    alert(completa ? 'Tu cuenta fue eliminada.' : 'Tu perfil y tu carrito fueron eliminados.');
+    location.href = '../index.html';
+  };
+  fetch(SUPABASE_URL + '/rest/v1/rpc/eliminar_mi_cuenta', { method: 'POST', headers: h(tok), body: JSON.stringify({}) })
+    .then(function(r){
+      if(r.ok){ finish(true); return; }
+      fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + uid, { method: 'DELETE', headers: h(tok) })
+        .then(function(){ return fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid, { method: 'DELETE', headers: h(tok) }); })
+        .then(function(){ finish(false); })
+        .catch(function(){ alert('No se pudo eliminar. Intenta de nuevo.'); });
+    })
+    .catch(function(){ alert('No se pudo eliminar. Revisa tu conexión.'); });
+}
+function renderPayPalButtons(total){
+  var cont = document.getElementById('paypal-button-container');
+  if(!cont || !cart.length) return;
+  if(_profBase && _profBase.estado === 'pausado'){
+    cont.innerHTML = '<div style="border:1px solid #e5b4b4;border-radius:14px;padding:16px;text-align:center;background:#fdf1f1"><b>Tu cuenta está pausada.</b><br><span style="font-size:13px;color:#666">Por ahora no puedes comprar. Escríbenos por WhatsApp si crees que es un error.</span></div>';
+    return;
+  }
+  function init(){
+    if(typeof paypal === 'undefined'){ setTimeout(init, 300); return; }
+    cont.innerHTML = '';
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'silver', shape: 'pill', label: 'buynow' },
+      createOrder: function(data, actions){
+        trackCodeCompra = genTrack();
+        return actions.order.create({
+          purchase_units: [{ custom_id: trackCodeCompra, amount: { value: total.toFixed(2), currency_code: 'USD' }, description: 'Rastreo: ' + trackCodeCompra + ' · Compra en Nexo' + (_prof && _prof.direccion ? ' · Entrega: ' + _prof.direccion + (_prof.ciudad ? ', ' + _prof.ciudad : '') : '') }]
+        });
+      },
+      onApprove: function(data, actions){
+        return actions.order.capture().then(function(details){
+          var gLines = cart.map(function(it){ return it.products.titulo + (it.talla ? ' · Talla ' + it.talla : '') + ' ×' + it.qty; });
+          var gWa = waOrderURL();
+          var gNom = (details.payer.name || {}).given_name || '';
+          saveOrders(data.orderID, trackCodeCompra);
+          try{ localStorage.setItem('dominus_gracias', JSON.stringify({ tipo: 'carrito', codigo: trackCodeCompra, nombre: gNom, total: money(total), items: gLines, paypal: data.orderID, wa: gWa, extra: 'Coordinamos el envío con cada vendedor.' })); }catch(e){}
+          clearCart();
+          location.href = '../gracias.html';
+        });
+      },
+      onError: function(err){ console.error('PayPal error:', err); var em = (err && err.message) ? err.message : String(err || 'desconocido'); alert('PayPal devolvió este error:\n\n' + em + '\n\nPor favor mándame una captura de este mensaje.'); }
+    }).render('#paypal-button-container');
+  }
+  if(typeof paypal === 'undefined'){
+    var s = document.createElement('script');
+    s.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD&intent=capture';
+    s.onload = init;
+    document.head.appendChild(s);
+  } else { init(); }
+}
+function clearCart(){
+  if(!session) return;
+  fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + session.user.id, {
+    method: 'DELETE', headers: h(session.access_token)
+  }).catch(function(){});
+  cart = [];
+}
+var _prof = null;
+// Construye el enlace de WhatsApp del pedido incluyendo los datos de entrega
+// del comprador (Mis datos de envío). Se llama en render() y se refresca
+// cuando loadShipForm() termina de cargar _prof (carga asíncrona).
+function waOrderURL(){
+  var nm = (session && session.user && session.user.user_metadata && session.user.user_metadata.nombre) || 'Comprador';
+  var lines = cart.map(function(it){ return '• ' + it.products.titulo + (it.talla ? ' · Talla ' + it.talla : '') + ' x' + it.qty + ' (' + money(Number(it.products.precio) * it.qty) + ') — ' + it.products.sellers.nombre; });
+  var subtotal = cart.reduce(function(s, it){ return s + Number(it.products.precio) * it.qty; }, 0);
+  var total = calcFees(subtotal).total;
+  var msg = 'Hola Nexo, mi pedido:\n' + lines.join('\n') + '\nTotal: ' + money(total) + (trackCodeCompra ? '\nCódigo de rastreo: ' + trackCodeCompra : '');
+  var p = _prof || {};
+  var dir = [p.direccion, [p.ciudad, p.departamento].filter(Boolean).join(', '), p.pais].filter(Boolean);
+  if(dir.length || p.telefono){
+    msg += '\n\nEntrega: ' + nm;
+    if(dir.length) msg += '\n' + dir.join('\n');
+    if(p.referencia) msg += '\nReferencia: ' + p.referencia;
+    if(p.telefono) msg += '\nContacto: ' + p.telefono;
+  } else {
+    msg += '\n\n(⚠️ Aún no tengo datos de entrega registrados en Nexo — los completo en "Direcciones")';
+  }
+  return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+}
+/* ===== Libreta de direcciones: varias direcciones, una principal ===== */
+var _dirs = null, _dirSelId = null, _profBase = null;
+function currentDir(){
+  if(!_dirs || !_dirs.length) return null;
+  var s = null, pr = null;
+  _dirs.forEach(function(a){ if(a.id === _dirSelId) s = a; if(a.principal) pr = a; });
+  return s || pr || _dirs[0];
+}
+function applyDirToProf(){
+  var a = currentDir();
+  if(a){
+    var b = _profBase || {};
+    _prof = { nombre: a.nombre || b.nombre || null, direccion: a.direccion || null, ciudad: a.ciudad || null, departamento: a.departamento || null, pais: a.pais || null, telefono: a.telefono || b.telefono || null, referencia: a.referencia || null };
+  }
+  var wb = document.getElementById('wa-order');
+  if(wb) wb.href = waOrderURL();
+  renderCheckoutDir();
+}
+function mirrorPrincipal(a){
+  var body = { direccion: a.direccion || null, ciudad: a.ciudad || null, departamento: a.departamento || null, pais: a.pais || null };
+  fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + session.user.id, { method: 'PATCH', headers: h(session.access_token), body: JSON.stringify(body) }).catch(function(){});
+  fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + session.user.id, { method: 'PATCH', headers: h(session.access_token), body: JSON.stringify({ ubicacion: (a.ciudad && a.pais) ? (a.ciudad + ', ' + a.pais) : null }) }).catch(function(){});
+}
+function loadShipForm(){
+  var tok = session.access_token, uid = session.user.id;
+  var profP = fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=nombre,direccion,ciudad,departamento,pais,telefono,referencia', { headers: h(tok) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){ _profBase = (rows && rows[0]) || {}; if(!_prof) _prof = _profBase; })
+    .catch(function(){ _profBase = _profBase || {}; });
+  fetch(SUPABASE_URL + '/rest/v1/direcciones?user_id=eq.' + uid + '&select=*&order=principal.desc,created_at.asc', { headers: h(tok) })
+    .then(function(r){ if(!r.ok) throw new Error('sin tabla'); return r.json(); })
+    .then(function(rows){
+      _dirs = rows || [];
+      return profP.then(function(){
+        if(!_dirs.length && _profBase && _profBase.direccion){
+          var seed = { user_id: uid, nombre: _profBase.nombre || null, telefono: _profBase.telefono || null, direccion: _profBase.direccion, ciudad: _profBase.ciudad || null, departamento: _profBase.departamento || null, pais: _profBase.pais || null, referencia: _profBase.referencia || null, principal: true };
+          return fetch(SUPABASE_URL + '/rest/v1/direcciones', { method: 'POST', headers: Object.assign({}, h(tok), { 'Prefer': 'return=representation' }), body: JSON.stringify(seed) })
+            .then(function(r){ return r.ok ? r.json() : []; })
+            .then(function(nr){ if(nr && nr.length) _dirs = nr; })
+            .catch(function(){});
+        }
+      });
+    })
+    .then(function(){ renderDirs(); applyDirToProf(); })
+    .catch(function(){
+      _dirs = null;
+      profP.then(function(){
+        if(document.getElementById('ship-form')) loadShipLegacy();
+        renderCheckoutDir();
+      });
+    });
+}
+function telConCodigo(v){
+  var d = (v || '').replace(/[^\d+]/g, '');
+  var n = d.replace(/\D/g, '').length;
+  return d.charAt(0) === '+' && n >= 7 && n <= 15;
+}
+var TEL_MSG = 'El teléfono debe llevar el código de país: +505 (Nicaragua) o +1 (Estados Unidos). Ej: +505 8888 8888.';
+function splitTel(v){
+  v = (v || '').trim();
+  if(v.indexOf('+505') === 0) return { cod: '+505', num: v.slice(4).trim() };
+  if(v.indexOf('+1') === 0) return { cod: '+1', num: v.slice(2).trim() };
+  return { cod: '', num: v };
+}
+function joinTel(cod, num){
+  num = (num || '').trim();
+  if(!num) return '';
+  return num.charAt(0) === '+' ? num : (cod || '+505') + ' ' + num;
+}
+var NI_DEPTOS = ['Boaco','Carazo','Chinandega','Chontales','Costa Caribe Norte','Costa Caribe Sur','Estelí','Granada','Jinotega','León','Madriz','Managua','Masaya','Matagalpa','Nueva Segovia','Río San Juan','Rivas'];
+var US_ESTADOS = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+function depOptions(sel, esUS, cur){
+  var list = esUS ? US_ESTADOS : NI_DEPTOS;
+  var other = esUS ? NI_DEPTOS : US_ESTADOS;
+  cur = (cur || '').trim();
+  if(other.indexOf(cur) >= 0) cur = '';
+  var opts = '<option value="">' + (esUS ? 'Elige el estado…' : 'Elige el departamento…') + '</option>';
+  if(cur && list.indexOf(cur) < 0) opts += '<option value="' + esc(cur) + '">' + esc(cur) + '</option>';
+  opts += list.map(function(n){ return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join('');
+  sel.innerHTML = opts;
+  sel.value = cur || '';
+}
+function dirFld(id, label, val, ph){
+  return '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">' + label + '</label>'
+    + '<input id="' + id + '" type="text" value="' + esc(val || '') + '" placeholder="' + ph + '" style="width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px">';
+}
+function renderDirs(){
+  var box = document.getElementById('ship-form');
+  if(!box || !_dirs) return;
+  var html = '';
+  if(!_dirs.length){
+    html += '<p class="empty">Todavía no tienes direcciones guardadas.</p>';
+  } else {
+    html += _dirs.map(function(a){
+      return '<div class="dir-card' + (a.principal ? ' prin' : '') + '">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b style="font-size:15px">' + esc(a.direccion || 'Sin dirección') + '</b>' + (a.principal ? '<span class="dir-badge">Principal</span>' : '') + '</div>'
+        + '<p style="font-size:13px;color:var(--mut);margin-top:4px">' + esc([[a.ciudad, a.departamento].filter(Boolean).join(', '), a.pais].filter(Boolean).join(' · ')) + '</p>'
+        + (a.codigo_postal ? '<p style="font-size:13px;color:var(--mut)">ZIP: ' + esc(a.codigo_postal) + '</p>' : '')
+        + (a.referencia ? '<p style="font-size:13px;color:var(--mut)">Referencia: ' + esc(a.referencia) + '</p>' : '')
+        + (a.telefono ? '<p style="font-size:13px;color:var(--mut)">Tel: ' + esc(a.telefono) + '</p>' : '')
+        + '<div class="dir-ops">'
+        + (a.principal ? '' : '<button class="dir-op" data-prin="' + a.id + '">Hacer principal</button>')
+        + '<button class="dir-op" data-edit="' + a.id + '">Editar</button>'
+        + '<button class="dir-op danger" data-del="' + a.id + '">Eliminar</button>'
+        + '</div></div>';
+    }).join('');
+  }
+  html += '<button class="btn" id="dir-add" style="margin-top:6px">＋ Agregar dirección</button><div id="dir-form"></div>';
+  box.innerHTML = html;
+  box.querySelectorAll('[data-prin]').forEach(function(b){ b.onclick = function(){ setPrincipalDir(b.dataset.prin); }; });
+  box.querySelectorAll('[data-edit]').forEach(function(b){ b.onclick = function(){ openDirForm(b.dataset.edit); }; });
+  box.querySelectorAll('[data-del]').forEach(function(b){ b.onclick = function(){ delDir(b.dataset.del); }; });
+  document.getElementById('dir-add').onclick = function(){ openDirForm(null); };
+}
+function openDirForm(id){
+  var wrap = document.getElementById('dir-form');
+  if(!wrap) return;
+  var a = {};
+  if(id) _dirs.forEach(function(x){ if(x.id === id) a = x; });
+  wrap.innerHTML = '<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:6px">'
+    + '<h3 style="font-size:16px;margin:8px 0 2px">' + (id ? 'Editar dirección' : 'Nueva dirección') + '</h3>'
+    + '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">País</label>'
+    + '<select id="df-pais" style="width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"><option value="Nicaragua"' + (/unidos|usa|eeuu|united/i.test(a.pais || '') ? '' : ' selected') + '>Nicaragua</option><option value="Estados Unidos"' + (/unidos|usa|eeuu|united/i.test(a.pais || '') ? ' selected' : '') + '>Estados Unidos</option></select>'
+    + dirFld('df-dir', 'Dirección (con referencias)', a.direccion, 'Ej: Calle 5 #123, frente al parque')
+    + dirFld('df-ciu', 'Ciudad', a.ciudad, 'Ej: Estelí')
+    + '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">Departamento</label>'
+    + '<select id="df-dep" style="width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"></select>'
+    + '<div id="df-zip-wrap" style="display:none">' + dirFld('df-zip', 'Código postal (ZIP)', a.codigo_postal, 'Ej: 90210') + '</div>'
+    + dirFld('df-ref', 'Referencia (cómo llegar)', a.referencia, 'Ej: Casa verde, portón negro')
+    + '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">Teléfono de contacto</label>'
+    + '<div style="display:flex;gap:8px"><select id="df-cod" aria-label="Código de país" style="width:104px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"><option value="+505">+505</option><option value="+1">+1</option></select>'
+    + '<input id="df-tel" type="tel" value="' + esc(splitTel(a.telefono).num) + '" placeholder="Ej: 8888 8888" style="flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"></div>'
+    + '<label style="display:flex;gap:8px;align-items:center;font-size:14px;margin-top:12px"><input type="checkbox" id="df-prin" style="width:auto"' + (a.principal || !_dirs.length ? ' checked' : '') + '> Usar como dirección principal</label>'
+    + '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn" id="df-save">Guardar dirección</button>'
+    + '<button class="btn" id="df-cancel" style="background:none;border:1px solid var(--line)">Cancelar</button></div></div>';
+  document.getElementById('df-cancel').onclick = function(){ wrap.innerHTML = ''; };
+  document.getElementById('df-save').onclick = function(){ saveDir(id); };
+  var dfPais = document.getElementById('df-pais');
+  var dfUI = function(keep){
+    var us = dfPais.value === 'Estados Unidos';
+    var dep = document.getElementById('df-dep');
+    if(dep){
+      if(dep.previousElementSibling) dep.previousElementSibling.textContent = us ? 'Estado' : 'Departamento';
+      depOptions(dep, us, keep ? (a.departamento || dep.value || '') : dep.value);
+    }
+    var zw = document.getElementById('df-zip-wrap'); if(zw) zw.style.display = us ? '' : 'none';
+  };
+  dfPais.addEventListener('change', function(){ dfUI(false); });
+  dfUI(true);
+  var st0 = splitTel(a.telefono);
+  var cod0 = document.getElementById('df-cod');
+  if(cod0 && st0.cod) cod0.value = st0.cod;
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function saveDir(id){
+  var zipEl = document.getElementById('df-zip');
+  var zipVal = zipEl ? zipEl.value.trim() : '';
+  var body = {
+    direccion: document.getElementById('df-dir').value.trim() || null,
+    ciudad: document.getElementById('df-ciu').value.trim() || null,
+    departamento: document.getElementById('df-dep').value.trim() || null,
+    pais: document.getElementById('df-pais').value || null,
+    referencia: document.getElementById('df-ref').value.trim() || null,
+    telefono: joinTel(document.getElementById('df-cod').value, document.getElementById('df-tel').value) || null
+  };
+  if(body.pais === 'Estados Unidos' && zipVal) body.codigo_postal = zipVal;
+  if(body.telefono && !telConCodigo(body.telefono)){ alert(TEL_MSG); return; }
+  if(!body.direccion){ alert('Escribe la dirección.'); return; }
+  var quierePrin = document.getElementById('df-prin').checked;
+  var tok = session.access_token, uid = session.user.id;
+  var sendDir = function(b){
+    return id
+      ? fetch(SUPABASE_URL + '/rest/v1/direcciones?id=eq.' + id, { method: 'PATCH', headers: Object.assign({}, h(tok), { 'Prefer': 'return=representation' }), body: JSON.stringify(b) })
+      : fetch(SUPABASE_URL + '/rest/v1/direcciones', { method: 'POST', headers: Object.assign({}, h(tok), { 'Prefer': 'return=representation' }), body: JSON.stringify(Object.assign({ user_id: uid, principal: false }, b)) });
+  };
+  var req = sendDir(body).then(function(r){
+    if(r.ok) return r;
+    if(body.codigo_postal){
+      var b2 = {}; for(var k in body){ if(k !== 'codigo_postal') b2[k] = body[k]; }
+      b2.referencia = ((b2.referencia || '') + ' · ZIP ' + body.codigo_postal).replace(/^ · /, '');
+      return sendDir(b2);
+    }
+    return r;
+  });
+  req.then(function(r){ if(!r.ok) throw new Error('db'); return r.json(); })
+    .then(function(rows){
+      var saved = rows && rows[0];
+      if(saved && saved.principal) mirrorPrincipal(saved);
+      if(quierePrin && saved && !saved.principal){ setPrincipalDir(saved.id); return; }
+      loadShipForm();
+    })
+    .catch(function(){ alert('No se pudo guardar la dirección. Intenta de nuevo.'); });
+}
+function setPrincipalDir(id){
+  var tok = session.access_token, uid = session.user.id;
+  fetch(SUPABASE_URL + '/rest/v1/direcciones?user_id=eq.' + uid + '&principal=eq.true', { method: 'PATCH', headers: h(tok), body: JSON.stringify({ principal: false }) })
+    .then(function(){
+      return fetch(SUPABASE_URL + '/rest/v1/direcciones?id=eq.' + id, { method: 'PATCH', headers: Object.assign({}, h(tok), { 'Prefer': 'return=representation' }), body: JSON.stringify({ principal: true }) });
+    })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      if(rows && rows[0]) mirrorPrincipal(rows[0]);
+      loadShipForm();
+    })
+    .catch(function(){ alert('No se pudo cambiar la dirección principal.'); });
+}
+function delDir(id){
+  var a = null;
+  _dirs.forEach(function(x){ if(x.id === id) a = x; });
+  if(!confirm('¿Eliminar esta dirección?\n\n' + (a ? (a.direccion || '') : ''))) return;
+  fetch(SUPABASE_URL + '/rest/v1/direcciones?id=eq.' + id, { method: 'DELETE', headers: h(session.access_token) })
+    .then(function(){
+      var quedan = _dirs.filter(function(x){ return x.id !== id; });
+      if(_dirSelId === id) _dirSelId = null;
+      if(a && a.principal && quedan.length){ setPrincipalDir(quedan[0].id); return; }
+      loadShipForm();
+    })
+    .catch(function(){ alert('No se pudo eliminar. Intenta de nuevo.'); });
+}
+function renderCheckoutDir(){
+  var el = document.getElementById('checkout-dir');
+  if(!el) return;
+  if(!_dirs || !_dirs.length){
+    el.innerHTML = '<p style="font-size:13px;color:var(--mut);margin:12px 0 4px">Sin dirección de entrega: agrega una en la sección <b>Direcciones</b> de tu cuenta.</p>';
+    return;
+  }
+  var a = currentDir();
+  el.innerHTML = '<div class="dir-check"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px">'
+    + '<b style="font-size:14px">Enviar a:</b><button class="dir-op" id="cd-change">Cambiar</button></div>'
+    + '<p style="font-size:14px;margin-top:4px">' + esc(a.direccion || '') + '</p>'
+    + '<p style="font-size:13px;color:var(--mut)">' + esc([[a.ciudad, a.departamento].filter(Boolean).join(', '), a.pais].filter(Boolean).join(' · ')) + (a.telefono ? ' · Tel: ' + esc(a.telefono) : '') + '</p>'
+    + '<div id="cd-opts" style="display:none;margin-top:10px">'
+    + _dirs.map(function(x){
+        return '<button class="dir-opt' + (x.id === a.id ? ' sel' : '') + '" data-cd="' + x.id + '">'
+          + esc(x.direccion || '') + ' <span style="color:var(--mut)">' + esc([x.ciudad, x.pais].filter(Boolean).join(', ')) + '</span>'
+          + (x.principal ? ' <span class="dir-badge">Principal</span>' : '') + '</button>';
+      }).join('')
+    + '</div></div>';
+  document.getElementById('cd-change').onclick = function(){
+    var o = document.getElementById('cd-opts');
+    o.style.display = o.style.display === 'none' ? 'block' : 'none';
+  };
+  el.querySelectorAll('[data-cd]').forEach(function(b){
+    b.onclick = function(){ _dirSelId = b.dataset.cd; applyDirToProf(); };
+  });
+}
+function loadShipLegacy(){
+  fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + session.user.id + '&select=direccion,ciudad,departamento,pais,telefono',
+    { headers: h(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      _prof = (rows && rows[0]) || {};
+      var wb = document.getElementById('wa-order');
+      if(wb) wb.href = waOrderURL(); // refresca el aviso con la dirección ya cargada
+      var p = _prof;
+      function fld(id, label, val, ph, type){
+        return '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">' + label + '</label>'
+          + '<input id="' + id + '" type="' + (type || 'text') + '" value="' + esc(val || '') + '" placeholder="' + ph + '"'
+          + ' style="width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px">';
+      }
+      document.getElementById('ship-form').innerHTML =
+        fld('sf-pais', 'País', p.pais, 'Ej: Nicaragua')
+        + fld('sf-dir', 'Dirección (con referencias)', p.direccion, 'Ej: Calle 5 #123, frente al parque')
+        + fld('sf-ciu', 'Ciudad', p.ciudad, 'Ej: Estelí')
+        + fld('sf-dep', 'Departamento', p.departamento, 'Ej: Estelí')
+        + '<button class="btn" id="sf-save" style="margin-top:14px">Guardar datos</button>';
+      document.getElementById('sf-save').onclick = saveShipForm;
+    })
+    .catch(function(){ document.getElementById('ship-form').innerHTML = '<p class="empty">No se pudo cargar.</p>'; });
+}
+function saveShipForm(){
+  var body = {
+    direccion: document.getElementById('sf-dir').value.trim() || null,
+    ciudad: document.getElementById('sf-ciu').value.trim() || null,
+    departamento: document.getElementById('sf-dep').value.trim() || null,
+    pais: document.getElementById('sf-pais').value.trim() || null,
+  };
+  var btn = document.getElementById('sf-save');
+  btn.textContent = 'Guardando…'; btn.disabled = true;
+  fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + session.user.id, {
+    method: 'PATCH', headers: h(session.access_token), body: JSON.stringify(body)
+  }).then(function(r){
+    btn.textContent = r.ok ? '✓ Guardado' : 'Guardar datos';
+    btn.disabled = false;
+    if(!r.ok) alert('No se pudo guardar. Intenta de nuevo.');
+    if(r.ok){
+      // Si esta cuenta tiene comercio, la ubicación de su muro sigue a los datos de envío (ciudad, país)
+      fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + session.user.id, {
+        method: 'PATCH', headers: h(session.access_token),
+        body: JSON.stringify({ ubicacion: (body.ciudad && body.pais) ? (body.ciudad + ', ' + body.pais) : null })
+      }).catch(function(){});
+    }
+  }).catch(function(){ btn.textContent = 'Guardar datos'; btn.disabled = false; });
+}
+function genTrack(){
+  var chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', s = '';
+  for(var i = 0; i < 6; i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
+  return 'DM-' + s;
+}
+var trackCodeCompra = '';
+function saveOrders(ppId, code){
+  var ent = null;
+  if(_prof){
+    var partes = [_prof.direccion, _prof.ciudad, _prof.departamento, _prof.pais].filter(Boolean).join(', ');
+    if(partes) ent = partes + (_prof.referencia ? ' · Ref: ' + _prof.referencia : '');
+  }
+  var rows = cart.map(function(it){
+    return {
+      buyer_id: session.user.id,
+      seller_id: it.products.seller_id,
+      product_id: it.products.id,
+      titulo: it.products.titulo + (it.talla ? ' · Talla ' + it.talla : ''),
+      precio: it.products.precio,
+      qty: it.qty,
+      paypal_order_id: ppId,
+      codigo_rastreo: code || null,
+      entrega: ent
+    };
+  }).filter(function(r){ return r.seller_id; });
+  if(!rows.length) return;
+  var post = function(rs){ return fetch(SUPABASE_URL + '/rest/v1/orders', { method: 'POST', headers: h(session.access_token), body: JSON.stringify(rs) }); };
+  var sin = function(rs, col){ return rs.map(function(rw){ var c = {}; for(var k in rw){ if(k !== col) c[k] = rw[k]; } return c; }); };
+  post(rows).then(function(r){
+    if(r.ok) return;
+    // Si la base aún no tiene la columna entrega (o la de rastreo), se reintenta sin ella
+    post(sin(rows, 'entrega')).then(function(r2){
+      if(r2.ok) return;
+      post(sin(sin(rows, 'entrega'), 'codigo_rastreo')).catch(function(){});
+    }).catch(function(){});
+  }).catch(function(){});
+}
+function loadHistory(){
+  var box = document.getElementById('hist-list');
+  if(!box) return;
+  fetch(SUPABASE_URL + '/rest/v1/orders?buyer_id=eq.' + session.user.id + '&select=titulo,precio,qty,created_at&order=created_at.desc&limit=50',
+    { headers: h(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(!rows || !rows.length){ box.innerHTML = '<p class="empty">Aún no tienes compras.</p>'; return; }
+      box.innerHTML = rows.map(function(o){
+        var d = new Date(o.created_at);
+        var f = d.toLocaleDateString('es-NI', { day:'numeric', month:'short', year:'numeric' });
+        return '<div class="item"><div class="info"><b>' + esc(o.titulo) + '</b><small>' + o.qty + ' × ' + money(o.precio) + ' · ' + f + '</small></div>'
+          + '<span class="pa">' + money(Number(o.precio) * o.qty) + '</span></div>';
+      }).join('');
+    })
+    .catch(function(){ box.innerHTML = '<p class="empty">No se pudo cargar.</p>'; });
+}
+function boot(){
+  session = getSession();
+  if(!session || !session.access_token){ location.href = 'cuenta.html'; return; }
+  fetch(SUPABASE_URL + '/auth/v1/user', { headers: h(session.access_token) }).then(function(r){
+    if(!r.ok){ localStorage.removeItem('dominus_session'); location.href = 'cuenta.html'; return null; }
+    return r.json();
+  }).then(function(user){
+    if(!user) return;
+    session.user = user;
+    loadCart();
+  });
+}
+function loadCart(){
+  fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + session.user.id + '&select=*,products!inner(id,titulo,precio,imagen_url,seller_id,sellers!inner(nombre,paypal_email))&order=created_at.desc',
+    { headers: h(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){ cart = rows || []; render(); })
+    .catch(function(){ document.getElementById('main').innerHTML = '<p class="empty">No se pudo cargar. Revisa tu conexión.</p>'; });
+}
+var SERGIO_PAYPAL = "Sergioromero97531@gmail.com";
+var SERVICE_FEE = 1.00;   // $1 fijo por transacción (modelo aprobado por Sergio)
+function calcFees(subtotal){
+  return { service: SERVICE_FEE, shipping: 0, total: subtotal + SERVICE_FEE };
+}
+function initAccordions(){
+  Array.prototype.forEach.call(document.querySelectorAll('#main .sec'), function(sec){
+    if(sec.dataset.acc) return;
+    var h2 = sec.querySelector('h2'); if(!h2) return;
+    sec.dataset.acc = '1';
+    var head = document.createElement('button');
+    head.type = 'button'; head.className = 'acc-head';
+    head.innerHTML = '<span>' + h2.innerHTML + '</span><span class="acc-chev">▾</span>';
+    var body = document.createElement('div'); body.className = 'acc-body';
+    while(sec.firstChild) body.appendChild(sec.firstChild);
+    var old = body.querySelector('h2'); if(old) old.parentNode.removeChild(old);
+    sec.appendChild(head); sec.appendChild(body);
+    head.onclick = function(){ sec.classList.toggle('open'); };
+  });
+}
+function render(){
+  var soloCart = false; try{ soloCart = new URLSearchParams(location.search).get('ver') === 'carrito'; }catch(e){}
+  var name = (session.user.user_metadata && session.user.user_metadata.nombre) || 'Comprador';
+  var subtotal = cart.reduce(function(s, it){ return s + Number(it.products.precio) * it.qty; }, 0);
+  var fees = cart.length ? calcFees(subtotal) : { service: 0, shipping: 0, total: 0 };
+  var total = fees.total;
+  var html = '<div class="welcome"><div><h1>Hola, <span class="hl">' + esc(name) + '</span></h1>'
+    + '<small style="color:var(--mut);font-size:13px">' + esc(session.user.email) + '</small></div>'
+    + '<a class="wall-link" href="../index.html">Explorar productos</a></div>'
+    + '<div class="sec"><h2>Direcciones</h2>'
+    + '<div id="ship-form"><p class="empty">Cargando…</p></div></div>'
+    + '<div class="sec"><h2>Mi carrito (' + cart.length + ')</h2><div id="cart-list">';
+  if(!cart.length){
+    html += '<p class="empty">Tu carrito está vacío.<br><a href="../index.html" style="color:var(--acc)">Explorar productos →</a></p>';
+  } else {
+    html += cart.map(function(it){
+      var p = it.products;
+      return '<div class="item">' + (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="">' : '')
+        + '<div class="info"><b>' + esc(p.titulo) + '</b><small>' + esc(p.sellers.nombre) + (it.talla ? ' · Talla ' + esc(it.talla) : '') + ' · ' + money(p.precio) + ' c/u</small><br>'
+        + '<button class="rm" data-rm="' + it.id + '">quitar</button></div>'
+        + '<div class="qty"><button data-dec="' + it.id + '">−</button><b>' + it.qty + '</b><button data-inc="' + it.id + '">+</button></div>'
+        + '<span class="pa">' + money(Number(p.precio) * it.qty) + '</span></div>';
+    }).join('')
+    + '<div class="total"><span>Subtotal</span><span>' + money(subtotal) + '</span></div>'
+    + '<div class="total" style="font-size:14px;color:var(--mut)"><span>Tasa de servicio</span><span>' + money(fees.service) + '</span></div>'
+    + '<div class="total"><span>Total</span><span>' + money(total) + '</span></div>'
+    + '<div id="checkout-dir"></div>'
+    + '<div id="paypal-button-container" style="margin-top:6px"></div>'
+    + '<a class="btn btn-wa" id="wa-order" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>'
+    + '<p style="font-size:12px;color:var(--mut);margin-top:10px;text-align:center">Incluye $1.00 de tasa de servicio. Pagas el total por PayPal en una sola transacción y coordinamos el envío con rastreo.</p>';
+  }
+  html += '</div></div>' + '<div class="sec"><h2>Mi historial</h2><div id="hist-list"><p class="empty">Cargando…</p></div></div>'
+    + '<div class="sec"><h2>Mis reseñas</h2><div id="my-revs"><p class="empty">Cargando…</p></div></div>'
+    + '<div class="sec"><h2>Ajustes de cuenta</h2>'
+    + '<p class="acc-note">Actualiza el correo electrónico y la contraseña con los que entras a tu cuenta.</p>'
+    + '<div class="aj-group"><h3 class="aj-h">Correo electrónico</h3><input id="ce-mail" type="email" autocomplete="email">'
+    + '<p id="ce-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="ce-btn">Guardar correo</button></div>'
+    + '<div class="aj-group"><h3 class="aj-h">Contraseña</h3>'
+    + '<label>Contraseña actual</label><div class="passwrap"><input id="cp-cur" type="password" autocomplete="current-password"><button type="button" class="eye" data-for="cp-cur">Ver</button></div>'
+    + '<label>Contraseña nueva (mínimo 6 caracteres)</label><div class="passwrap"><input id="cp-new" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new">Ver</button></div>'
+    + '<label>Confirma la contraseña nueva</label><div class="passwrap"><input id="cp-new2" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new2">Ver</button></div>'
+    + '<p id="cp-msg" style="font-size:13px;margin-top:10px"></p>'
+    + '<button class="btn" id="cp-btn">Cambiar contraseña</button></div>'
+    + '<div class="aj-group"><h3 class="aj-h" style="color:#b3261e">Eliminar mi cuenta</h3>'
+    + '<p style="font-size:14px;color:var(--mut);margin-bottom:12px">Si eliminas tu cuenta se borra tu perfil, tu carrito y tu cuenta de acceso. No se puede deshacer.</p>'
+    + '<button class="btn" id="btn-delacc" style="background:#b3261e!important;color:#fff!important">Eliminar mi cuenta</button></div>'
+    + '</div>'
+    + '<div class="sec sell-box">¿Tienes un negocio? <a href="../cuenta.html?tipo=vendedor">Abre tu muro de vendedor →</a></div>';
+  document.getElementById('main').innerHTML = html;
+  if(soloCart){
+    var mainEl = document.getElementById('main');
+    Array.prototype.slice.call(mainEl.children).forEach(function(ch){
+      if(!ch.querySelector || !ch.querySelector('#cart-list')) mainEl.removeChild(ch);
+    });
+  }
+  initAccordions();
+  Array.prototype.forEach.call(document.querySelectorAll('#main .sec'), function(s){ if(soloCart && s.querySelector('#cart-list')) s.classList.add('open'); });
+  wireChangePass(function(){ return session.user.email; }, function(j){ session = j; try{ localStorage.setItem('dominus_session', JSON.stringify(j)); }catch(e){} });
+  wireEmail(function(){ return session.access_token; }, function(){ return session.user.email; });
+  var delBtn = document.getElementById('btn-delacc'); if(delBtn) delBtn.onclick = deleteMyAccountBuyer;
+  document.querySelectorAll('[data-inc]').forEach(function(b){ b.onclick = function(){ chQty(b.dataset.inc, 1); }; });
+  document.querySelectorAll('[data-dec]').forEach(function(b){ b.onclick = function(){ chQty(b.dataset.dec, -1); }; });
+  document.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick = function(){ rmItem(b.dataset.rm); }; });
+  renderPayPalButtons(total);
+  loadShipForm();
+  if(!soloCart) loadHistory();
+  var waBtn = document.getElementById('wa-order');
+  if(!soloCart) loadMyReviews();
+  if(waBtn){
+    waBtn.href = waOrderURL();
+  }
+}
+
+function wireEmail(getTok, getEmail){
+  var btn = document.getElementById('ce-btn'); if(!btn) return;
+  var inp = document.getElementById('ce-mail');
+  var msg = document.getElementById('ce-msg');
+  if(inp && getEmail()) inp.value = getEmail();
+  btn.onclick = function(){
+    var em = inp.value.trim();
+    if(!em || em.indexOf('@') < 0){ msg.style.color = '#b3261e'; msg.textContent = 'Escribe un correo válido.'; return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/user', { method: 'PUT', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + getTok(), 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        btn.disabled = false; btn.textContent = 'Guardar correo';
+        if(res.ok){ msg.style.color = '#1c7c43'; msg.textContent = 'Te envié un correo de confirmación a ' + em + '. Ábrelo y toca el enlace para que el cambio se aplique.'; }
+        else { msg.style.color = '#b3261e'; msg.textContent = 'No se pudo cambiar el correo. Intenta de nuevo.'; }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Guardar correo'; msg.style.color = '#b3261e'; msg.textContent = 'Error de conexión. Intenta de nuevo.'; });
+  };
+}
+function wireChangePass(getEmail, setSession){
+  Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+    if(b._w) return; b._w = 1;
+    b.onclick = function(){
+      var i = document.getElementById(b.getAttribute('data-for'));
+      if(!i) return;
+      var s = i.type === 'password';
+      i.type = s ? 'text' : 'password';
+      b.textContent = s ? 'Ocultar' : 'Ver';
+    };
+  });
+  var btn = document.getElementById('cp-btn');
+  if(!btn) return;
+  btn.onclick = function(){
+    var msg = document.getElementById('cp-msg');
+    function err(m){ msg.style.color = '#b3261e'; msg.textContent = m; }
+    var cur = document.getElementById('cp-cur').value;
+    var nw = document.getElementById('cp-new').value;
+    var nw2 = document.getElementById('cp-new2').value;
+    if(!cur){ err('Escribe tu contraseña actual.'); return; }
+    if(nw.length < 6){ err('La contraseña nueva debe tener mínimo 6 caracteres.'); return; }
+    if(nw !== nw2){ err('Las contraseñas nuevas no coinciden.'); return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: getEmail(), password: cur })
+    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(res){
+        if(!res.ok){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('La contraseña actual no es correcta.'); return null; }
+        setSession(res.j);
+        return fetch(SUPABASE_URL + '/auth/v1/user', {
+          method: 'PUT',
+          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + res.j.access_token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: nw })
+        }).then(function(r){ return { ok: r.ok }; });
+      })
+      .then(function(r2){
+        if(!r2) return;
+        btn.disabled = false; btn.textContent = 'Cambiar contraseña';
+        if(r2.ok){
+          msg.style.color = '#1c7c43'; msg.textContent = 'Contraseña actualizada.';
+          document.getElementById('cp-cur').value = '';
+          document.getElementById('cp-new').value = '';
+          document.getElementById('cp-new2').value = '';
+        } else { err('No se pudo actualizar. Intenta de nuevo.'); }
+      })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('Error de conexión. Intenta de nuevo.'); });
+  };
+}
+
+function starsHTML(r){ var s = ''; for(var i = 1; i <= 5; i++) s += i <= Math.round(r) ? '★' : '☆'; return '<span class="stars">' + s + '</span>'; }
+function loadMyReviews(){
+  var el = document.getElementById('my-revs');
+  if(!el) return;
+  Promise.all([
+    fetch(SUPABASE_URL + '/rest/v1/seller_reviews?user_id=eq.' + session.user.id + '&select=*,sellers!inner(nombre)&order=created_at.desc', { headers: h(session.access_token) }).then(function(r){ return r.ok ? r.json() : []; }),
+    fetch(SUPABASE_URL + '/rest/v1/product_reviews?user_id=eq.' + session.user.id + '&select=*,products!inner(titulo)&order=created_at.desc', { headers: h(session.access_token) }).then(function(r){ return r.ok ? r.json() : []; })
+  ]).then(function(res){
+    var items = res[0].map(function(r){ return { t: 'Empresa: ' + r.sellers.nombre, rating: r.rating, com: r.comentario, d: r.created_at }; })
+      .concat(res[1].map(function(r){ return { t: 'Producto: ' + r.products.titulo, rating: r.rating, com: r.comentario, d: r.created_at }; }));
+    items.sort(function(a, b){ return new Date(b.d) - new Date(a.d); });
+    if(!items.length){ el.innerHTML = '<p class="empty">Aún no dejas reseñas.</p>'; return; }
+    el.innerHTML = items.slice(0, 10).map(function(r){
+      return '<div class="item"><div class="info"><b>' + esc(r.t) + '</b><div>' + starsHTML(r.rating) + '</div><small>' + esc(r.com || '') + '</small></div></div>';
+    }).join('');
+  }).catch(function(){ el.innerHTML = '<p class="empty">No se pudieron cargar.</p>'; });
+}
+function chQty(id, d){
+  var it = cart.find(function(x){ return x.id === id; });
+  var q = it.qty + d;
+  if(q < 1) return rmItem(id);
+  fetch(SUPABASE_URL + '/rest/v1/cart_items?id=eq.' + id, {
+    method: 'PATCH', headers: h(session.access_token), body: JSON.stringify({ qty: q })
+  }).then(loadCart);
+}
+function rmItem(id){
+  fetch(SUPABASE_URL + '/rest/v1/cart_items?id=eq.' + id, { method: 'DELETE', headers: h(session.access_token) }).then(loadCart);
+}
+boot();
+
+document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
+document.addEventListener('click', function(){ var m = document.getElementById('menu'); if(m) m.classList.remove('open'); });
+function routeMiCuenta(tipo, slug){
+  if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+  else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
+  else { location.href = '/Nexo/comprador/perfil.html'; }
+}
+function goMiCuenta(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!(s && s.access_token)) return true;
+
+    var uid = (s.user && s.user.id) || null;
+    if(!uid) return true;
+    var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
+      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      if(t === 'vendedor'){
+        fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
+        .then(function(r){ return r.json(); })
+        .then(function(r2){
+          var sl = (r2 && r2[0] && r2[0].slug) || null;
+          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          routeMiCuenta(t, sl);
+        }).catch(function(){ routeMiCuenta(t, null); });
+      } else {
+        routeMiCuenta(t, null);
+      }
+    }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+    return false;
+  }catch(e){ return true; }
+}
+function doLogout(){
+  try{
+    localStorage.removeItem('dominus_session');
+    localStorage.removeItem('dominus_tipo');
+    localStorage.removeItem('dominus_slug');
+  }catch(e){}
+  location.href = '/Nexo/index.html';
+  return false;
+}
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(s && s.access_token){
+      var b = document.getElementById('menu-logout');
+      if(b) b.style.display = 'block';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

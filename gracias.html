@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Gracias por tu compra! · Nexo</title>
+<style>
+ :root{ --ink:#141416; --mut:#6d6d74; --line:#e3e3e8; --soft:#f6f6f8; --dark:#142c47; }
+ *{ box-sizing:border-box; }
+ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#fff; color:var(--ink); }
+ header{ background:var(--dark); color:#fff; padding:14px 18px; text-align:center; }
+ header a{ color:#fff; text-decoration:none; font-weight:800; font-size:1.25rem; letter-spacing:.06em; }
+ main{ max-width:560px; margin:0 auto; padding:28px 18px 44px; text-align:center; }
+ .check{ width:76px; height:76px; margin:6px auto 14px; border-radius:50%; background:linear-gradient(180deg,#dbe9f8,#9dbfdd); display:flex; align-items:center; justify-content:center; box-shadow:inset 0 1px 0 #fff, 0 4px 14px rgba(0,0,0,.12); }
+ .check svg{ width:40px; height:40px; }
+ h1{ font-size:1.55rem; margin:6px 0 8px; }
+ .lead{ color:var(--mut); line-height:1.55; margin:0 auto 20px; max-width:440px; }
+ .codebox{ border:2px dashed #9a9aa2; background:var(--soft); border-radius:14px; padding:16px 12px 13px; margin:0 auto 20px; max-width:440px; }
+ .codebox .lab{ font-size:.78rem; font-weight:700; letter-spacing:.14em; color:var(--mut); }
+ .codebox .code{ font-size:2rem; font-weight:800; letter-spacing:.08em; margin:4px 0 6px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+ .codebox .note{ font-size:.85rem; color:var(--mut); line-height:1.5; margin:0; }
+ .sum{ text-align:left; border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin:0 auto 20px; max-width:440px; }
+ .sum h2{ font-size:.95rem; margin:0 0 10px; }
+ .sum .it{ display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px solid var(--soft); font-size:.92rem; }
+ .sum .it:last-of-type{ border-bottom:none; }
+ .sum .tot{ display:flex; justify-content:space-between; font-weight:800; padding-top:9px; font-size:1rem; }
+ .sum .meta{ color:var(--mut); font-size:.83rem; line-height:1.55; margin-top:10px; }
+ .btn{ display:block; max-width:440px; margin:10px auto 0; padding:14px 18px; border-radius:999px; text-decoration:none; font-weight:700; font-size:1rem; text-align:center; }
+ .btn-wa{ background:linear-gradient(180deg,#dbe9f8,#9dbfdd); color:#141416; box-shadow:inset 0 1px 0 #fff; }
+ .btn-dark{ background:var(--dark); color:#fff; }
+ .btn-ghost{ color:var(--ink); border:1px solid var(--line); }
+ footer{ text-align:center; color:var(--mut); font-size:.8rem; padding:0 18px 30px; }
+</style>
+</head>
+<body>
+<header><a href="index.html">NEXO</a></header>
+<main>
+ <div class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#142c47" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+ <h1>¡Gracias por comprar con Nexo!</h1>
+ <p class="lead" id="g-lead">Tu pago fue recibido correctamente y tu pedido quedó registrado. Ya estamos trabajando en él.</p>
+
+ <div class="codebox" id="g-codebox" style="display:none">
+  <div class="lab">TU CÓDIGO DE RASTREO</div>
+  <div class="code" id="g-code"></div>
+  <p class="note">Guárdalo y tenlo a la mano: con este código damos seguimiento a tu compra. Si nos escribes por WhatsApp, compártelo para ubicar tu pedido al instante.</p>
+ </div>
+
+ <div class="sum" id="g-sum" style="display:none">
+  <h2>Resumen de tu compra</h2>
+  <div id="g-items"></div>
+  <div class="tot"><span>Total pagado</span><span id="g-total"></span></div>
+  <div class="meta" id="g-meta"></div>
+ </div>
+
+ <a class="btn btn-wa" id="g-wa" href="#" target="_blank" rel="noopener" style="display:none">Confirmar por WhatsApp</a>
+ <a class="btn btn-dark" id="g-back" href="index.html">Seguir explorando</a>
+ <a class="btn btn-ghost" href="index.html">Ir al inicio</a>
+</main>
+<footer>Nexo · Compra protegida por PayPal</footer>
+<script>
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+var g = null;
+try{ g = JSON.parse(localStorage.getItem('dominus_gracias') || 'null'); }catch(e){}
+if(g && g.codigo){
+ document.getElementById('g-code').textContent = g.codigo;
+ document.getElementById('g-codebox').style.display = 'block';
+ if(g.nombre) document.getElementById('g-lead').textContent = '¡Gracias, ' + g.nombre + '! Tu pago fue recibido correctamente y tu pedido quedó registrado. Ya estamos trabajando en él.';
+ var items = (g.items || []).map(function(t){ return '<div class="it"><span>' + esc(t) + '</span></div>'; }).join('');
+ if(items || g.total){
+  document.getElementById('g-items').innerHTML = items;
+  document.getElementById('g-total').textContent = g.total || '';
+  var meta = '';
+  if(g.paypal) meta += 'Pedido PayPal: <b>' + esc(g.paypal) + '</b>';
+  if(g.extra) meta += (meta ? '<br>' : '') + esc(g.extra);
+  document.getElementById('g-meta').innerHTML = meta;
+  document.getElementById('g-sum').style.display = 'block';
+ }
+ if(g.wa){
+  var wa = document.getElementById('g-wa');
+  wa.href = g.wa;
+  wa.textContent = 'Ver mi pedido por WhatsApp';
+  wa.style.display = 'block';
+ }
+ var back = document.getElementById('g-back');
+}
+</script>
+</body>
+</html>

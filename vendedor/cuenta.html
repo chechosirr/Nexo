@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi cuenta — Nexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
+body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
+.logo em{font-style:normal;color:var(--acc)}
+.back{color:var(--mut);text-decoration:none;font-size:14px}
+main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:40px 18px}
+.box{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 26px}
+.box h1{font-size:26px;font-weight:900;margin-bottom:6px}
+.box h1 .hl{color:var(--acc)}
+.box>p{color:var(--mut);font-size:14px;margin-bottom:22px}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:22px}
+.tabs button{flex:1;background:none;border:0;color:var(--mut);font-family:inherit;font-weight:800;font-size:14px;padding:11px;border-radius:9px;cursor:pointer}
+.tabs button.on{background:var(--acc);color:#f2f4f8}
+label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
+input,textarea{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:13px 14px;outline:none}
+input::placeholder,textarea::placeholder{color:#7d8590}
+input:focus,textarea:focus{border-color:var(--acc)}
+textarea{resize:vertical;min-height:80px}
+.btn{width:100%;margin-top:20px;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer}
+.btn:disabled{opacity:.5}
+.err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.okmsg{display:none;background:rgba(150,185,225,.1);border:1px solid var(--acc);color:var(--acc);font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
+.hidden{display:none!important}
+.hint{font-size:12px;color:var(--mut);margin-top:10px;line-height:1.5}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
+
+/* ===== plateado metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+
+.menu-wrap{position:relative;margin-left:auto}
+#menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:16px;min-width:200px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.16);z-index:50}
+.menu.open{display:block}
+.menu a{display:block;padding:14px 20px;text-decoration:none;font-size:15px;font-weight:700;border-bottom:1px solid var(--line);color:#111111}
+.menu a:last-child{border-bottom:0}
+.menu a:hover{background:rgba(0,0,0,.05)}
+body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
+.passwrap{position:relative}
+.passwrap input{padding-right:74px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
+.forgot{display:block;text-align:center;margin-top:14px;color:#5a6270;font-size:14px;font-weight:700;text-decoration:none}
+.forgot:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="../index.html">NE<em>XO</em></a>
+  <div class="menu-wrap">
+    <button id="menu-btn" aria-label="Menú">☰</button>
+    <nav class="menu" id="menu">
+      <a href="../index.html">Inicio</a>
+      <a href="../cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
+      <a href="../comprador/perfil.html?ver=carrito">Carrito</a>
+          <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+</nav>
+  </div>
+</header>
+<main>
+  <div class="box" id="auth-box">
+    <h1>Vende en <span class="hl">Nexo</span></h1>
+    <p>Crea tu cuenta para tener tu muro y subir tus productos. <b>Sin comisiones para ti</b>: el comprador paga una pequeña tasa de servicio por compra.</p>
+    <div class="tabs">
+      <button id="tab-in" class="on">Entrar</button>
+      <button id="tab-up">Crear cuenta</button>
+    </div>
+    <div id="form-in">
+      <label>Correo electrónico</label>
+      <input id="in-email" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+      <label>Contraseña</label>
+      <div class="passwrap"><input id="in-pass" type="password" placeholder="••••••••" autocomplete="current-password"><button type="button" class="eye" data-for="in-pass">Ver</button></div>
+      <button class="btn" id="btn-in">Entrar a mi panel</button>
+      <a href="#" class="forgot" id="link-forgot">¿Olvidaste tu contraseña?</a>
+    </div>
+    <div id="form-up" class="hidden">
+      <label>Nombre de la empresa *</label>
+      <input id="up-empresa" type="text" placeholder="Ej: Tech Zone">
+      <label>Número de WhatsApp *</label>
+      <input id="up-wa" type="tel" placeholder="Ej: 88888888" autocomplete="tel">
+      <label>Correo electrónico</label>
+      <input id="up-email" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="email">
+      <label>Contraseña (mínimo 6 caracteres)</label>
+      <div class="passwrap"><input id="up-pass" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="up-pass">Ver</button></div>
+      <label>Confirma tu contraseña</label>
+      <div class="passwrap"><input id="up-pass2" type="password" placeholder="••••••••" autocomplete="new-password"><button type="button" class="eye" data-for="up-pass2">Ver</button></div>
+      <button class="btn" id="btn-up">Crear mi cuenta</button>
+      <p class="hint">Al crear tu cuenta aceptas las reglas de Nexo: productos físicos reales, envío con rastreo y atención honesta al comprador.</p>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="okmsg" id="okmsg"></div>
+  </div>
+
+  <div class="box hidden" id="profile-box">
+    <h1>Tu <span class="hl">muro</span></h1>
+    <p>Completa los datos de tu negocio. Así te verán los compradores.</p>
+    <label>Nombre de tu negocio *</label>
+    <input id="p-nombre" placeholder="Ej: Tech Zone">
+    <label>Descripción de tu empresa</label>
+    <textarea id="p-desc" placeholder="Qué vendes, garantías, tiempos de envío…"></textarea>
+    <label>WhatsApp / número de contacto <small style="color:var(--mut)">(privado: solo lo ve el equipo de Nexo)</small></label>
+    <input id="p-wa" placeholder="Ej: 15704698339">
+    <label>Tu PayPal para recibir pagos * <small style="color:var(--mut)">(correo de tu cuenta PayPal)</small></label>
+    <input id="p-paypal" type="email" placeholder="Correo de PayPal">
+    <label>Foto de perfil (opcional)</label>
+    <input id="p-logo" type="file" accept="image/*">
+    <label>Foto de portada (opcional)</label>
+    <input id="p-cover" type="file" accept="image/*">
+    <button class="btn" id="btn-profile">Crear mi muro</button>
+    <div class="err" id="err2"></div>
+  </div>
+</main>
+<footer>© 2026 Nexo · Compra y vende seguro</footer>
+<script>
+var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
+var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+/* sesión persistente: renueva el token automáticamente */
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!s || !s.access_token || !s.refresh_token) return;
+    var exp = 0;
+    if(s.expires_at) exp = s.expires_at * 1000;
+    else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+    if(!exp || Date.now() < exp - 120000) return;
+    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    }).then(function(r){ return r.json(); }).then(function(ns){
+      if(ns && ns.access_token){ localStorage.setItem('dominus_session', JSON.stringify(ns)); location.reload(); }
+      else localStorage.removeItem('dominus_session');
+    }).catch(function(){});
+  }catch(e){}
+})();
+
+function headers(token, prefer){
+  var h = { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' };
+  if(token) h['Authorization'] = 'Bearer ' + token;
+  if(prefer) h['Prefer'] = 'return=representation';
+  return h;
+}
+function showErr(id, msg){ var e = document.getElementById(id); e.textContent = msg; e.style.display = 'block'; }
+function hideErr(id){ document.getElementById(id).style.display = 'none'; }
+function showOk(msg){ var e = document.getElementById('okmsg'); e.textContent = msg; e.style.display = 'block'; }
+function saveSession(s){ localStorage.setItem('dominus_session', JSON.stringify(s)); }
+function getSession(){ try { return JSON.parse(localStorage.getItem('dominus_session')); } catch(e){ return null; } }
+
+var tabIn = document.getElementById('tab-in'), tabUp = document.getElementById('tab-up');
+tabIn.onclick = function(){ tabIn.classList.add('on'); tabUp.classList.remove('on'); document.getElementById('form-in').classList.remove('hidden'); document.getElementById('form-up').classList.add('hidden'); hideErr('err'); };
+tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); document.getElementById('form-up').classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr('err'); };
+
+
+function slugifyNom(t){
+  return (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'empresa';
+}
+function ensureSellerVend(session, empresa, wa){
+  if(!empresa) return Promise.resolve();
+  return fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + session.user.id + '&select=id', { headers: headers(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows.length) return;
+      var base = slugifyNom(empresa);
+      var intento = function(slug){
+        return fetch(SUPABASE_URL + '/rest/v1/sellers', {
+          method: 'POST', headers: headers(session.access_token),
+          body: JSON.stringify({ user_id: session.user.id, slug: slug, nombre: empresa, verificado: false, whatsapp: wa || null })
+        }).then(function(r){
+          if(r.ok) return;
+          if(r.status === 409) return intento(base + '-' + Math.floor(100 + Math.random() * 900));
+          return;
+        }).catch(function(){});
+      };
+      return intento(base);
+    }).catch(function(){});
+}
+function entrarVendedor(session, empresa, wa){
+  ensureSellerVend(session, empresa, wa).then(function(){ afterAuth(session); });
+}
+function afterAuth(session){
+  saveSession(session);
+  fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + session.user.id + '&select=es_admin', { headers: headers(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(pr){
+      if(pr && pr[0] && pr[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '../admin.html'; return; }
+      afterAuthSeller(session);
+    }).catch(function(){ afterAuthSeller(session); });
+}
+function afterAuthSeller(session){
+  fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + session.user.id + '&select=*&limit=1', { headers: headers(session.access_token) })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows.length){
+        var s = rows[0];
+        window._seller = s;
+        try{ localStorage.setItem('dominus_slug', s.slug); }catch(e){}
+        if(!s.paypal_email){
+          // Pedir solo la información del negocio (los datos personales ya se dieron al crear la cuenta)
+          document.getElementById('auth-box').classList.add('hidden');
+          document.getElementById('profile-box').classList.remove('hidden');
+          var pn = document.getElementById('p-nombre'); if(pn && !pn.value) pn.value = s.nombre || '';
+          var pw = document.getElementById('p-wa'); if(pw && !pw.value) pw.value = s.whatsapp || '';
+          var bp = document.getElementById('btn-profile'); if(bp) bp.textContent = 'Guardar mi muro';
+        } else { location.href = 'panel.html'; }
+      }
+      else {
+        window._seller = null;
+        document.getElementById('auth-box').classList.add('hidden');
+        document.getElementById('profile-box').classList.remove('hidden');
+      }
+    });
+}
+
+document.getElementById('btn-in').onclick = function(){
+  hideErr('err');
+  var email = document.getElementById('in-email').value.trim();
+  var pass = document.getElementById('in-pass').value;
+  if(!email || !pass){ showErr('err', 'Escribe tu correo y contraseña.'); return; }
+  fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if(!res.ok){ showErr('err', res.j.msg || res.j.error_description || 'No se pudo entrar. Revisa tus datos.'); return; }
+      afterAuth(res.j);
+    }).catch(function(){ showErr('err', 'Error de conexión. Intenta de nuevo.'); });
+};
+
+document.getElementById('btn-up').onclick = function(){
+  hideErr('err');
+  var email = document.getElementById('up-email').value.trim();
+  var pass = document.getElementById('up-pass').value;
+  var empresa = document.getElementById('up-empresa').value.trim();
+  if(!empresa){ showErr('err', 'Escribe el nombre de tu empresa (es obligatorio).'); return; }
+  var wa = document.getElementById('up-wa').value.trim();
+  if(!wa){ showErr('err', 'Escribe tu número de WhatsApp (es obligatorio).'); return; }
+  if(!email || pass.length < 6){ showErr('err', 'Escribe un correo válido y una contraseña de mínimo 6 caracteres.'); return; }
+  var pass2 = document.getElementById('up-pass2').value;
+  if(pass !== pass2){ showErr('err', 'Las contraseñas no coinciden. Escríbela dos veces igual.'); return; }
+  fetch(SUPABASE_URL + '/auth/v1/signup', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass })
+  }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if(!res.ok){ showErr('err', res.j.msg || 'No se pudo crear la cuenta.'); return; }
+      if(res.j.session){ entrarVendedor(res.j.session, empresa, wa); }
+      else {
+        // Sin sesión inmediata: entrar de una vez con la contraseña recién creada
+        fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+          method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass })
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+          .then(function(r2){
+            if(r2.ok && r2.j.access_token) entrarVendedor(r2.j, empresa, wa);
+            else showOk('Cuenta creada. Entra con tu correo y contraseña.');
+          }).catch(function(){ showOk('Cuenta creada. Entra con tu correo y contraseña.'); });
+      }
+    }).catch(function(){ showErr('err', 'Error de conexión. Intenta de nuevo.'); });
+};
+
+
+
+
+Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
+  b.onclick = function(){
+    var i = document.getElementById(b.getAttribute('data-for'));
+    if(!i) return;
+    var show = i.type === 'password';
+    i.type = show ? 'text' : 'password';
+    b.textContent = show ? 'Ocultar' : 'Ver';
+  };
+});
+document.getElementById('link-forgot').onclick = function(){
+  hideErr('err');
+  var email = document.getElementById('in-email').value.trim();
+  if(!email || email.indexOf('@') < 0){ showErr('err', 'Escribe tu correo arriba y vuelve a tocar "¿Olvidaste tu contraseña?".'); return false; }
+  fetch(SUPABASE_URL + '/auth/v1/recover', {
+    method: 'POST', headers: headers(),
+    body: JSON.stringify({ email: email, redirect_to: 'https://chechosirr.github.io/Nexo/restablecer.html' })
+  }).then(function(){
+    showOk('Si ese correo tiene cuenta, te enviamos un enlace para crear una contraseña nueva. Revisa tu correo (y el spam).');
+  }).catch(function(){ showErr('err', 'Error de conexión. Intenta de nuevo.'); });
+  return false;
+};
+
+function uploadSellerImage(token, slug, file, kind){
+  var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  var path = slug + '/' + kind + '-' + Date.now() + '.' + ext;
+  return fetch(SUPABASE_URL + '/storage/v1/object/product-images/' + path, {
+    method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + token, 'Content-Type': file.type || 'image/jpeg' },
+    body: file
+  }).then(function(r){ if(!r.ok) throw new Error('img'); return SUPABASE_URL + '/storage/v1/object/public/product-images/' + path; });
+}
+
+document.getElementById('btn-profile').onclick = function(){
+  hideErr('err2');
+  var session = getSession();
+  var editing = window._seller || null;
+  var nombre = document.getElementById('p-nombre').value.trim();
+  if(editing) nombre = nombre || editing.nombre;
+  var slug = editing ? editing.slug : nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  var ppEmail = document.getElementById('p-paypal').value.trim();
+  if(!nombre || !slug){ showErr('err2', 'El nombre de tu negocio es obligatorio.'); return; }
+  if(!ppEmail || ppEmail.indexOf('@') < 0){ showErr('err2', 'Tu PayPal para recibir pagos es obligatorio.'); return; }
+  var btn = this; btn.disabled = true; btn.textContent = 'Creando tu muro…';
+  var body = {
+    user_id: session.user.id, slug: slug, nombre: nombre, paypal_email: ppEmail,
+    descripcion: document.getElementById('p-desc').value.trim() || null,
+    whatsapp: document.getElementById('p-wa').value.trim() || null,
+    verificado: false
+  };
+  var sellerId = editing ? editing.id : null;
+  var paso1 = editing
+    ? fetch(SUPABASE_URL + '/rest/v1/sellers?id=eq.' + editing.id, { method: 'PATCH', headers: headers(session.access_token), body: JSON.stringify({ nombre: body.nombre, paypal_email: body.paypal_email, descripcion: body.descripcion, ubicacion: body.ubicacion, whatsapp: body.whatsapp }) }).then(function(r){ return { ok: r.ok, j: [editing] }; })
+    : fetch(SUPABASE_URL + '/rest/v1/sellers', { method: 'POST', headers: headers(session.access_token, true), body: JSON.stringify(body) }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); });
+  paso1
+    .then(function(res){
+      if(!res.ok){ showErr('err2', res.j.message && res.j.message.indexOf('duplicate') >= 0 ? 'Ese nombre corto ya está en uso. Elige otro.' : 'No se pudo crear tu muro. Intenta de nuevo.'); btn.disabled = false; btn.textContent = 'Crear mi muro'; throw new Error('stop'); }
+      sellerId = res.j[0] ? res.j[0].id : null;
+      var jobs = [];
+      var logoFile = document.getElementById('p-logo').files[0];
+      var coverFile = document.getElementById('p-cover').files[0];
+      if(logoFile) jobs.push(uploadSellerImage(session.access_token, slug, logoFile, 'profile'));
+      if(coverFile) jobs.push(uploadSellerImage(session.access_token, slug, coverFile, 'cover'));
+      return Promise.all(jobs).then(function(urls){
+        var i = 0, patch = {};
+        if(logoFile) patch.logo_url = urls[i++];
+        if(coverFile) patch.cover_url = urls[i++];
+        if(!Object.keys(patch).length || !sellerId) return null;
+        return fetch(SUPABASE_URL + '/rest/v1/sellers?id=eq.' + sellerId, { method: 'PATCH', headers: headers(session.access_token), body: JSON.stringify(patch) });
+      });
+    })
+    .then(function(){
+      try{ localStorage.setItem('dominus_tipo', 'vendedor'); localStorage.setItem('dominus_slug', slug); }catch(e){}
+      location.href = 'panel.html';
+    })
+    .catch(function(e){ if(e.message !== 'stop'){ showErr('err2', 'Error de conexión. Intenta de nuevo.'); btn.disabled = false; btn.textContent = 'Crear mi muro'; } });
+};
+
+// Si no hay sesión, ir a la cuenta unificada; si hay, mostrar el formulario del muro
+(function(){
+  var s = getSession();
+  if(!s || !s.access_token){ location.href = '../cuenta.html?tipo=vendedor'; return; }
+  fetch(SUPABASE_URL + '/auth/v1/user', { headers: headers(s.access_token) })
+    .then(function(r){ if(r.ok) afterAuth(s); else location.href = '../cuenta.html?tipo=vendedor'; })
+    .catch(function(){});
+})();
+
+document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
+document.addEventListener('click', function(){ var m = document.getElementById('menu'); if(m) m.classList.remove('open'); });
+function routeMiCuenta(tipo, slug){
+  if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+  else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
+  else { location.href = '/Nexo/comprador/perfil.html'; }
+}
+function goMiCuenta(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(!(s && s.access_token)) return true;
+
+    var uid = (s.user && s.user.id) || null;
+    if(!uid) return true;
+    var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(rows){
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('dominus_tipo'); localStorage.removeItem('dominus_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
+      try{ localStorage.setItem('dominus_tipo', t); }catch(e){}
+      if(t === 'vendedor'){
+        fetch(SUPABASE_URL + '/rest/v1/sellers?user_id=eq.' + uid + '&select=slug', { headers: H })
+        .then(function(r){ return r.json(); })
+        .then(function(r2){
+          var sl = (r2 && r2[0] && r2[0].slug) || null;
+          if(sl){ try{ localStorage.setItem('dominus_slug', sl); }catch(e){} }
+          routeMiCuenta(t, sl);
+        }).catch(function(){ routeMiCuenta(t, null); });
+      } else {
+        routeMiCuenta(t, null);
+      }
+    }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+    return false;
+  }catch(e){ return true; }
+}
+function doLogout(){
+  try{
+    localStorage.removeItem('dominus_session');
+    localStorage.removeItem('dominus_tipo');
+    localStorage.removeItem('dominus_slug');
+  }catch(e){}
+  location.href = '/Nexo/index.html';
+  return false;
+}
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('dominus_session') || 'null');
+    if(s && s.access_token){
+      var b = document.getElementById('menu-logout');
+      if(b) b.style.display = 'block';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
