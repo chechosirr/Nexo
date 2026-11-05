@@ -108,7 +108,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 
 <style>
 /* ===== Apertura NEXO (pedido de Sergio 2026-11-05): NEXO en el centro 3 s con su slogan, luego SE DESINTEGRA en partículas que se esparcen por toda la pantalla y revela la tienda ===== */
-#nexo-splash{position:fixed;inset:0;z-index:200;background:#142c47;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:14px}
+#nexo-splash{position:fixed;inset:0;z-index:1000;background:#142c47;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:14px}
 #nexo-splash .nexo-splash-name{font-family:Archivo,'Source Sans 3',sans-serif;font-weight:900;font-size:clamp(44px,13vw,96px);letter-spacing:6px;color:#f5f5f7;white-space:nowrap;transition:opacity .25s ease}
 #nexo-splash .nexo-splash-tag{font-family:'Source Sans 3',Archivo,sans-serif;font-weight:600;font-size:clamp(15px,4.2vw,22px);letter-spacing:.05em;color:#b9cfe6;white-space:nowrap;opacity:0;animation:nexoTagIn .9s ease .7s both;transition:opacity .35s ease}
 #nexo-splash .nexo-splash-tag.tag-out{animation:none;opacity:0}
@@ -116,9 +116,10 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 #nexo-splash.nexo-fading{opacity:0;transition:opacity .3s ease}
 @media (prefers-reduced-motion:reduce){#nexo-splash .nexo-splash-tag{animation:none;opacity:1}}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style id="nx-header">
 header.top{justify-content:space-between}
-header.top .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Archivo',sans-serif;font-weight:900;font-size:27px;letter-spacing:5px;background:linear-gradient(115deg,#f2f8ff 0%,#9db9da 30%,#e9f3fe 52%,#557da6 78%,#c3d9ef 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 8px rgba(110,160,220,.35));white-space:nowrap;text-decoration:none}
+header.top .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Caveat Brush',cursive;font-weight:400;font-size:42px;line-height:1;letter-spacing:0;background:none;color:#ffffff!important;-webkit-text-fill-color:#ffffff;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));white-space:nowrap;text-decoration:none}
 header.top .logo em,header.top .logo span{background:none!important;color:transparent!important;-webkit-text-fill-color:transparent;font-style:normal}
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
@@ -128,15 +129,17 @@ header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transf
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
 header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
+#btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
+#btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
 </style>
-<style>.nexo-splash-name{background:linear-gradient(115deg,#f2f8ff 0%,#9db9da 30%,#e9f3fe 52%,#557da6 78%,#c3d9ef 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent}</style>
+<style>.nexo-splash-name{font-family:'Caveat Brush',cursive!important;background:none!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:0!important;font-weight:400!important;font-size:clamp(72px,21vw,150px)!important}</style>
 </head>
 <body>
 <script>
 /* Apertura NEXO: nombre en el centro 3 s con el slogan; después se DESINTEGRA en partículas azul metálico que se esparcen por toda la pantalla y revela la tienda. Tocar la pantalla salta la espera. Nunca atrapa al usuario: a los 8 s se quita igual. */
 (function(){
   var splash=document.createElement('div'); splash.id='nexo-splash';
-  var name=document.createElement('div'); name.className='nexo-splash-name'; name.textContent='NEXO';
+  var name=document.createElement('div'); name.className='nexo-splash-name'; name.textContent='Nexo';
   var tag=document.createElement('div'); tag.className='nexo-splash-tag'; tag.textContent='Compra y vende lo que quieras.';
   splash.appendChild(name); splash.appendChild(tag); document.body.appendChild(splash);
   var done=false, started=false, cvRef=null;
@@ -161,7 +164,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
     octx.textAlign='center'; octx.textBaseline='middle';
     try{ octx.letterSpacing=cs.letterSpacing; }catch(e){}
     octx.fillStyle='#ffffff';
-    octx.fillText('NEXO', off.width/2, off.height/2+2);
+    octx.fillText('Nexo', off.width/2, off.height/2+2);
     var data=null;
     try{ data=octx.getImageData(0,0,off.width,off.height).data; }catch(e){}
     if(!data){ cv.remove(); finish(); return; }
@@ -220,7 +223,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 
 <header class="top">
  <button class="nx-back" aria-label="Volver" onclick="nxBack()">&#8592;</button>
- <a class="logo" href="index.html">NE<em>XO</em></a>
+ <a class="logo" href="index.html">Nexo</a>
  <div class="menu-wrap">
  <button id="menu-btn" aria-label="Menú">☰</button>
  <nav class="menu" id="menu">
