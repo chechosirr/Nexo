@@ -237,8 +237,8 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 </main>
 
 <script>
-var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
-var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+var SUPABASE_URL = "https://ywtmzkzcxnntvxvjcger.supabase.co";
+var SUPABASE_ANON = "sb_publishable_hm3dr-gmYE1loU-yXiZkow_uompYxYl";
 /* sesión persistente: renueva el token automáticamente (igual que el resto del sitio) */
 (function(){
  try{
@@ -870,9 +870,8 @@ wireEmail(function(){ return TOK; }, function(){ return (S && S.user && S.user.e
 /* Puerta de acceso: cuentas con es_admin y también cuentas de comprador (pedido de Sergio 4-nov: «que el panel del administrador se pueda iniciar como cuenta de comprador también») */
 (function(){
  if(!TOK || !UID){ gateFail('No hay una sesión activa. Entra primero a tu cuenta.'); return; }
- api('profiles?user_id=eq.' + UID + '&select=tipo,es_admin,sitio,nombre', TOK).then(function(rows){
+ api('profiles?user_id=eq.' + UID + '&select=tipo,es_admin,nombre', TOK).then(function(rows){
  var p = rows && rows[0];
- if(p && p.sitio && p.sitio !== 'nexo' && !p.es_admin){ gateFail('Esta cuenta no puede entrar a este panel.'); return; }
  if(!p || !(p.es_admin || p.tipo === 'comprador')){ gateFail('Esta cuenta no puede entrar al panel (solo administrador o comprador).'); return; }
  document.getElementById('who').textContent = 'Sesión de ' + (p.nombre || (S.user && S.user.email) || 'administrador');
  document.getElementById('gate').classList.add('hidden');

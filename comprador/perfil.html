@@ -143,8 +143,8 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 <main id="main"><p class="empty">Cargando…</p></main>
 <footer>© 2026 Nexo · Compra y vende seguro</footer>
 <script>
-var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
-var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+var SUPABASE_URL = "https://ywtmzkzcxnntvxvjcger.supabase.co";
+var SUPABASE_ANON = "sb_publishable_hm3dr-gmYE1loU-yXiZkow_uompYxYl";
 var PAYPAL_CLIENT_ID = "BAAxRwrBgVX0LQCQlIC6qPmtzh-87LsKLBvcSlTcXQRqOEJNUhpzNhCdzw-l25nJnuIsJi_8d-uhBBx2mY";
 /* sesión persistente: renueva el token automáticamente */
 (function(){
@@ -258,6 +258,7 @@ function waOrderURL(){
     msg += '\n\nEntrega: ' + nm;
     if(dir.length) msg += '\n' + dir.join('\n');
     if(p.referencia) msg += '\nReferencia: ' + p.referencia;
+    if(p.plus_code) msg += '\n📍 Ubicación (código): ' + p.plus_code + '\nCómo llegar: https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.plus_code);
     if(p.telefono) msg += '\nContacto: ' + p.telefono;
   } else {
     msg += '\n\n(⚠️ Aún no tengo datos de entrega registrados en Nexo — los completo en "Direcciones")';
@@ -266,6 +267,71 @@ function waOrderURL(){
 }
 /* ===== Libreta de direcciones: varias direcciones, una principal ===== */
 var _dirs = null, _dirSelId = null, _profBase = null;
+/* ===== Pin de ubicación + Plus Code (pedido de Sergio): sin números de
+   casa, el cliente fija su casa con un pin, lo CONFIRMA y se genera el
+   código (Open Location Code) para que el delivery lo encuentre. ===== */
+var _pinSel = null, _dfMap = null, _dfMarker = null;
+function nxPlusCode(lat, lng){
+  var ALPH = '23456789CFGHJMPQRVWX';
+  lat = Math.min(90, Math.max(-90, lat)); lng = ((lng + 180) % 360 + 360) % 360 - 180;
+  if(lat === 90) lat = 90 - 0.000125;
+  var latV = lat + 90, lngV = lng + 180, code = '';
+  var res = [20, 1, 0.05, 0.0025, 0.000125];
+  for(var i = 0; i < 5; i++){
+    var dLat = Math.floor(latV / res[i]); latV -= dLat * res[i];
+    var dLng = Math.floor(lngV / res[i]); lngV -= dLng * res[i];
+    code += ALPH[dLat] + ALPH[dLng];
+    if(i === 3) code += '+';
+  }
+  return code;
+}
+var _leafletQ = null;
+function ensureLeaflet(cb){
+  if(window.L){ cb(); return; }
+  if(_leafletQ){ _leafletQ.push(cb); return; }
+  _leafletQ = [cb];
+  var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(css);
+  var sc = document.createElement('script'); sc.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  sc.onload = function(){ var q = _leafletQ; _leafletQ = null; if(q) q.forEach(function(f){ f(); }); };
+  sc.onerror = function(){ _leafletQ = null; var el = document.getElementById('df-pin-state'); if(el) el.textContent = 'No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.'; };
+  document.head.appendChild(sc);
+}
+function setPinTentative(lat, lng){
+  _pinSel = { lat: Math.round(lat * 1e6) / 1e6, lng: Math.round(lng * 1e6) / 1e6, code: nxPlusCode(lat, lng), confirmed: false };
+  updatePinUI();
+}
+function updatePinUI(){
+  var st = document.getElementById('df-pin-state'), btn = document.getElementById('df-confirm-pin'), clr = document.getElementById('df-clear-pin');
+  if(!st) return;
+  if(!_pinSel){
+    st.innerHTML = 'Sin ubicación fijada. Toca el mapa o arrastra el pin hasta tu casa.';
+    if(btn) btn.style.display = 'none'; if(clr) clr.style.display = 'none';
+    return;
+  }
+  if(_pinSel.confirmed){
+    st.innerHTML = '✓ <b style="color:var(--txt)">Ubicación confirmada</b> · Tu código: <b style="color:var(--txt)">' + _pinSel.code + '</b>';
+    if(btn) btn.style.display = 'none';
+  } else {
+    st.innerHTML = 'Código de este punto: <b style="color:var(--txt)">' + _pinSel.code + '</b> — si es tu casa, toca «Confirmar ubicación».';
+    if(btn) btn.style.display = '';
+  }
+  if(clr) clr.style.display = '';
+}
+function initPinMap(){
+  var mapEl = document.getElementById('df-map');
+  if(!mapEl || !window.L) return;
+  if(_dfMap){ _dfMap.remove(); _dfMap = null; }
+  var start = _pinSel ? [_pinSel.lat, _pinSel.lng] : [12.87, -85.21];
+  _dfMap = L.map('df-map').setView(start, _pinSel ? 16 : 8);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(_dfMap);
+  var icon = L.divIcon({ className: '', html: '<div style="font-size:30px;line-height:1">📍</div>', iconSize: [30, 30], iconAnchor: [15, 28] });
+  _dfMarker = L.marker(start, { draggable: true, icon: icon }).addTo(_dfMap);
+  if(!_pinSel) _dfMarker.setOpacity(0.45);
+  _dfMarker.on('dragend', function(){ var ll = _dfMarker.getLatLng(); setPinTentative(ll.lat, ll.lng); });
+  _dfMap.on('click', function(e){ _dfMarker.setLatLng(e.latlng); _dfMarker.setOpacity(1); setPinTentative(e.latlng.lat, e.latlng.lng); });
+  updatePinUI();
+  setTimeout(function(){ if(_dfMap) _dfMap.invalidateSize(); }, 250);
+}
 function currentDir(){
   if(!_dirs || !_dirs.length) return null;
   var s = null, pr = null;
@@ -276,7 +342,7 @@ function applyDirToProf(){
   var a = currentDir();
   if(a){
     var b = _profBase || {};
-    _prof = { nombre: a.nombre || b.nombre || null, direccion: a.direccion || null, ciudad: a.ciudad || null, departamento: a.departamento || null, pais: a.pais || null, telefono: a.telefono || b.telefono || null, referencia: a.referencia || null };
+    _prof = { nombre: a.nombre || b.nombre || null, direccion: a.direccion || null, ciudad: a.ciudad || null, departamento: a.departamento || null, pais: a.pais || null, telefono: a.telefono || b.telefono || null, referencia: a.referencia || null, plus_code: a.plus_code || null, lat: (a.lat != null ? a.lat : null), lng: (a.lng != null ? a.lng : null) };
   }
   var wb = document.getElementById('wa-order');
   if(wb) wb.href = waOrderURL();
@@ -363,6 +429,7 @@ function renderDirs(){
         + '<p style="font-size:13px;color:var(--mut);margin-top:4px">' + esc([[a.ciudad, a.departamento].filter(Boolean).join(', '), a.pais].filter(Boolean).join(' · ')) + '</p>'
         + (a.codigo_postal ? '<p style="font-size:13px;color:var(--mut)">ZIP: ' + esc(a.codigo_postal) + '</p>' : '')
         + (a.referencia ? '<p style="font-size:13px;color:var(--mut)">Referencia: ' + esc(a.referencia) + '</p>' : '')
+        + (a.plus_code ? '<p style="font-size:13px;color:var(--mut)">📍 Código de ubicación: <b style="color:var(--txt)">' + esc(a.plus_code) + '</b> · <a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.plus_code) + '" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">Cómo llegar</a></p>' : '')
         + (a.telefono ? '<p style="font-size:13px;color:var(--mut)">Tel: ' + esc(a.telefono) + '</p>' : '')
         + '<div class="dir-ops">'
         + (a.principal ? '' : '<button class="dir-op" data-prin="' + a.id + '">Hacer principal</button>')
@@ -393,6 +460,14 @@ function openDirForm(id){
     + '<select id="df-dep" style="width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"></select>'
     + '<div id="df-zip-wrap" style="display:none">' + dirFld('df-zip', 'Código postal (ZIP)', a.codigo_postal, 'Ej: 90210') + '</div>'
     + dirFld('df-ref', 'Referencia (cómo llegar)', a.referencia, 'Ej: Casa verde, portón negro')
+    + '<div style="margin-top:14px"><label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">Ubicación exacta (pin en el mapa)</label>'
+    + '<p style="font-size:13px;color:var(--mut);margin:0 0 8px">Aquí no hay números de casa: mueve el pin hasta tu casa y toca <b>Confirmar ubicación</b>. Se genera tu código y así el delivery te encuentra fácil.</p>'
+    + '<div id="df-map" style="height:260px;border-radius:12px;border:1px solid var(--line);overflow:hidden;background:#dfe7ef;position:relative;z-index:0"></div>'
+    + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">'
+    + '<button type="button" id="df-loc" class="btn" style="background:none;border:1px solid var(--line);padding:10px 14px;font-size:14px">📍 Usar mi ubicación actual</button>'
+    + '<button type="button" id="df-confirm-pin" class="btn" style="padding:10px 14px;font-size:14px;display:none">Confirmar ubicación</button>'
+    + '<button type="button" id="df-clear-pin" style="background:none;border:0;color:var(--err);font-size:13.5px;font-weight:700;cursor:pointer;display:none;padding:6px">Quitar pin</button></div>'
+    + '<p id="df-pin-state" style="font-size:13.5px;margin-top:8px;color:var(--mut)">Sin ubicación fijada.</p></div>'
     + '<label style="display:block;font-size:13px;color:var(--mut);margin:10px 0 4px">Teléfono de contacto</label>'
     + '<div style="display:flex;gap:8px"><select id="df-cod" aria-label="Código de país" style="width:104px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"><option value="+505">+505</option><option value="+1">+1</option></select>'
     + '<input id="df-tel" type="tel" value="' + esc(splitTel(a.telefono).num) + '" placeholder="Ej: 8888 8888" style="flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"></div>'
@@ -417,6 +492,24 @@ function openDirForm(id){
   var cod0 = document.getElementById('df-cod');
   if(cod0 && st0.cod) cod0.value = st0.cod;
   wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  _pinSel = (a.lat != null && a.lng != null) ? { lat: +a.lat, lng: +a.lng, code: a.plus_code || nxPlusCode(+a.lat, +a.lng), confirmed: true } : null;
+  var cfBtn = document.getElementById('df-confirm-pin');
+  if(cfBtn) cfBtn.onclick = function(){ if(_pinSel){ _pinSel.confirmed = true; updatePinUI(); } };
+  var clBtn = document.getElementById('df-clear-pin');
+  if(clBtn) clBtn.onclick = function(){ _pinSel = null; if(_dfMarker) _dfMarker.setOpacity(0.45); updatePinUI(); };
+  var locBtn = document.getElementById('df-loc');
+  if(locBtn) locBtn.onclick = function(){
+    if(!navigator.geolocation){ alert('Tu navegador no puede dar tu ubicación. Mueve el pin a mano.'); return; }
+    locBtn.textContent = 'Buscando tu ubicación…';
+    navigator.geolocation.getCurrentPosition(function(pos){
+      locBtn.textContent = '📍 Usar mi ubicación actual';
+      var la = pos.coords.latitude, lo = pos.coords.longitude;
+      if(_dfMap && _dfMarker){ _dfMap.setView([la, lo], 17); _dfMarker.setLatLng([la, lo]); _dfMarker.setOpacity(1); }
+      setPinTentative(la, lo);
+    }, function(){ locBtn.textContent = '📍 Usar mi ubicación actual'; alert('No se pudo obtener tu ubicación. Mueve el pin a mano hasta tu casa.'); }, { enableHighAccuracy: true, timeout: 12000 });
+  };
+  ensureLeaflet(function(){ initPinMap(); });
+  updatePinUI();
 }
 function saveDir(id){
   var zipEl = document.getElementById('df-zip');
@@ -432,6 +525,8 @@ function saveDir(id){
   if(body.pais === 'Estados Unidos' && zipVal) body.codigo_postal = zipVal;
   if(body.telefono && !telConCodigo(body.telefono)){ alert(TEL_MSG); return; }
   if(!body.direccion){ alert('Escribe la dirección.'); return; }
+  if(_pinSel && !_pinSel.confirmed){ alert('Toca «Confirmar ubicación» para fijar el pin, o quítalo con «Quitar pin» para guardar sin ubicación.'); return; }
+  if(_pinSel && _pinSel.confirmed){ body.lat = _pinSel.lat; body.lng = _pinSel.lng; body.plus_code = _pinSel.code; }
   var quierePrin = document.getElementById('df-prin').checked;
   var tok = session.access_token, uid = session.user.id;
   var sendDir = function(b){
@@ -441,9 +536,12 @@ function saveDir(id){
   };
   var req = sendDir(body).then(function(r){
     if(r.ok) return r;
-    if(body.codigo_postal){
-      var b2 = {}; for(var k in body){ if(k !== 'codigo_postal') b2[k] = body[k]; }
-      b2.referencia = ((b2.referencia || '') + ' · ZIP ' + body.codigo_postal).replace(/^ · /, '');
+    if(body.codigo_postal || body.plus_code){
+      var extra = [];
+      if(body.codigo_postal) extra.push('ZIP ' + body.codigo_postal);
+      if(body.plus_code) extra.push('📍 ' + body.plus_code);
+      var b2 = {}; for(var k in body){ if(['codigo_postal','lat','lng','plus_code'].indexOf(k) < 0) b2[k] = body[k]; }
+      b2.referencia = ((b2.referencia || '') + ' · ' + extra.join(' · ')).replace(/^ · /, '');
       return sendDir(b2);
     }
     return r;
@@ -569,6 +667,7 @@ function saveOrders(ppId, code){
   if(_prof){
     var partes = [_prof.direccion, _prof.ciudad, _prof.departamento, _prof.pais].filter(Boolean).join(', ');
     if(partes) ent = partes + (_prof.referencia ? ' · Ref: ' + _prof.referencia : '');
+    if(_prof.plus_code) ent = (ent ? ent + ' · ' : '') + '📍 ' + _prof.plus_code;
   }
   var rows = cart.map(function(it){
     return {
@@ -840,11 +939,10 @@ function goMiCuenta(){
     var uid = (s.user && s.user.id) || null;
     if(!uid) return true;
     var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
-    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin,sitio', { headers: H })
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
     .then(function(r){ return r.json(); })
     .then(function(rows){
       if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
- if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo' && !rows[0].es_admin){ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/cuenta.html'; return; }
       var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
       try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
       if(t === 'vendedor'){

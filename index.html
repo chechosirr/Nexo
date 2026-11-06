@@ -278,8 +278,8 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 </main>
 <footer>© 2026 Nexo · Compra y vende seguro</footer>
 <script>
-var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
-var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+var SUPABASE_URL = "https://ywtmzkzcxnntvxvjcger.supabase.co";
+var SUPABASE_ANON = "sb_publishable_hm3dr-gmYE1loU-yXiZkow_uompYxYl";
 /* sesión persistente: renueva el token automáticamente */
 (function(){
  try{
@@ -442,11 +442,10 @@ function goMiCuenta(){
  var uid = (s.user && s.user.id) || null;
  if(!uid) return true;
  var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
- fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin,sitio', { headers: H })
+ fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
  .then(function(r){ return r.json(); })
  .then(function(rows){
  if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
- if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo' && !rows[0].es_admin){ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/cuenta.html'; return; }
  var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
  try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
  if(t === 'vendedor'){

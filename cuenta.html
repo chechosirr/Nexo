@@ -166,8 +166,8 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 </main>
 <footer>© 2026 Nexo · Compra y vende seguro</footer>
 <script>
-var SUPABASE_URL = "https://mmmkwkjzfyijnffniykt.supabase.co";
-var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tbWt3a2p6Znlpam5mZm5peWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTIzNDUsImV4cCI6MjEwNzY2ODM0NX0.xa-0G0E1vbGZGUvfvWsAMS9vNdg17pR68ee-kU8aur4";
+var SUPABASE_URL = "https://ywtmzkzcxnntvxvjcger.supabase.co";
+var SUPABASE_ANON = "sb_publishable_hm3dr-gmYE1loU-yXiZkow_uompYxYl";
 function telConCodigo(v){
   var d = (v || '').replace(/[^\d+]/g, '');
   var n = d.replace(/\D/g, '').length;
@@ -267,9 +267,9 @@ function ensureSeller(s, empresa, ubic, wa){
 }
 function ensureProfile(s, name, extra){
   // busca perfil; si no existe lo crea con el tipo elegido
-  return api('profiles?user_id=eq.' + s.user.id + '&select=tipo,sitio', s.access_token).then(function(rows){
+  return api('profiles?user_id=eq.' + s.user.id + '&select=tipo', s.access_token).then(function(rows){
     if(rows && rows.length) return rows[0].tipo;
-    var body = { user_id: s.user.id, tipo: tipo, nombre: name || null, sitio: 'nexo' };
+    var body = { user_id: s.user.id, tipo: tipo, nombre: name || null };
     if(extra){ ['direccion','ciudad','departamento','pais','telefono','referencia','foto_referencia'].forEach(function(k){ if(extra[k]) body[k] = extra[k]; }); }
     return fetch(SUPABASE_URL + '/rest/v1/profiles', {
       method: 'POST', headers: headers(s.access_token),
@@ -302,9 +302,8 @@ document.getElementById('btn-in').onclick = function(){
   }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
     .then(function(res){
       if(!res.ok){ showErr(res.j.msg || 'No se pudo entrar. Revisa tus datos.'); return; }
-      api('profiles?user_id=eq.' + res.j.user.id + '&select=tipo,es_admin,sitio', res.j.access_token).then(function(rows){
+      api('profiles?user_id=eq.' + res.j.user.id + '&select=tipo,es_admin', res.j.access_token).then(function(rows){
         if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} saveSession(res.j); location.href = 'admin.html'; return; }
-        if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo'){ showErr('No se pudo entrar. Revisa tus datos.'); return; }
         var real = (rows && rows[0] && rows[0].tipo) || null;
         if(real && real !== tipo){
           var otro = real === 'vendedor' ? 'Vendedor' : 'Comprador';
@@ -425,11 +424,10 @@ function goMiCuenta(){
     var uid = (s.user && s.user.id) || null;
     if(!uid) return true;
     var H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + s.access_token };
-    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin,sitio', { headers: H })
+    fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
     .then(function(r){ return r.json(); })
     .then(function(rows){
       if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
- if(rows && rows[0] && rows[0].sitio && rows[0].sitio !== 'nexo' && !rows[0].es_admin){ try{ localStorage.removeItem('nexo_session'); localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/cuenta.html'; return; }
       var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
       try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
       if(t === 'vendedor'){
