@@ -11,13 +11,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
 a{color:inherit}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
 .logo em{font-style:normal;color:var(--acc)}
-.search{flex:1;display:flex;background:var(--card);border:2px solid #d0d4da;border-radius:14px;padding:10px 16px;gap:8px;align-items:center}
+.search{flex:1;display:flex;background:var(--card);border:2px solid #b7cadd;border-radius:14px;padding:10px 16px;gap:8px;align-items:center}
 .search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#111111!important;font-size:15px;font-family:inherit}
 .search input::placeholder{color:#9aa0a8!important}
 .back{color:var(--mut);text-decoration:none;font-size:14px;flex:0 0 auto}
@@ -37,7 +37,7 @@ main{max-width:1180px;margin:0 auto;padding:22px 18px 70px}
 .card-seller{font-size:12px;color:var(--mut)}
 .card-seller a{color:var(--mut);text-decoration:none}
 .card-price{font-size:19px;font-weight:900;margin-top:auto;padding-top:8px}
-.buy{margin-top:8px;display:block;text-align:center;background:var(--acc);color:#0a0c10;font-weight:800;font-size:13px;padding:11px;border-radius:12px;text-decoration:none}
+.buy{margin-top:8px;display:block;text-align:center;background:var(--acc);color:#ffffff;font-weight:800;font-size:13px;padding:11px;border-radius:12px;text-decoration:none}
 .add-cart{margin-top:8px;width:100%;background:none;border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
 .grid .card{flex:none}
@@ -63,10 +63,10 @@ header.top{flex-wrap:wrap;gap:10px}
 .chip{padding:9px 16px;font-size:13px}
 }
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .card-price{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#111111!important}
 
 .menu-wrap{position:relative;margin-left:auto}
@@ -90,7 +90,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 </style>
 
 <style>
-.qbtn{border:1.5px solid #e2e5ea;background:linear-gradient(180deg,#e6f0fa,#b3cbe8);color:#141416;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem;white-space:nowrap}
+.qbtn{border:1.5px solid #c7d6ea;background:linear-gradient(180deg,#24567f,#1d4568);color:#141416;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem;white-space:nowrap}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style id="nx-header">
@@ -122,7 +122,7 @@ header.top .logo{top:29px}
  <button class="nx-back" aria-label="Volver" onclick="nxBack()">&#8592;</button>
   <a class="logo" href="../index.html">Nexo</a>
   <label class="search"><input id="q" type="search" placeholder="Buscar productos o empresas…"></label>
-  <button class="qbtn" id="q-btn" type="button">Buscar</button>
+  <button class="qbtn" id="q-btn" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
   <div class="menu-wrap">
     <button id="menu-btn" aria-label="Menú">☰</button>
     <nav class="menu" id="menu">
@@ -216,7 +216,7 @@ function render(){
     if(sellList.length){
       html += '<div class="sec"><div class="sec-head"><h2>Empresas <span class="hl">(' + sellList.length + ')</span></h2></div>'
         + '<div class="grid">' + sellList.map(function(s){
-            return '<a href="../vendedor/?s=' + esc(s.slug) + '" style="display:flex;align-items:center;gap:12px;background:#ffffff;border:1px solid #e2e5ea;border-radius:14px;padding:14px;text-decoration:none">'
+            return '<a href="../vendedor/?s=' + esc(s.slug) + '" style="display:flex;align-items:center;gap:12px;background:#ffffff;border:1px solid #c7d6ea;border-radius:14px;padding:14px;text-decoration:none">'
               + '<div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#2e5f8a,#5f89b5);display:grid;place-content:center;color:#fff;font-size:20px;font-weight:800;flex:0 0 auto">' + esc(s.nombre.charAt(0).toUpperCase()) + '</div>'
               + '<div style="color:#111111;font-weight:700;font-size:15px">' + esc(s.nombre) + '</div></a>';
           }).join('') + '</div></div>';

@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
@@ -26,11 +26,11 @@ main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:4
 .tabs button{flex:1;background:none;border:0;color:var(--mut);font-family:inherit;font-weight:800;font-size:14px;padding:11px;border-radius:9px;cursor:pointer}
 .tabs button.on{background:var(--acc);color:#f2f4f8}
 label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
-input,textarea{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:13px 14px;outline:none}
-input::placeholder,textarea::placeholder{color:#7d8590}
+input,textarea{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:13px 14px;outline:none}
+input::placeholder,textarea::placeholder{color:#7189a3}
 input:focus,textarea:focus{border-color:var(--acc)}
 textarea{resize:vertical;min-height:80px}
-.btn{width:100%;margin-top:20px;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer}
+.btn{width:100%;margin-top:20px;background:var(--acc);color:#ffffff;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer}
 .btn:disabled{opacity:.5}
 .err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
 .okmsg{display:none;background:rgba(150,185,225,.1);border:1px solid var(--acc);color:var(--acc);font-size:13px;border-radius:12px;padding:11px 14px;margin-top:16px}
@@ -38,10 +38,10 @@ textarea{resize:vertical;min-height:80px}
 .hint{font-size:12px;color:var(--mut);margin-top:10px;line-height:1.5}
 footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 
 .menu-wrap{position:relative;margin-left:auto}
 #menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
@@ -54,7 +54,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 .passwrap{position:relative}
 .passwrap input{padding-right:74px}
 .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
-.forgot{display:block;text-align:center;margin-top:14px;color:#5a6270;font-size:14px;font-weight:700;text-decoration:none}
+.forgot{display:block;text-align:center;margin-top:14px;color:#47617e;font-size:14px;font-weight:700;text-decoration:none}
 .forgot:hover{text-decoration:underline}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">

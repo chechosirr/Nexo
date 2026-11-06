@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79;--acc2:#3d7ab5;--err:#ff5d5d}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
@@ -32,12 +32,12 @@ main{max-width:1000px;margin:0 auto;padding:26px 18px 70px}
 .sec{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:22px}
 .sec h2{font-size:19px;margin-bottom:16px}
 label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
-input,textarea,select{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:12px 14px;outline:none}
-input::placeholder,textarea::placeholder{color:#7d8590}
+input,textarea,select{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;color:#111111;font-family:inherit;font-size:15px;padding:12px 14px;outline:none}
+input::placeholder,textarea::placeholder{color:#7189a3}
 input:focus,textarea:focus{border-color:var(--acc)}
 textarea{resize:vertical;min-height:70px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn{background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px 22px;cursor:pointer;margin-top:18px}
+.btn{background:var(--acc);color:#ffffff;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px 22px;cursor:pointer;margin-top:18px}
 .btn:disabled{opacity:.5}
 .btn-ghost{background:none;border:1px solid var(--line);color:var(--txt);border-radius:12px;font-family:inherit;font-size:13px;padding:9px 16px;cursor:pointer}
 .preview-img{max-width:120px;border-radius:12px;margin-top:10px;display:none}
@@ -57,10 +57,10 @@ textarea{resize:vertical;min-height:70px}
 .empty{color:var(--mut);font-size:14px;text-align:center;padding:20px}
 @media(max-width:640px){.cards{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:1fr}.prod .ops{flex-direction:column}}
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 
 .menu-wrap{position:relative;margin-left:auto}
 #menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
@@ -105,7 +105,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
           <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
 </nav>
   </div>
-    <a id="btn-volver" href="../cuenta.html" style="background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;padding:9px 18px;font-family:inherit">← Volver</a>
+    <a id="btn-volver" href="../cuenta.html" onclick="return goMiCuenta()" style="background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;padding:9px 18px;font-family:inherit">← Volver</a>
   </div>
 </header>
 <main id="main"><p class="empty">Cargando tu panel…</p></main>
@@ -150,7 +150,7 @@ function renderAjustes(){
   if(volver) volver.href = 'index.html?s=' + encodeURIComponent(seller.slug);
   document.getElementById('main').innerHTML =
     '<div class="sec"><h2 style="color:#111111;font-size:24px;margin:0 0 4px">Ajustes de cuenta</h2>'
-    + '<p style="font-size:13px;color:#6a6a72;margin:0 0 8px">Actualiza tu correo electrónico y tu contraseña.</p>'
+    + '<p style="font-size:13px;color:#5b7186;margin:0 0 8px">Actualiza tu correo electrónico y tu contraseña.</p>'
     + '<label>Correo electrónico</label><input id="ce-mail" type="email" autocomplete="email">'
     + '<p id="ce-msg" style="font-size:13px;margin-top:10px"></p>'
     + '<button class="btn" id="ce-btn" style="width:100%">Guardar correo</button>'

@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--acc2:#3d7ab5}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79;--acc2:#3d7ab5}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
@@ -23,7 +23,7 @@ header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:
 
 .wrap{max-width:1000px;margin:0 auto;padding:0 18px}
 .profile{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:0;padding-top:22px;z-index:2}
-.avatar{flex:0 0 176px;width:176px;height:176px;border-radius:50%;overflow:hidden;border:5px solid var(--bg);background:linear-gradient(135deg,var(--acc2),var(--acc));display:grid;place-content:center;font-weight:900;font-size:64px;color:#0a0c10;z-index:2;box-shadow:0 10px 34px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08)}
+.avatar{flex:0 0 176px;width:176px;height:176px;border-radius:50%;overflow:hidden;border:5px solid var(--bg);background:linear-gradient(135deg,var(--acc2),var(--acc));display:grid;place-content:center;font-weight:900;font-size:64px;color:#ffffff;z-index:2;box-shadow:0 10px 34px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08)}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .p-head{flex:1;min-width:220px;padding-bottom:6px}
 .p-head{padding-bottom:6px}.p-head h1{font-size:clamp(28px,6vw,40px);font-weight:900;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px}
@@ -47,14 +47,14 @@ main{max-width:1000px;margin:0 auto;padding:26px 18px 70px}
 @media(min-width:760px){.hgrid{grid-auto-columns:calc((100% - 56px)/5)}}
 .catbar::-webkit-scrollbar{display:none}
 .catchip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:#111111;border-radius:999px;padding:9px 18px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
-.catchip.on{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;border-color:transparent}
+.catchip.on{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;border-color:transparent}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s}
 .card:hover{transform:translateY(-4px)}
 .card img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;padding:8px;box-sizing:border-box}
 .card-body{padding:10px;display:flex;flex-direction:column;gap:5px;flex:1}
 .card-title{font-size:14px;font-weight:700;line-height:1.35;color:#111111;min-height:2.7em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card-price{font-size:19px;font-weight:900;margin-top:auto;padding-top:8px}
-.buy{margin-top:8px;display:block;text-align:center;background:var(--acc);color:#0a0c10;font-weight:800;font-size:14px;padding:12px;border-radius:12px;text-decoration:none}
+.buy{margin-top:8px;display:block;text-align:center;background:var(--acc);color:#ffffff;font-weight:800;font-size:14px;padding:12px;border-radius:12px;text-decoration:none}
 .empty{text-align:center;color:var(--mut);padding:44px 10px;font-size:15px;grid-column:1/-1}
 footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:26px}
 @media(min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.cover{height:340px}}
@@ -75,8 +75,8 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .rev .rt{color:var(--mut);font-size:12px;margin-left:8px}
 .rev p{font-size:14px;color:#33383f;margin-top:6px;line-height:1.6}
 .rform label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
-.rform textarea{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:14px;padding:12px;min-height:90px;resize:vertical;outline:none}
-.rform textarea::placeholder{color:#7d8590}
+.rform textarea{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;color:#111111;font-family:inherit;font-size:14px;padding:12px;min-height:90px;resize:vertical;outline:none}
+.rform textarea::placeholder{color:#7189a3}
 .rform textarea:focus{border-color:var(--acc)}
 .starin{display:flex;gap:6px}
 .starin button{background:none;border:0;color:#3a4354;font-size:30px;cursor:pointer;font-family:inherit;padding:0}
@@ -102,10 +102,10 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .card .buy{padding:12px;font-size:14px}
 }
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .card-price{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#111111!important}
 .about h2 .hl,.reviews h2 .hl,.feat-sec h2 .hl{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#1f4e79!important}
 
@@ -118,13 +118,13 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .menu a:hover{background:rgba(0,0,0,.05)}
 
 /* ===== modo edición tipo Facebook ===== */
-#edit-toggle{position:fixed;bottom:20px;right:20px;z-index:200;background:linear-gradient(135deg,#e8f2fd,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc);color:#0a0c10;border:0;border-radius:999px;padding:14px 22px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.5);font-family:inherit}
+#edit-toggle{position:fixed;bottom:20px;right:20px;z-index:200;background:linear-gradient(135deg,#3d7ab5,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44);color:#ffffff;border:0;border-radius:999px;padding:14px 22px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.5);font-family:inherit}
 .ed-only{display:none!important}
 body.editing .ed-only{display:block!important}
 body.editing .ed-only-inline{display:inline-block!important}
 .ed-cover{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.72);color:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;z-index:3;white-space:nowrap}
 .avatar{position:relative}
-.ed-avatar{position:absolute;bottom:2px;right:2px;background:var(--acc);color:#0a0c10;border:0;border-radius:50%;width:38px;height:38px;font-size:17px;cursor:pointer;display:grid;place-content:center;z-index:3}
+.ed-avatar{position:absolute;bottom:2px;right:2px;background:var(--acc);color:#ffffff;border:0;border-radius:50%;width:38px;height:38px;font-size:17px;cursor:pointer;display:grid;place-content:center;z-index:3}
 body.editing .editable{cursor:pointer;border-radius:6px}
 body.editing .editable:hover{outline:2px dashed var(--acc);outline-offset:4px}
 .ed-hint{display:inline-block;background:rgba(150,185,225,.14);color:var(--acc);font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
@@ -132,7 +132,7 @@ body.editing .editable:hover{outline:2px dashed var(--acc);outline-offset:4px}
 .inline-form input,.inline-form textarea{background:#ffffff;border:1px solid var(--acc);border-radius:10px;color:#111111;padding:11px 14px;font-family:inherit;font-size:14px;width:100%}
 .inline-form .row{display:flex;gap:8px}
 .inline-form .row button{flex:1;padding:11px;border-radius:10px;border:0;font-weight:800;cursor:pointer;font-family:inherit;font-size:14px}
-.inline-save{background:var(--acc);color:#ffffff}#ep-save{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
+.inline-save{background:var(--acc);color:#ffffff}#ep-save{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
 .inline-cancel{background:var(--card);color:#111111;border:1px solid var(--line)!important}
 body.editing .buy,body.editing .add-cart{display:none!important}
 .more-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.62);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:20px;line-height:1;cursor:pointer;z-index:5;font-family:inherit}
@@ -151,10 +151,10 @@ body.editing .card{cursor:grab}
 .modal{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
 .modal h3{margin-bottom:6px;font-size:18px;color:#111111!important}
 .modal label{font-size:13px;color:#111111!important;display:block;margin:12px 0 6px}
-.modal input,.modal textarea,.modal select{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:10px;color:#111111;padding:12px;font-family:inherit;font-size:14px}
-.modal input::placeholder,.modal textarea::placeholder{color:#7d8590}
-.edit-panel input,.edit-panel textarea,.edit-panel select{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:10px;color:#111111;padding:11px 14px;font-family:inherit;font-size:14px}
-.edit-panel input::placeholder,.edit-panel textarea::placeholder{color:#7d8590}
+.modal input,.modal textarea,.modal select{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:10px;color:#111111;padding:12px;font-family:inherit;font-size:14px}
+.modal input::placeholder,.modal textarea::placeholder{color:#7189a3}
+.edit-panel input,.edit-panel textarea,.edit-panel select{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:10px;color:#111111;padding:11px 14px;font-family:inherit;font-size:14px}
+.edit-panel input::placeholder,.edit-panel textarea::placeholder{color:#7189a3}
 .modal .row{display:flex;gap:10px;margin-top:18px}
 .modal .row button{flex:1;padding:13px;border-radius:12px;border:0;font-weight:800;cursor:pointer;font-family:inherit;font-size:15px}
 .ed-wa{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;margin-top:12px;font-size:13px}
@@ -173,49 +173,49 @@ body.editing .card{cursor:grab}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 /* Dashboard del vendedor */
-.dash{background:#ffffff;border:1px solid #e2e5ea;border-radius:22px;padding:36px 28px;margin:26px auto;max-width:620px;box-shadow:0 12px 40px rgba(0,0,0,.10);text-align:center}
+.dash{background:#ffffff;border:1px solid #c7d6ea;border-radius:22px;padding:36px 28px;margin:26px auto;max-width:620px;box-shadow:0 12px 40px rgba(0,0,0,.10);text-align:center}
 .dash h2{font-family:'Source Sans 3',sans-serif;font-size:28px;letter-spacing:1.5px;margin-bottom:8px;color:#111111}
 .dash p{color:var(--mut);font-size:14px;margin-bottom:26px}
-.dash-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:#f7f7f9;border:1px solid #e2e5ea;border-radius:16px;padding:20px 22px;margin-bottom:14px;cursor:pointer;color:#111111;font-family:'Source Sans 3',sans-serif;font-size:20px;letter-spacing:.5px;transition:border-color .2s,transform .15s}
+.dash-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:#f7f7f9;border:1px solid #c7d6ea;border-radius:16px;padding:20px 22px;margin-bottom:14px;cursor:pointer;color:#111111;font-family:'Source Sans 3',sans-serif;font-size:20px;letter-spacing:.5px;transition:border-color .2s,transform .15s}
 .ord-ov{position:fixed;inset:0;z-index:400;background:#fff;overflow-y:auto;padding:26px 20px 30px;display:flex;flex-direction:column}
-.ord-x{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #d0d4da;background:#fff;font-size:19px;cursor:pointer;color:#111;font-family:inherit}
+.ord-x{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #b7cadd;background:#fff;font-size:19px;cursor:pointer;color:#111;font-family:inherit}
 .ord-tag{display:inline-block;align-self:flex-start;background:#1c7c43;color:#fff;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:5px 12px;margin-top:38px}
 .ord-h{font-size:27px;font-weight:900;margin:12px 0 4px;color:#111}
-.ord-fecha{color:#6a6a72;font-size:14px;margin:0 0 18px}
-.ord-items{border:1px solid #e2e5ea;border-radius:14px;padding:6px 14px}
-.ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef0f3;font-size:15px;color:#111}
+.ord-fecha{color:#5b7186;font-size:14px;margin:0 0 18px}
+.ord-items{border:1px solid #c7d6ea;border-radius:14px;padding:6px 14px}
+.ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #e8eef7;font-size:15px;color:#111}
 .ord-item:last-child{border-bottom:0}
-.ord-item small{color:#6a6a72}
+.ord-item small{color:#5b7186}
 .ord-total{display:flex;justify-content:space-between;font-size:19px;margin:16px 2px;color:#111}
-.ord-buyer{background:#f7f8fa;border:1px solid #e2e5ea;border-radius:14px;padding:14px 16px;margin-top:6px;color:#111;font-size:15px}
+.ord-buyer{background:#f7f8fa;border:1px solid #c7d6ea;border-radius:14px;padding:14px 16px;margin-top:6px;color:#111;font-size:15px}
 .ord-buyer h3{font-size:15px;margin:0 0 8px}
 .ord-buyer p{margin:4px 0}
 .ord-note{color:#44484f;font-size:14px;margin:14px 2px 0}
-.ord-more{color:#6a6a72;font-size:13px;margin-top:8px}
-.ord-accept{margin-top:auto;width:100%;padding:18px;border:0;border-radius:14px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-family:inherit;font-size:19px;font-weight:900;cursor:pointer}
-.today-card{border:1px solid #e2e5ea;border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
+.ord-more{color:#5b7186;font-size:13px;margin-top:8px}
+.ord-accept{margin-top:auto;width:100%;padding:18px;border:0;border-radius:14px;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;font-family:inherit;font-size:19px;font-weight:900;cursor:pointer}
+.today-card{border:1px solid #c7d6ea;border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
 .today-card.pend{background:#eefaf1;border-color:#9fd4ae}
-.today-head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6a6a72;margin-bottom:8px}
+.today-head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#5b7186;margin-bottom:8px}
 .today-chip{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;background:#eceff3;color:#44484f}
 .today-card.pend .today-chip{background:#1c7c43;color:#fff}
 .today-item{display:flex;justify-content:space-between;gap:10px;font-size:15px;color:#111;padding:5px 0}
-.today-item small{color:#6a6a72}
-.today-total{display:flex;justify-content:space-between;font-size:17px;color:#111;border-top:1px solid #e2e5ea;margin-top:8px;padding-top:10px}
+.today-item small{color:#5b7186}
+.today-total{display:flex;justify-content:space-between;font-size:17px;color:#111;border-top:1px solid #c7d6ea;margin-top:8px;padding-top:10px}
 .today-buyer{font-size:13px;color:#44484f;margin:8px 0 0}
-.today-accept{margin-top:12px;width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer}
+.today-accept{margin-top:12px;width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer}
 .dash-btn:hover{border-color:var(--acc);transform:translateY(-1px)}
 .dash-btn span:last-child{color:var(--acc);font-size:22px}
-.dash-back{background:#ffffff;border:1px solid #d0d4da;color:var(--acc);font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:16px;padding:10px 20px;border-radius:12px;float:right}
+.dash-back{background:#ffffff;border:1px solid #b7cadd;color:var(--acc);font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:16px;padding:10px 20px;border-radius:12px;float:right}
 /* Panel de edicion formal */
-.edit-panel{background:#ffffff;border:1px solid #e2e5ea;border-radius:22px;padding:30px 28px;margin:22px auto 0;max-width:620px;box-shadow:0 12px 40px rgba(0,0,0,.10)}
+.edit-panel{background:#ffffff;border:1px solid #c7d6ea;border-radius:22px;padding:30px 28px;margin:22px auto 0;max-width:620px;box-shadow:0 12px 40px rgba(0,0,0,.10)}
 .edit-panel h3{font-family:'Source Sans 3',sans-serif;font-size:25px;text-align:center;margin:0 0 8px;letter-spacing:1.5px;color:#111111}
 .edit-panel .ep-sub{text-align:center;color:var(--mut);font-size:13px;margin-bottom:20px}
 .edit-row{display:flex;align-items:center;gap:18px;padding:14px 4px;border-bottom:1px solid rgba(0,0,0,.07)}
 .edit-row label{flex:0 0 38%;font-family:'Source Sans 3',sans-serif;font-size:18px;color:#33383f;text-align:right;letter-spacing:.3px}
-.edit-row input{flex:1;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111111;font-family:inherit;font-size:15px;min-width:0;transition:border-color .2s,box-shadow .2s}
+.edit-row input{flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111111;font-family:inherit;font-size:15px;min-width:0;transition:border-color .2s,box-shadow .2s}
 .edit-row input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(46,99,184,.18)}
-.edit-row input::placeholder{color:#7d8590}
-.edit-panel details{margin-top:14px;border:1px solid #e2e5ea;border-radius:14px;padding:6px 18px 14px;background:#f7f7f9}
+.edit-row input::placeholder{color:#7189a3}
+.edit-panel details{margin-top:14px;border:1px solid #c7d6ea;border-radius:14px;padding:6px 18px 14px;background:#f7f7f9}
 .edit-panel summary{font-family:'Source Sans 3',sans-serif;font-size:19px;cursor:pointer;padding:12px 0;list-style:none;text-align:center;letter-spacing:.8px;color:#111111}
 .edit-panel summary::-webkit-details-marker{display:none}
 .edit-panel summary:before{content:'+  ';color:var(--acc);font-weight:700}
@@ -296,7 +296,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
   <a class="logo" href="../index.html">Nexo</a>
   <div class="menu-wrap">
     <button id="menu-btn" aria-label="Menú">☰</button>
-    <button id="hdr-back" aria-label="Volver" style="display:none;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);border:0;color:#0a0c10;font-size:16px;font-weight:800;border-radius:12px;padding:8px 16px;cursor:pointer;font-family:inherit">‹ Volver</button>
+    <button id="hdr-back" aria-label="Volver" style="display:none;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);border:0;color:#ffffff;font-size:16px;font-weight:800;border-radius:12px;padding:8px 16px;cursor:pointer;font-family:inherit">‹ Volver</button>
     <nav class="menu" id="menu">
       <a href="../index.html">Inicio</a>
       <a href="../cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
@@ -415,7 +415,7 @@ Promise.all([
   var prodHTML = own ?
     '<div class="wrap"><div id="view-productos" style="display:none">'
     + '<div class="edit-panel"><h3>Inventario</h3><p class="ep-sub">Tus productos, como se ven en tu muro</p><p id="inv-counts" style="text-align:center;font-size:14px;color:#44484f;margin:0 0 14px"></p>'
-    + '<button class="inline-save" id="prod-add" style="width:100%;margin-bottom:16px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0">+ Agregar producto</button>'
+    + '<button class="inline-save" id="prod-add" style="width:100%;margin-bottom:16px;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0">+ Agregar producto</button>'
     + '<div id="prod-list"><p style="color:var(--mut);font-size:14px">Cargando\u2026</p></div>'
     + '</div></div></div>' : '';
   var catHTML = own ?
@@ -454,7 +454,7 @@ Promise.all([
   renderWallProducts(prods, own);
   if(isPreview){
     document.body.insertAdjacentHTML('afterbegin',
-      '<div style="position:sticky;top:0;z-index:100;background:#c6f52e;color:#0a0c10;text-align:center;font-weight:800;font-size:14px;padding:10px">Vista previa — así verán los clientes tu muro</div>');
+      '<div style="position:sticky;top:0;z-index:100;background:#c6f52e;color:#ffffff;text-align:center;font-weight:800;font-size:14px;padding:10px">Vista previa — así verán los clientes tu muro</div>');
   }
   loadReviews();
   setupEditMode();
@@ -485,11 +485,11 @@ function renderWallProducts(prods, own){
   grid.className = '';
   var lupa = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-2px;margin-right:6px"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
   grid.innerHTML = '<div class="catbar" id="catbar">'
-    + '<button class="catchip" id="wall-search-btn">' + lupa + 'Buscar</button>'
+    + '<button class="catchip" id="wall-search-btn" aria-label="Buscar" title="Buscar">' + lupa + '</button>'
     + '<button class="catchip on" data-cat="">Todos</button>'
     + cats.map(function(c){ return '<button class="catchip" data-cat="' + esc(c) + '">' + esc(c) + '</button>'; }).join('')
     + '</div>'
-    + '<div id="wall-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="wall-search" type="search" placeholder="Buscar en esta tienda..." style="flex:1;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="wall-search-go" class="catchip on" type="button">Buscar</button></div></div>'
+    + '<div id="wall-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="wall-search" type="search" placeholder="Buscar en esta tienda..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="wall-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
     + '<div class="showrow" id="showrow"></div>'
     + '<div class="grid hgrid" id="wall-grid"></div>';
   var wg = document.getElementById('wall-grid');
@@ -716,7 +716,7 @@ function loadCatalog(){
   // Buscador
   var searchHTML = '<div style="margin-bottom:14px">'
     + '<input id="cat-search" type="search" placeholder="Buscar en este negocio..." '
-    + 'style="width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px">'
+    + 'style="width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px">'
     + '</div><div id="cat-results"></div>';
   box.innerHTML = searchHTML;
   var results = document.getElementById('cat-results');
@@ -735,7 +735,7 @@ function loadCatalog(){
       return;
     }
     results.innerHTML = names.map(function(c, i){
-      return '<div style="margin-bottom:8px;border:1px solid #d0d4da;border-radius:14px;overflow:hidden">'
+      return '<div style="margin-bottom:8px;border:1px solid #b7cadd;border-radius:14px;overflow:hidden">'
         + '<button class="cat-h" data-i="' + i + '" style="width:100%;background:#ffffff;border:0;color:#111;padding:14px 16px;font-size:15px;font-weight:700;text-align:left;cursor:pointer;font-family:inherit">' + esc(c) + ' (' + cats[c].length + ') ▾</button>'
         + '<div class="cat-b" id="cb-' + i + '" style="display:none;padding:12px"><div class="grid">'
         + cats[c].map(function(p){ return prodCardHTML(p, false); }).join('')
@@ -781,28 +781,28 @@ function loadProdList(){
   prods.forEach(function(p){ var c = p.categoria || 'General'; if(cats.indexOf(c) < 0) cats.push(c); });
   var lupa = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-2px;margin-right:6px"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
   box.innerHTML = '<div class="catbar">'
-    + '<button class="catchip" id="inv-search-btn">' + lupa + 'Buscar</button>'
+    + '<button class="catchip" id="inv-search-btn" aria-label="Buscar" title="Buscar">' + lupa + '</button>'
     + '<button class="catchip on" data-cat="">Todos</button>'
     + cats.map(function(c){ return '<button class="catchip" data-cat="' + esc(c) + '">' + esc(c) + '</button>'; }).join('')
     + '</div>'
-    + '<div id="inv-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="inv-search" type="search" placeholder="Buscar en tu inventario..." style="flex:1;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="inv-search-go" class="catchip on" type="button">Buscar</button></div></div>'
+    + '<div id="inv-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="inv-search" type="search" placeholder="Buscar en tu inventario..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="inv-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
     + '<div id="inv-grid"></div>';
   var wg = box.querySelector('#inv-grid');
   var curCat = '', query = '';
   var menBtn = 'display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #1b3a56;color:#111111;padding:12px 14px;font-size:14px;cursor:pointer;font-family:inherit';
   function cardWrap(p){
     var n = (p.stock === null || p.stock === undefined) ? null : Number(p.stock);
-    var btn = 'background:#eef0f3;border:1px solid #d0d4da;color:#111;border-radius:9px;padding:9px 10px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;flex:0 0 auto';
+    var btn = 'background:#e8eef7;border:1px solid #b7cadd;color:#111;border-radius:9px;padding:9px 10px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;flex:0 0 auto';
     var menBtn = 'display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #1b3a56;color:#111111;padding:12px 14px;font-size:14px;cursor:pointer;font-family:inherit';
-    return '<div style="display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:10px 12px;margin-bottom:8px;position:relative">'
+    return '<div style="display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:10px 12px;margin-bottom:8px;position:relative">'
       + (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" style="width:52px;height:52px;object-fit:contain;border-radius:9px;flex:0 0 auto;background:#fff;padding:2px;box-sizing:border-box">' : '<div style="width:52px;height:52px;background:#1a1e28;border-radius:9px;flex:0 0 auto"></div>')
       + '<div style="flex:1;min-width:0"><div style="color:#111;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(p.titulo) + '</div>'
-      + '<div style="color:#6a6a72;font-size:12px">' + esc(p.categoria || 'General') + ' · $' + Number(p.precio).toFixed(2) + '</div>'
+      + '<div style="color:#5b7186;font-size:12px">' + esc(p.categoria || 'General') + ' · $' + Number(p.precio).toFixed(2) + '</div>'
       + '<div style="font-size:12px;color:#44484f">Disponibles: <b style="color:#111">' + (n === null ? '—' : n) + '</b>' + (n === 0 ? ' <b style="color:#ff8a8a">(Agotado)</b>' : '') + '</div></div>'
       + '<button data-sold="' + p.id + '" style="' + btn + '">Vender</button>'
       + '<button data-add="' + p.id + '" style="' + btn + '">Agregar</button>'
-      + '<button class="prod-more-btn" data-more="' + p.id + '" style="background:none;border:1px solid #d0d4da;color:#111;border-radius:9px;padding:8px 11px;font-size:15px;cursor:pointer;font-family:inherit;flex:0 0 auto">\u22ef</button>'
-      + '<div class="prod-menu" id="pm-' + p.id + '" style="display:none;position:absolute;top:calc(100% - 4px);right:8px;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;min-width:150px;overflow:hidden;z-index:20;box-shadow:0 12px 40px rgba(0,0,0,.55)">'
+      + '<button class="prod-more-btn" data-more="' + p.id + '" style="background:none;border:1px solid #b7cadd;color:#111;border-radius:9px;padding:8px 11px;font-size:15px;cursor:pointer;font-family:inherit;flex:0 0 auto">\u22ef</button>'
+      + '<div class="prod-menu" id="pm-' + p.id + '" style="display:none;position:absolute;top:calc(100% - 4px);right:8px;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;min-width:150px;overflow:hidden;z-index:20;box-shadow:0 12px 40px rgba(0,0,0,.55)">'
       + '<button data-pedit="' + p.id + '" style="' + menBtn + '">Editar</button>'
       + '<button data-pdel="' + p.id + '" style="display:block;width:100%;text-align:left;background:none;border:0;color:#ff8a8a;padding:12px 14px;font-size:14px;cursor:pointer;font-family:inherit">Eliminar</button>'
       + '</div></div>';
@@ -1003,7 +1003,7 @@ function productModal(pid, tok){
           opts = '<option value="' + esc(cur) + '" selected>' + esc(cur) + '</option>' + opts;
         }
         var hint = tipo ? '' : '<p style="color:#ff9a9a;font-size:13px;margin:6px 0 0">Selecciona primero el tipo de empresa en Información del negocio para ver sugerencias.</p>';
-        return '<label>Categoría *</label><select id="m-cat" style="width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px">'
+        return '<label>Categoría *</label><select id="m-cat" style="width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px">'
           + '<option value="">Seleccionar...</option>' + opts + '<option value="__custom">Personalizado</option></select>'
           + '<input id="m-catcustom" placeholder="Nombre de tu categoría" style="display:none;margin-top:8px">'
           + hint;
@@ -1024,19 +1024,19 @@ function productModal(pid, tok){
     var box = ov.querySelector('#m-tallas');
     var kind = sizeKind(SELLER.tipo_empresa, curCatVal());
     if(!kind){ box.innerHTML = ''; return; }
-    var chip = 'flex:0 0 auto;background:#ffffff;border:1px solid #d0d4da;color:#111;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer';
-    var chipOn = 'flex:0 0 auto;background:linear-gradient(135deg,#e8f2fd,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc);border:1px solid transparent;color:#0a0c10;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer';
-    var h = '<label style="margin-top:14px">Tallas disponibles <span style="color:#9aa4b5;font-size:12px">(toca las que tienes)</span></label>';
+    var chip = 'flex:0 0 auto;background:#ffffff;border:1px solid #b7cadd;color:#111;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer';
+    var chipOn = 'flex:0 0 auto;background:linear-gradient(135deg,#3d7ab5,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44);border:1px solid transparent;color:#ffffff;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer';
+    var h = '<label style="margin-top:14px">Tallas disponibles <span style="color:#7189a3;font-size:12px">(toca las que tienes)</span></label>';
     var list;
     if(kind === 'zapato'){
       h += '<div style="display:flex;gap:8px;margin-bottom:8px">' + ['Hombre','Mujer','Ni\u00f1o'].map(function(g){
         return '<button type="button" class="zg" data-g="' + g + '" style="' + (zapGen === g ? chipOn : chip) + '">' + g + '</button>';
       }).join('') + '</div>';
       list = TALLAS_ZAP[zapGen];
-      h += '<div style="font-size:12px;color:#9aa4b5;margin-bottom:6px">N\u00famero americano (US)</div>';
+      h += '<div style="font-size:12px;color:#7189a3;margin-bottom:6px">N\u00famero americano (US)</div>';
     } else {
       list = TALLAS_ROPA;
-      h += '<div style="font-size:12px;color:#9aa4b5;margin-bottom:6px">Letras y cintura de pantal\u00f3n (pulgadas)</div>';
+      h += '<div style="font-size:12px;color:#7189a3;margin-bottom:6px">Letras y cintura de pantal\u00f3n (pulgadas)</div>';
     }
     h += '<div style="display:flex;gap:8px;flex-wrap:wrap">' + list.map(function(t){
       return '<button type="button" class="tz" data-t="' + t + '" style="' + (selTallas.indexOf(t) >= 0 ? chipOn : chip) + '">' + t + '</button>';
@@ -1408,7 +1408,7 @@ function loadSales(tok){
       };
       box.innerHTML = '<p style="font-size:14px;color:var(--mut);margin-bottom:12px">Total vendido: <b style="color:var(--txt)">' + money(total) + '</b></p>'
         + groups.map(function(g){
-          return '<div style="background:#eef0f3;border:1px solid #d0d4da;border-radius:10px;padding:9px 13px;margin:16px 0 8px;font-size:14px;color:#111"><b>' + esc(g.label) + '</b> · ' + money(g.total) + ' del mes · ' + g.items.length + (g.items.length === 1 ? ' venta' : ' ventas') + '</div>'
+          return '<div style="background:#e8eef7;border:1px solid #b7cadd;border-radius:10px;padding:9px 13px;margin:16px 0 8px;font-size:14px;color:#111"><b>' + esc(g.label) + '</b> · ' + money(g.total) + ' del mes · ' + g.items.length + (g.items.length === 1 ? ' venta' : ' ventas') + '</div>'
             + g.items.map(rowHTML).join('');
         }).join('');
     })
@@ -1433,7 +1433,7 @@ function loadEditPanel(tok){
       box.innerHTML =
         row('ep-nombre', 'Nombre del negocio', SELLER.nombre, 'Ej: Mi Tienda')
         + '<div class="edit-row"><label>Tipo de empresa</label>'
-        + '<select id="ep-tipo" style="flex:1;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px;min-width:0">'
+        + '<select id="ep-tipo" style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px;min-width:0">'
         + '<option value="">Seleccionar...</option>' + tiposOpts + '</select></div>'
         + row('ep-wa', 'WhatsApp', SELLER.whatsapp, 'Ej: 50588888888', 'tel')
         + row('ep-pp', 'PayPal', SELLER.paypal_email, 'Correo de PayPal', 'email')

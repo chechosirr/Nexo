@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--err:#ff5d5d;--star:#f5b301}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79;--err:#ff5d5d;--star:#f5b301}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
@@ -34,9 +34,9 @@ main{max-width:900px;margin:0 auto;padding:22px 18px 70px}
 .pd-seller a{color:var(--acc);text-decoration:none;font-weight:700}
 .pd-price{font-size:34px;font-weight:900;color:#1f4e79!important;background:none!important;-webkit-background-clip:unset!important;background-clip:unset!important;margin:10px 0 16px}
 .tsz-row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
-.tsz{background:#ffffff;border:1px solid #d0d4da;color:#111111;border-radius:999px;padding:9px 16px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.tsz.on{background:linear-gradient(135deg,#e8f2fd,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc);color:#0a0c10;border-color:transparent}
-.btn{display:block;width:100%;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
+.tsz{background:#ffffff;border:1px solid #b7cadd;color:#111111;border-radius:999px;padding:9px 16px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.tsz.on{background:linear-gradient(135deg,#3d7ab5,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44);color:#ffffff;border-color:transparent}
+.btn{display:block;width:100%;background:var(--acc);color:#ffffff;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
 .btn-ghost{background:none;border:1px solid var(--line);color:var(--txt)}
 .sec{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:20px}
 .sec h2{font-size:19px;margin-bottom:12px}
@@ -52,8 +52,8 @@ main{max-width:900px;margin:0 auto;padding:22px 18px 70px}
 .avg{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .avg b{font-size:32px}
 .rform label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
-.rform textarea{width:100%;background:#ffffff;border:1px solid #d0d4da;border-radius:12px;color:#111111;font-family:inherit;font-size:14px;padding:12px;min-height:90px;resize:vertical;outline:none}
-.rform textarea::placeholder{color:#7d8590}
+.rform textarea{width:100%;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;color:#111111;font-family:inherit;font-size:14px;padding:12px;min-height:90px;resize:vertical;outline:none}
+.rform textarea::placeholder{color:#7189a3}
 .rform textarea:focus{border-color:var(--acc)}
 .starin{display:flex;gap:6px;font-size:30px}
 .starin button{background:none;border:0;color:#3a4354;font-size:30px;cursor:pointer;font-family:inherit;padding:0}
@@ -64,10 +64,10 @@ main{max-width:900px;margin:0 auto;padding:22px 18px 70px}
 .login-cta a{color:var(--acc);font-weight:700;text-decoration:none}
 footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 
 .menu-wrap{position:relative;margin-left:auto}
 #menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
@@ -386,9 +386,9 @@ document.addEventListener('click', function(e){
  <div style="background:#ffffff;border-radius:20px;max-width:340px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35)">
   <div style="font-size:34px">&#128274;</div>
   <h3 style="margin:10px 0 8px;font-family:'Archivo',sans-serif;font-size:20px;color:#12263f">Necesitas una cuenta para comprar</h3>
-  <p style="margin:0 0 18px;color:#5a6b80;font-size:15px;line-height:1.45">Crea tu cuenta de NEXO o inicia sesi&#243;n para completar tu compra.</p>
+  <p style="margin:0 0 18px;color:#47617e;font-size:15px;line-height:1.45">Crea tu cuenta de NEXO o inicia sesi&#243;n para completar tu compra.</p>
   <a href="../cuenta.html?tipo=comprador" style="display:block;background:linear-gradient(135deg,#2e6db0,#1f4e79);color:#ffffff;font-weight:800;text-decoration:none;border-radius:12px;padding:13px 16px">Crear cuenta / Iniciar sesi&#243;n</a>
-  <button onclick="document.getElementById('nx-aviso').style.display='none'" style="margin-top:10px;background:none;border:0;color:#5a6b80;font-weight:700;font-size:14.5px;cursor:pointer;padding:8px;font-family:inherit">Ahora no</button>
+  <button onclick="document.getElementById('nx-aviso').style.display='none'" style="margin-top:10px;background:none;border:0;color:#47617e;font-weight:700;font-size:14.5px;cursor:pointer;padding:8px;font-family:inherit">Ahora no</button>
  </div>
 </div>
 <script>function nxAvisoCompra(){var m=document.getElementById('nx-aviso');if(m){m.style.display='flex';}}</script>

@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#eef0f3;--card:#ffffff;--line:#e2e5ea;--txt:#111111;--mut:#5a6270;--acc:#1f4e79;--err:#ff5d5d}
+:root{--bg:#e8eef7;--card:#ffffff;--line:#c7d6ea;--txt:#111111;--mut:#47617e;--acc:#1f4e79;--err:#ff5d5d}
 body{background:#ffffff;background-attachment:fixed;color:#111111;font-family:'Source Sans 3',Archivo,Arial,sans-serif;min-height:100vh}
 header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 18px;background:#142c47;border-bottom:1px solid var(--line)}
 .logo{font-weight:900;font-size:22px;letter-spacing:3px;text-decoration:none;flex:0 0 auto;color:#111111!important}
@@ -42,6 +42,8 @@ main{max-width:760px;margin:0 auto;padding:26px 18px 70px}
 .acc-note{font-size:13px;color:var(--mut);margin-bottom:14px}
 .aj-group{background:#f7f8fa;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
 .aj-group:last-child{margin-bottom:0}
+.nx-codepill{display:inline-block;background:#e8eef7;border:1.5px solid #b7cadd;color:var(--acc);font-weight:800;font-size:13.5px;border-radius:999px;padding:3px 11px;cursor:pointer;font-family:inherit;vertical-align:middle}
+.nx-codepill:active{transform:scale(.96)}
 .dir-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;background:#f7f8fa}
 .dir-card.prin{border-color:#142c47}
 .dir-badge{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;background:#142c47;color:#fff;white-space:nowrap}
@@ -65,7 +67,7 @@ main{max-width:760px;margin:0 auto;padding:26px 18px 70px}
 .rm{background:none;border:0;color:var(--mut);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline}
 .total{display:flex;justify-content:space-between;align-items:center;margin:16px 0;font-size:18px;font-weight:900}
 .total span:last-child{color:var(--acc);font-size:24px}
-.btn{display:block;width:100%;background:var(--acc);color:#0a0c10;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
+.btn{display:block;width:100%;background:var(--acc);color:#ffffff;border:0;border-radius:12px;font-family:inherit;font-weight:800;font-size:15px;padding:14px;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
 .btn-wa{background:#22c55e}
 .empty{color:var(--mut);font-size:14px;text-align:center;padding:24px}
 .sell-box{text-align:center;font-size:14px;color:var(--mut)}
@@ -73,10 +75,10 @@ main{max-width:760px;margin:0 auto;padding:26px 18px 70px}
 .err{display:none;background:rgba(255,93,93,.12);border:1px solid var(--err);color:#b3261e;font-size:13px;border-radius:12px;padding:11px 14px;margin-top:14px}
 footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:12px;padding:22px}
 
-/* ===== plateado metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#e8f2fd 0%,#8fb0d6 35%,#e6f1fd 55%,#4a739e 80%,#b8d2ec 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%)!important;color:#0a0c10!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#e8f2fd,#8fb0d6 40%,#e6f1fd 60%,#4a739e)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* ===== azul metálico ===== */
+.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 
 .menu-wrap{position:relative;margin-left:auto}
 #menu-btn{background:none;border:1px solid var(--line);color:#f2f4f8;font-size:20px;border-radius:12px;padding:8px 13px;cursor:pointer;font-family:inherit}
@@ -300,6 +302,29 @@ function setPinTentative(lat, lng){
   _pinSel = { lat: Math.round(lat * 1e6) / 1e6, lng: Math.round(lng * 1e6) / 1e6, code: nxPlusCode(lat, lng), confirmed: false };
   updatePinUI();
 }
+function nxCopyFallback(text){
+  try{
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+  }catch(e){}
+}
+function nxCopyCode(el, code){
+  function done(){
+    if(!el || el.dataset.done) return;
+    el.dataset.done = '1';
+    var prev = el.innerHTML;
+    el.innerHTML = '✓ ¡Copiado!';
+    setTimeout(function(){ el.innerHTML = prev; delete el.dataset.done; }, 1600);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(done).catch(function(){ nxCopyFallback(code); done(); });
+  } else { nxCopyFallback(code); done(); }
+}
+function nxCodePill(code){
+  return '<button type="button" class="nx-codepill" title="Toca para copiar" onclick="nxCopyCode(this,\'' + code + '\')">' + code + ' ⧉</button>';
+}
 function updatePinUI(){
   var st = document.getElementById('df-pin-state'), btn = document.getElementById('df-confirm-pin'), clr = document.getElementById('df-clear-pin');
   if(!st) return;
@@ -309,10 +334,10 @@ function updatePinUI(){
     return;
   }
   if(_pinSel.confirmed){
-    st.innerHTML = '✓ <b style="color:var(--txt)">Ubicación confirmada</b> · Tu código: <b style="color:var(--txt)">' + _pinSel.code + '</b>';
+    st.innerHTML = '✓ <b style="color:var(--txt)">Ubicación confirmada</b> · Tu código: ' + nxCodePill(_pinSel.code);
     if(btn) btn.style.display = 'none';
   } else {
-    st.innerHTML = 'Código de este punto: <b style="color:var(--txt)">' + _pinSel.code + '</b> — si es tu casa, toca «Confirmar ubicación».';
+    st.innerHTML = 'Código de este punto: ' + nxCodePill(_pinSel.code) + ' — si es tu casa, toca «Confirmar ubicación».';
     if(btn) btn.style.display = '';
   }
   if(clr) clr.style.display = '';
@@ -429,7 +454,7 @@ function renderDirs(){
         + '<p style="font-size:13px;color:var(--mut);margin-top:4px">' + esc([[a.ciudad, a.departamento].filter(Boolean).join(', '), a.pais].filter(Boolean).join(' · ')) + '</p>'
         + (a.codigo_postal ? '<p style="font-size:13px;color:var(--mut)">ZIP: ' + esc(a.codigo_postal) + '</p>' : '')
         + (a.referencia ? '<p style="font-size:13px;color:var(--mut)">Referencia: ' + esc(a.referencia) + '</p>' : '')
-        + (a.plus_code ? '<p style="font-size:13px;color:var(--mut)">📍 Código de ubicación: <b style="color:var(--txt)">' + esc(a.plus_code) + '</b> · <a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.plus_code) + '" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">Cómo llegar</a></p>' : '')
+        + (a.plus_code ? '<p style="font-size:13px;color:var(--mut)">📍 Código de ubicación: ' + nxCodePill(esc(a.plus_code)) + ' · <a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.plus_code) + '" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">Cómo llegar</a></p>' : '')
         + (a.telefono ? '<p style="font-size:13px;color:var(--mut)">Tel: ' + esc(a.telefono) + '</p>' : '')
         + '<div class="dir-ops">'
         + (a.principal ? '' : '<button class="dir-op" data-prin="' + a.id + '">Hacer principal</button>')
@@ -798,7 +823,7 @@ function render(){
     + '<p style="font-size:14px;color:var(--mut);margin-bottom:12px">Si eliminas tu cuenta se borra tu perfil, tu carrito y tu cuenta de acceso. No se puede deshacer.</p>'
     + '<button class="btn" id="btn-delacc" style="background:#b3261e!important;color:#fff!important">Eliminar mi cuenta</button></div>'
     + '</div>'
-    + '<div class="sec sell-box">¿Tienes un negocio? <a href="../cuenta.html?tipo=vendedor">Abre tu muro de vendedor →</a></div>';
+    + '<div class="sec sell-box">¿Tienes un negocio? <a href="../vendedor/cuenta.html">Abre tu muro de vendedor →</a></div>';
   document.getElementById('main').innerHTML = html;
   if(soloCart){
     var mainEl = document.getElementById('main');

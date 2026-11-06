@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--dark:#142c47;--line:#e3e6ea;--txt:#101216;--mut:#6a6a72;--soft:#f4f4f6;--ok:#1c7c43;--warn:#9a6a00;--bad:#b3261e}
+:root{--dark:#142c47;--line:#e3e6ea;--txt:#101216;--mut:#5b7186;--soft:#f4f4f6;--ok:#1c7c43;--warn:#9a6a00;--bad:#b3261e}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--txt);background:#fff}
 h1,h2,h3,.logo{font-family:Archivo,Arial,sans-serif}
@@ -40,22 +40,22 @@ main{max-width:1060px;margin:0 auto;padding:22px 16px 60px}
 .ped-btn{padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:.85rem;font-weight:700;font-family:inherit;color:var(--txt)}
 .ped-btn.acc{background:#1c7c43;border-color:#1c7c43;color:#fff}
 .ord-ov{position:fixed;inset:0;z-index:400;background:#fff;overflow-y:auto;padding:26px 20px 30px;display:flex;flex-direction:column}
-.ord-x{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #d0d4da;background:#fff;font-size:19px;cursor:pointer;color:#111;font-family:inherit}
+.ord-x{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #b7cadd;background:#fff;font-size:19px;cursor:pointer;color:#111;font-family:inherit}
 .ord-tag{display:inline-block;align-self:flex-start;background:#1c7c43;color:#fff;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:5px 12px;margin-top:38px}
 .ord-h{font-size:27px;font-weight:900;margin:12px 0 4px;color:#111}
-.ord-fecha{color:#6a6a72;font-size:14px;margin:0 0 18px}
-.ord-items{border:1px solid #e2e5ea;border-radius:14px;padding:6px 14px}
-.ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef0f3;font-size:15px;color:#111}
+.ord-fecha{color:#5b7186;font-size:14px;margin:0 0 18px}
+.ord-items{border:1px solid #c7d6ea;border-radius:14px;padding:6px 14px}
+.ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #e8eef7;font-size:15px;color:#111}
 .ord-item:last-child{border-bottom:0}
-.ord-item small{color:#6a6a72}
+.ord-item small{color:#5b7186}
 .ord-total{display:flex;justify-content:space-between;font-size:19px;margin:16px 2px;color:#111}
-.ord-buyer{background:#f7f8fa;border:1px solid #e2e5ea;border-radius:14px;padding:14px 16px;margin-top:6px;color:#111;font-size:15px}
+.ord-buyer{background:#f7f8fa;border:1px solid #c7d6ea;border-radius:14px;padding:14px 16px;margin-top:6px;color:#111;font-size:15px}
 .ord-buyer h3{font-size:15px;margin:0 0 8px}
 .ord-buyer p{margin:4px 0}
 .ord-note{color:#44484f;font-size:14px;margin:14px 2px 0}
-.ord-more{color:#6a6a72;font-size:13px;margin-top:8px}
+.ord-more{color:#5b7186;font-size:13px;margin-top:8px}
 .ord-copy{margin-top:14px;width:100%;padding:15px;border:0;border-radius:14px;background:#142c47;color:#fff;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer}
-.ord-accept{margin-top:10px;width:100%;padding:18px;border:0;border-radius:14px;background:linear-gradient(135deg,#e8f2fd 0%,#a9c3e4 30%,#5f89b5 50%,#d7e6f8 70%,#7ba3cc 100%);color:#0a0c10;font-family:inherit;font-size:19px;font-weight:900;cursor:pointer}
+.ord-accept{margin-top:10px;width:100%;padding:18px;border:0;border-radius:14px;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;font-family:inherit;font-size:19px;font-weight:900;cursor:pointer}
 .ped-item{display:flex;justify-content:space-between;gap:10px;font-size:15px;color:var(--txt);padding:4px 0}
 .ped-total{display:flex;justify-content:space-between;font-size:17px;color:var(--txt);border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
 .ped-contact{display:block;margin-top:12px;text-align:center;background:var(--ok);color:#fff;font-weight:800;border-radius:12px;padding:13px;text-decoration:none}
@@ -220,7 +220,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 
   <section id="tab-compradores" class="hidden">
     <input class="search" id="buy-q" type="search" placeholder="Buscar comprador por nombre, teléfono, ciudad o correo…">
-    <button class="qgo" type="button" onclick="renderBuyers()" style="background:#1d4568;color:#fff;border:1px solid #1d4568;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;margin:0 0 12px">Buscar</button>
+    <button class="qgo" type="button" onclick="renderBuyers()" style="background:#1d4568;color:#fff;border:1px solid #1d4568;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;margin:0 0 12px" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
     <div id="buyers-list"><p class="mut">Cargando compradores…</p></div>
   </section>
 
