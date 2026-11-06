@@ -121,6 +121,10 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
   }catch(e){}
 })();
 </script>
+<style>
+.nx-codepill{display:inline-block;background:#e8eef7;border:1.5px solid #b7cadd;color:var(--acc);font-weight:800;font-size:13.5px;border-radius:999px;padding:3px 11px;cursor:pointer;font-family:inherit;vertical-align:middle}
+.nx-codepill:active{transform:scale(.96)}
+</style>
 </head>
 <body>
 <header class="top">
@@ -188,7 +192,18 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
           <div style="display:flex;gap:8px"><select id="up-cod" aria-label="Código de país" style="width:104px;flex:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-family:inherit;font-size:15px"><option value="+505">+505</option><option value="+1">+1</option></select>
           <input id="up-tel" type="tel" placeholder="Ej: 8888 8888" autocomplete="tel" required style="flex:1;min-width:0"></div></div>
         </div>
-        <p style="font-size:12px;color:#9aa0a8;margin:6px 0 0">(privado: solo tú y Nexo lo ven)</p>
+        <div id="up-pin-wrap">
+          <label id="up-pin-label">Tu ubicación en el mapa *</label>
+          <p id="up-pin-help" style="font-size:13px;color:var(--mut);margin:0 0 8px">Aquí no hay números de casa: mueve el pin hasta tu casa y toca <b>Confirmar ubicación</b>. Se genera tu código y esta queda guardada como tu <b>dirección principal</b> (después puedes cambiarla o agregar más).</p>
+          <div id="up-map" style="height:260px;border-radius:12px;border:1px solid var(--line);overflow:hidden;background:#dfe7ef;position:relative;z-index:0"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+            <button type="button" id="up-loc" class="btn" style="background:none;border:1px solid var(--line);padding:10px 14px;font-size:14px;width:auto;margin-top:0">📍 Usar mi ubicación actual</button>
+            <button type="button" id="up-confirm-pin" class="btn" style="padding:10px 14px;font-size:14px;display:none;width:auto;margin-top:0">Confirmar ubicación</button>
+            <button type="button" id="up-clear-pin" style="background:none;border:0;color:var(--err);font-size:13.5px;font-weight:700;cursor:pointer;display:none;padding:6px">Quitar pin</button>
+          </div>
+          <p id="up-pin-state" style="font-size:13.5px;margin-top:8px;color:var(--mut)">Sin ubicación fijada. Toca el mapa o arrastra el pin hasta tu casa.</p>
+        </div>
+        <p style="font-size:12px;color:var(--mut);margin:6px 0 0">(privado: solo tú y Nexo lo ven)</p>
         <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:16px 0 2px;cursor:pointer;text-align:left">
           <input type="checkbox" id="up-acepta" style="width:18px;height:18px;margin-top:2px;flex:none;width:18px">
           <span>Acepto las <a href="politicas.html" target="_blank" rel="noopener">políticas y términos de Nexo</a></span>
@@ -265,6 +280,11 @@ function setTipo(t){
   document.getElementById('t-vendedor').classList.toggle('on', t === 'vendedor');
   document.getElementById('feat').innerHTML = FEATS[t];
   document.getElementById('up-empresa-wrap').classList.toggle('hidden', t !== 'vendedor');
+  document.getElementById('up-pin-label').textContent = t === 'vendedor' ? 'Lugar de donde envías los paquetes *' : 'Tu ubicación en el mapa *';
+  document.getElementById('up-pin-help').innerHTML = t === 'vendedor'
+    ? 'Mueve el pin hasta tu local o bodega y toca <b>Confirmar ubicación</b>. Se genera tu código: ese es el <b>punto de donde salen tus paquetes</b> (después puedes cambiarlo desde tu cuenta).'
+    : 'Aquí no hay números de casa: mueve el pin hasta tu casa y toca <b>Confirmar ubicación</b>. Se genera tu código y esta queda guardada como tu <b>dirección principal</b> (después puedes cambiarla o agregar más).';
+  tryInitUpMap();
 }
 document.getElementById('t-comprador').onclick = function(){ setTipo('comprador'); };
 document.getElementById('t-vendedor').onclick = function(){ setTipo('vendedor'); };
@@ -273,7 +293,120 @@ if(qp.get('tipo') === 'vendedor') setTipo('vendedor'); else setTipo('comprador')
 
 var tabIn = document.getElementById('tab-in'), tabUp = document.getElementById('tab-up');
 tabIn.onclick = function(){ tabIn.classList.add('on'); tabUp.classList.remove('on'); document.getElementById('form-in').classList.remove('hidden'); document.getElementById('form-up').classList.add('hidden'); hideErr(); };
-tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); document.getElementById('form-up').classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr(); };
+tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); document.getElementById('form-up').classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr(); tryInitUpMap(); };
+
+/* Pin de ubicación al crear la cuenta (pedido de Sergio): el comprador
+   fija su casa, la confirma y esa dirección nace como su PRINCIPAL. */
+function nxPlusCode(lat, lng){
+  var ALPH = '23456789CFGHJMPQRVWX';
+  lat = Math.min(90, Math.max(-90, lat)); lng = ((lng + 180) % 360 + 360) % 360 - 180;
+  if(lat === 90) lat = 90 - 0.000125;
+  var latV = lat + 90, lngV = lng + 180, code = '';
+  var res = [20, 1, 0.05, 0.0025, 0.000125];
+  for(var i = 0; i < 5; i++){
+    var dLat = Math.floor(latV / res[i]); latV -= dLat * res[i];
+    var dLng = Math.floor(lngV / res[i]); lngV -= dLng * res[i];
+    code += ALPH[dLat] + ALPH[dLng];
+    if(i === 3) code += '+';
+  }
+  return code;
+}
+function ensureLeaflet(cb){
+  if(window.L){ cb(); return; }
+  if(_leafletQ){ _leafletQ.push(cb); return; }
+  _leafletQ = [cb];
+  var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(css);
+  var sc = document.createElement('script'); sc.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  sc.onload = function(){ var q = _leafletQ; _leafletQ = null; if(q) q.forEach(function(f){ f(); }); };
+  sc.onerror = function(){ _leafletQ = null; var el = document.getElementById('up-pin-state'); if(el) el.textContent = 'No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.'; };
+  document.head.appendChild(sc);
+}
+function nxCopyFallback(text){
+  try{
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+  }catch(e){}
+}
+function nxCopyCode(el, code){
+  function done(){
+    if(!el || el.dataset.done) return;
+    el.dataset.done = '1';
+    var prev = el.innerHTML;
+    el.innerHTML = '✓ ¡Copiado!';
+    setTimeout(function(){ el.innerHTML = prev; delete el.dataset.done; }, 1600);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(done).catch(function(){ nxCopyFallback(code); done(); });
+  } else { nxCopyFallback(code); done(); }
+}
+function nxCodePill(code){
+  return '<button type="button" class="nx-codepill" title="Toca para copiar" onclick="nxCopyCode(this,\'' + code + '\')">' + code + ' ⧉</button>';
+}
+var _upPin = null, _upMap = null, _upMarker = null;
+function setUpPinTentative(lat, lng){
+  _upPin = { lat: Math.round(lat * 1e6) / 1e6, lng: Math.round(lng * 1e6) / 1e6, code: nxPlusCode(lat, lng), confirmed: false };
+  updateUpPinUI();
+}
+function updateUpPinUI(){
+  var st = document.getElementById('up-pin-state'), btn = document.getElementById('up-confirm-pin'), clr = document.getElementById('up-clear-pin');
+  if(!st) return;
+  if(!_upPin){
+    st.innerHTML = tipo === 'vendedor' ? 'Sin ubicación fijada. Toca el mapa o arrastra el pin hasta tu local o bodega.' : 'Sin ubicación fijada. Toca el mapa o arrastra el pin hasta tu casa.';
+    if(btn) btn.style.display = 'none'; if(clr) clr.style.display = 'none';
+    return;
+  }
+  if(_upPin.confirmed){
+    st.innerHTML = '✓ <b style="color:var(--txt)">Ubicación confirmada</b> · Tu código: ' + nxCodePill(_upPin.code);
+    if(btn) btn.style.display = 'none';
+  } else {
+    st.innerHTML = 'Código de este punto: ' + nxCodePill(_upPin.code) + ' — si es tu casa, toca «Confirmar ubicación».';
+    if(btn) btn.style.display = '';
+  }
+  if(clr) clr.style.display = '';
+}
+function initUpPinMap(){
+  var mapEl = document.getElementById('up-map');
+  if(!mapEl || !window.L) return;
+  if(_upMap){ setTimeout(function(){ if(_upMap) _upMap.invalidateSize(); }, 200); return; }
+  var start = _upPin ? [_upPin.lat, _upPin.lng] : [12.87, -85.21];
+  _upMap = L.map('up-map').setView(start, _upPin ? 16 : 8);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(_upMap);
+  var icon = L.divIcon({ className: '', html: '<div style="font-size:30px;line-height:1">📍</div>', iconSize: [30, 30], iconAnchor: [15, 28] });
+  _upMarker = L.marker(start, { draggable: true, icon: icon }).addTo(_upMap);
+  if(!_upPin) _upMarker.setOpacity(0.45);
+  _upMarker.on('dragend', function(){ var ll = _upMarker.getLatLng(); setUpPinTentative(ll.lat, ll.lng); });
+  _upMap.on('click', function(e){ _upMarker.setLatLng(e.latlng); _upMarker.setOpacity(1); setUpPinTentative(e.latlng.lat, e.latlng.lng); });
+  updateUpPinUI();
+  setTimeout(function(){ if(_upMap) _upMap.invalidateSize(); }, 250);
+}
+function tryInitUpMap(){
+  if(document.getElementById('form-up').classList.contains('hidden')) return;
+  ensureLeaflet(initUpPinMap);
+}
+document.getElementById('up-loc').onclick = function(){
+  if(!navigator.geolocation){ showErr('Tu teléfono no permitió la ubicación automática. Mueve el pin en el mapa.'); return; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat = pos.coords.latitude, lng = pos.coords.longitude;
+    ensureLeaflet(function(){
+      initUpPinMap();
+      if(_upMap && _upMarker){ _upMap.setView([lat, lng], 16); _upMarker.setLatLng([lat, lng]); _upMarker.setOpacity(1); }
+      setUpPinTentative(lat, lng);
+    });
+  }, function(){ showErr('No se pudo obtener tu ubicación. Mueve el pin en el mapa hasta tu casa.'); }, { enableHighAccuracy: true, timeout: 10000 });
+};
+document.getElementById('up-confirm-pin').onclick = function(){ if(_upPin){ _upPin.confirmed = true; updateUpPinUI(); } };
+document.getElementById('up-clear-pin').onclick = function(){ _upPin = null; if(_upMarker) _upMarker.setOpacity(0.45); updateUpPinUI(); };
+function savePrincipalDirFull(s, name, extra){
+  if(!(_upPin && _upPin.confirmed)) return Promise.resolve();
+  var body = { user_id: s.user.id, nombre: (tipo === 'vendedor' ? (document.getElementById('up-empresa').value.trim() || name) : name) || null, telefono: extra.telefono || null, direccion: null, ciudad: extra.ciudad || null, departamento: extra.departamento || null, pais: extra.pais || null, referencia: extra.referencia || null, lat: _upPin.lat, lng: _upPin.lng, plus_code: _upPin.code, principal: true };
+  return fetch(SUPABASE_URL + '/rest/v1/direcciones', {
+    method: 'POST', headers: Object.assign({}, headers(s.access_token), { 'Prefer': 'return=minimal' }),
+    body: JSON.stringify(body)
+  }).then(function(r){ return r; }).catch(function(){});
+}
+
 
 function api(path, token){
   return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: headers(token) }).then(function(r){
@@ -373,6 +506,7 @@ document.getElementById('btn-up').onclick = function(){
   var tel = joinTel(document.getElementById('up-cod').value, document.getElementById('up-tel').value);
   if(!ciu || !dep || !pai || !tel){ showErr('Completa ciudad, departamento, país y número de WhatsApp (son obligatorios).'); return; }
   if(!telConCodigo(tel)){ showErr(TEL_MSG); return; }
+  if(!(_upPin && _upPin.confirmed)){ showErr(tipo === 'vendedor' ? 'Fija en el mapa el lugar de donde envías los paquetes y toca «Confirmar ubicación».' : 'Fija tu ubicación en el mapa y toca «Confirmar ubicación»: esa queda como tu dirección principal.'); document.getElementById('up-pin-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   fetch(SUPABASE_URL + '/auth/v1/signup', {
     method: 'POST', headers: headers(), body: JSON.stringify({ email: email, password: pass, data: { nombre: name } })
   }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
@@ -390,6 +524,8 @@ document.getElementById('btn-up').onclick = function(){
         var fotoFile = document.getElementById('up-foto-ref').files[0];
         var proceed = function(){
           ensureProfile(s, name, extra).then(function(){
+            return savePrincipalDirFull(s, name, extra);
+          }).then(function(){
             return ensureSeller(s, tipo === 'vendedor' ? empresa : null, (extra.ciudad && extra.pais) ? (extra.ciudad + ', ' + extra.pais) : null, extra.telefono || null);
           }).then(function(){
             if(tipo === 'vendedor'){ location.href = 'vendedor/cuenta.html'; }

@@ -289,6 +289,11 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 #btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
 #btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
 </style>
+<style>
+/* Lupa bien centrada en su botón (pedido de Sergio) */
+#wall-search-btn,#inv-search-btn,#wall-search-go,#inv-search-go{display:inline-flex;align-items:center;justify-content:center}
+#wall-search-btn svg,#inv-search-btn svg,#wall-search-go svg,#inv-search-go svg{display:block}
+</style>
 </head>
 <body>
 <header class="top">
@@ -483,13 +488,13 @@ function renderWallProducts(prods, own){
   var cats = [];
   prods.forEach(function(p){ var c = p.categoria || 'General'; if(cats.indexOf(c) < 0) cats.push(c); });
   grid.className = '';
-  var lupa = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-2px;margin-right:6px"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
+  var lupa = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
   grid.innerHTML = '<div class="catbar" id="catbar">'
     + '<button class="catchip" id="wall-search-btn" aria-label="Buscar" title="Buscar">' + lupa + '</button>'
     + '<button class="catchip on" data-cat="">Todos</button>'
     + cats.map(function(c){ return '<button class="catchip" data-cat="' + esc(c) + '">' + esc(c) + '</button>'; }).join('')
     + '</div>'
-    + '<div id="wall-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="wall-search" type="search" placeholder="Buscar en esta tienda..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="wall-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
+    + '<div id="wall-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="wall-search" type="search" placeholder="Buscar en esta tienda..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="wall-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
     + '<div class="showrow" id="showrow"></div>'
     + '<div class="grid hgrid" id="wall-grid"></div>';
   var wg = document.getElementById('wall-grid');
@@ -779,13 +784,13 @@ function loadProdList(){
   }
   var cats = [];
   prods.forEach(function(p){ var c = p.categoria || 'General'; if(cats.indexOf(c) < 0) cats.push(c); });
-  var lupa = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:-2px;margin-right:6px"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
+  var lupa = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="16" y1="16" x2="22" y2="22"></line></svg>';
   box.innerHTML = '<div class="catbar">'
     + '<button class="catchip" id="inv-search-btn" aria-label="Buscar" title="Buscar">' + lupa + '</button>'
     + '<button class="catchip on" data-cat="">Todos</button>'
     + cats.map(function(c){ return '<button class="catchip" data-cat="' + esc(c) + '">' + esc(c) + '</button>'; }).join('')
     + '</div>'
-    + '<div id="inv-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="inv-search" type="search" placeholder="Buscar en tu inventario..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="inv-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
+    + '<div id="inv-search-row" style="display:none;margin-bottom:14px"><div style="display:flex;gap:8px"><input id="inv-search" type="search" placeholder="Buscar en tu inventario..." style="flex:1;background:#ffffff;border:1px solid #b7cadd;border-radius:12px;padding:13px 15px;color:#111;font-family:inherit;font-size:15px"><button id="inv-search-go" class="catchip on" type="button" aria-label="Buscar" title="Buscar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button></div></div>'
     + '<div id="inv-grid"></div>';
   var wg = box.querySelector('#inv-grid');
   var curCat = '', query = '';

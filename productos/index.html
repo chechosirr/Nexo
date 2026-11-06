@@ -116,13 +116,18 @@ header.top .search{grid-column:1/4;grid-row:2;margin-top:2px;min-width:0}
 header.top .qbtn{grid-column:4;grid-row:2;margin-top:2px}
 header.top .logo{top:29px}
 </style>
+<style>
+/* Lupa bien centrada en su botón (pedido de Sergio) */
+#q-btn{display:inline-flex!important;align-items:center;justify-content:center}
+#q-btn svg{display:block}
+</style>
 </head>
 <body>
 <header class="top">
  <button class="nx-back" aria-label="Volver" onclick="nxBack()">&#8592;</button>
   <a class="logo" href="../index.html">Nexo</a>
   <label class="search"><input id="q" type="search" placeholder="Buscar productos o empresas…"></label>
-  <button class="qbtn" id="q-btn" type="button" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
+  <button class="qbtn" id="q-btn" type="button" aria-label="Buscar" title="Buscar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
   <div class="menu-wrap">
     <button id="menu-btn" aria-label="Menú">☰</button>
     <nav class="menu" id="menu">
