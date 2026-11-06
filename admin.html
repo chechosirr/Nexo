@@ -98,10 +98,6 @@ th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
 .gate a{color:var(--dark);font-weight:700}
 .hidden{display:none}
 @media(max-width:640px){ table,thead,tbody,tr,th,td{display:block} thead{display:none} td{border:0;padding:3px 8px} tr{border-bottom:1px solid var(--line);padding:8px 0} }
-#pass-box{max-width:560px;margin:16px auto 0;padding:0 16px}
-#pass-box .card{border:1.5px solid var(--line,#d8dce3);border-radius:16px;padding:6px 18px 18px}
-#pass-box label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
-#pass-box input{width:100%;padding:12px 14px;border:1.5px solid #c9ced6;border-radius:12px;font-size:15px;font-family:inherit}
 .passwrap{position:relative}
 .passwrap input{padding-right:74px}
 .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
@@ -153,29 +149,11 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
     <nav class="ddnav" id="ddnav">
       <a href="index.html">Inicio</a>
       <a href="index.html">Tienda</a>
-      <a href="#" id="menu-pass">Ajustes de cuenta</a>
+      <a href="comprador/perfil.html">Mi cuenta</a>
       <a href="#" id="logout" style="color:#ff7b7b">Cerrar sesión</a>
     </nav>
   </div>
 </header>
-<div id="pass-box" class="hidden">
-  <div class="card">
-    <h2 style="margin:14px 0 4px;font-size:20px">Ajustes de cuenta</h2>
-    <label>Correo electrónico</label>
-    <input id="ce-mail" type="email" autocomplete="email">
-    <p id="ce-msg" style="font-size:13px;margin-top:10px"></p>
-    <button id="ce-btn">Guardar correo</button>
-    <label>Contraseña actual</label>
-    <div class="passwrap"><input id="cp-cur" type="password" autocomplete="current-password"><button type="button" class="eye" data-for="cp-cur">Ver</button></div>
-    <label>Contraseña nueva (mínimo 6 caracteres)</label>
-    <div class="passwrap"><input id="cp-new" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new">Ver</button></div>
-    <label>Confirma la contraseña nueva</label>
-    <div class="passwrap"><input id="cp-new2" type="password" autocomplete="new-password"><button type="button" class="eye" data-for="cp-new2">Ver</button></div>
-    <p id="cp-msg" style="font-size:13px;margin-top:10px"></p>
-    <button id="cp-btn">Cambiar contraseña</button>
-  </div>
-</div>
-
 <div class="gate" id="gate">
   <h1>Administración</h1>
   <p class="sub" id="gate-msg">Comprobando tu acceso…</p>
@@ -310,6 +288,69 @@ var BTNMINI = 'margin-top:5px;padding:3px 12px;border-radius:999px;border:1px so
 document.addEventListener('click', function(){ document.querySelectorAll('.ddmenu').forEach(function(m){ m.classList.add('hidden'); }); });
 
 function estadoBadge(e){ return '<span class="badge b-' + esc(e || 'activo') + '">' + esc(e || 'activo') + '</span>'; }
+
+function renderHistorial(){
+ var box = document.getElementById('hist-list');
+ if(!box) return;
+ var q = ((document.getElementById('hist-q') || {}).value || '').toLowerCase();
+ var list = DATA.products.filter(function(pr){
+ if(!q) return true;
+ var vend = (pr.sellers && pr.sellers.nombre) || '';
+ return ((pr.titulo || '') + ' ' + (pr.categoria || '') + ' ' + vend).toLowerCase().indexOf(q) >= 0;
+ });
+ if(!list.length){ box.innerHTML = '<p class="mut">' + (DATA.products.length ? 'Ningún producto coincide con esa búsqueda.' : 'Todavía no hay productos de revendedores.') + '</p>'; return; }
+ box.innerHTML = list.map(function(pr){
+ var vend = (pr.sellers && pr.sellers.nombre) || '—';
+ var badges = (pr.activo ? '' : '<span class="badge b-pausado">pausado</span> ') + (pr.bloqueado ? '<span class="badge b-bloqueado">bloqueado</span>' : '');
+ var menu = '<span class="ddwrap"><button class="btn btn-dark" data-hmenu="' + pr.id + '">Acciones ▾</button>'
+ + '<span class="ddmenu hidden" id="hmenu-' + pr.id + '">'
+ + (pr.activo
+ ? '<button data-hact="pausar" data-prod="' + pr.id + '">Pausar</button>'
+ : '<button data-hact="reactivar" data-prod="' + pr.id + '">Reactivar</button>')
+ + '<button data-hact="eliminar" data-prod="' + pr.id + '" class="danger">Eliminar</button>'
+ + '</span></span>';
+ return '<div class="rowitem">' + (pr.imagen_url ? '<img src="' + esc(pr.imagen_url) + '" alt="">' : '<img alt="">')
+ + '<div class="grow"><b>' + esc(pr.titulo) + '</b><span class="mut">' + money(pr.precio) + ' · ' + esc(pr.categoria || 'General') + ' · ' + esc(vend) + ' · subido el ' + fecha(pr.created_at) + '</span></div>'
+ + '<span>' + badges + '</span>' + menu + '</div>';
+ }).join('');
+ box.querySelectorAll('[data-hmenu]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var m = document.getElementById('hmenu-' + b.getAttribute('data-hmenu'));
+ var was = m.classList.contains('hidden');
+ document.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(was) m.classList.remove('hidden');
+ };
+ });
+ box.querySelectorAll('[data-hact]').forEach(function(b){
+ b.onclick = function(e){
+ e.stopPropagation();
+ var id = b.getAttribute('data-prod'), act = b.getAttribute('data-hact');
+ var pr = DATA.products.filter(function(x){ return x.id === id; })[0];
+ document.querySelectorAll('.ddmenu').forEach(function(x){ x.classList.add('hidden'); });
+ if(act === 'pausar' || act === 'reactivar'){
+ var body = { activo: act === 'reactivar' };
+ patch('products', id, body, TOK).then(function(){
+ if(pr) pr.activo = body.activo;
+ renderHistorial(); renderInv(document.getElementById('inv-q').value || ''); renderResumen();
+ }).catch(function(){ alert('No se pudo aplicar el cambio. Intenta de nuevo.'); });
+ return;
+ }
+ if(act === 'eliminar'){
+ if(!confirm('¿Eliminar "' + (pr ? pr.titulo : 'este producto') + '"?\n\nSe borra del marketplace para siempre. Esto NO se puede deshacer.')) return;
+ fetch(SUPABASE_URL + '/rest/v1/products?id=eq.' + id, { method: 'DELETE', headers: H(TOK) })
+ .then(function(r){
+ if(!r.ok) throw 0;
+ DATA.products = DATA.products.filter(function(x){ return x.id !== id; });
+ renderHistorial(); renderInv(document.getElementById('inv-q').value || ''); renderResumen();
+ })
+ .catch(function(){ alert('No se pudo eliminar. Intenta de nuevo.'); });
+ }
+ };
+ });
+}
+
+/* ===== Ventas de zapatos (PayPal, registradas por el vigilante de pagos) ===== */
 
 function cargar(){
  return Promise.all([
@@ -792,85 +833,6 @@ Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function
  };
 });
 
-function wireEmail(getTok, getEmail){
-  var btn = document.getElementById('ce-btn'); if(!btn) return;
-  var inp = document.getElementById('ce-mail');
-  var msg = document.getElementById('ce-msg');
-  if(inp && getEmail()) inp.value = getEmail();
-  btn.onclick = function(){
-    var em = inp.value.trim();
-    if(!em || em.indexOf('@') < 0){ msg.style.color = '#ff8a8a'; msg.textContent = 'Escribe un correo válido.'; return; }
-    btn.disabled = true; btn.textContent = 'Guardando…';
-    fetch(SUPABASE_URL + '/auth/v1/user', { method: 'PUT', headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + getTok(), 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
-      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
-      .then(function(res){
-        btn.disabled = false; btn.textContent = 'Guardar correo';
-        if(res.ok){ msg.style.color = '#7bc47f'; msg.textContent = 'Te envié un correo de confirmación a ' + em + '. Ábrelo y toca el enlace para que el cambio se aplique.'; }
-        else { msg.style.color = '#ff8a8a'; msg.textContent = 'No se pudo cambiar el correo. Intenta de nuevo.'; }
-      })
-      .catch(function(){ btn.disabled = false; btn.textContent = 'Guardar correo'; msg.style.color = '#ff8a8a'; msg.textContent = 'Error de conexión. Intenta de nuevo.'; });
-  };
-}
-function wireChangePass(getEmail, setSession){
-  Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
-    if(b._w) return; b._w = 1;
-    b.onclick = function(){
-      var i = document.getElementById(b.getAttribute('data-for'));
-      if(!i) return;
-      var s = i.type === 'password';
-      i.type = s ? 'text' : 'password';
-      b.textContent = s ? 'Ocultar' : 'Ver';
-    };
-  });
-  var btn = document.getElementById('cp-btn');
-  if(!btn) return;
-  btn.onclick = function(){
-    var msg = document.getElementById('cp-msg');
-    function err(m){ msg.style.color = '#d33'; msg.textContent = m; }
-    var cur = document.getElementById('cp-cur').value;
-    var nw = document.getElementById('cp-new').value;
-    var nw2 = document.getElementById('cp-new2').value;
-    if(!cur){ err('Escribe tu contraseña actual.'); return; }
-    if(nw.length < 6){ err('La contraseña nueva debe tener mínimo 6 caracteres.'); return; }
-    if(nw !== nw2){ err('Las contraseñas nuevas no coinciden.'); return; }
-    btn.disabled = true; btn.textContent = 'Guardando…';
-    fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: getEmail(), password: cur })
-    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
-      .then(function(res){
-        if(!res.ok){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('La contraseña actual no es correcta.'); return null; }
-        setSession(res.j);
-        return fetch(SUPABASE_URL + '/auth/v1/user', {
-          method: 'PUT',
-          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + res.j.access_token, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: nw })
-        }).then(function(r){ return { ok: r.ok }; });
-      })
-      .then(function(r2){
-        if(!r2) return;
-        btn.disabled = false; btn.textContent = 'Cambiar contraseña';
-        if(r2.ok){
-          msg.style.color = '#2e7d32'; msg.textContent = 'Contraseña actualizada.';
-          document.getElementById('cp-cur').value = '';
-          document.getElementById('cp-new').value = '';
-          document.getElementById('cp-new2').value = '';
-        } else { err('No se pudo actualizar. Intenta de nuevo.'); }
-      })
-      .catch(function(){ btn.disabled = false; btn.textContent = 'Cambiar contraseña'; err('Error de conexión. Intenta de nuevo.'); });
-  };
-}
-document.getElementById('menu-pass').onclick = function(e){
-  e.preventDefault(); e.stopPropagation();
-  document.getElementById('ddnav').classList.remove('open');
-  var box = document.getElementById('pass-box');
-  box.classList.toggle('hidden');
-  if(!box.classList.contains('hidden')) window.scrollTo({ top: 0, behavior: 'smooth' });
-  return false;
-};
-wireChangePass(function(){ return (S && S.user && S.user.email) || ''; }, function(j){ S = j; TOK = j.access_token; UID = j.user.id; try{ localStorage.setItem('nexo_session', JSON.stringify(j)); }catch(e){} });
-wireEmail(function(){ return TOK; }, function(){ return (S && S.user && S.user.email) || ''; });
 
 /* Puerta de acceso: cuentas con es_admin y también cuentas de comprador (pedido de Sergio 4-nov: «que el panel del administrador se pueda iniciar como cuenta de comprador también») */
 (function(){
