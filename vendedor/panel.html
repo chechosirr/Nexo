@@ -550,19 +550,28 @@ function doLogout(){
 <script>function nxBack(){try{if(window.history.length>1){history.back();return;}}catch(e){}var a=document.querySelector('header.top .logo');window.location.href=a?a.getAttribute('href'):'index.html';}</script>
 
 <script>
-/* Sesión y botón «atrás» (corrección 2026-11-07): al volver, el navegador
-   puede restaurar esta página desde su caché tal como se dejó —con la
-   sesión ya cerrada en otra sección— y se vería «con sesión» sin estarlo.
-   Al volver a mostrarse, se compara la sesión actual con la que había al
-   cargarse; si cambió, la página se recarga y muestra el estado real. */
+/* Sesión y botón «atrás» (corrección 2026-11-07, reforzada): al volver,
+   el navegador puede enseñar esta página tal como quedó al salir —con
+   la sesión ya cerrada en otra sección— y se vería «con sesión» sin
+   estarlo. Tres capas: (1) un «unload» vacío deja la página fuera de
+   la caché atrás/adelante de Safari/iOS, que al volver la recarga con
+   el estado real; (2) si el documento vuelve congelado (pageshow), se
+   compara la sesión actual con la que había al cargarse y si cambió
+   se recarga; (3) si la página vuelve a verse sin recargarse (estaba
+   abierta en segundo plano) y la sesión ya no existe, se recarga. */
 (function(){
-  var stamp = null;
+  var born = null, shown = false;
   function cur(){ try{ var s = JSON.parse(localStorage.getItem('nexo_session') || 'null'); return (s && s.user && s.user.id) || ''; }catch(e){ return ''; } }
+  function check(){ if(born !== null && cur() !== born) location.reload(); }
   window.addEventListener('pageshow', function(e){
-    if(!e.persisted){ stamp = cur(); return; }
-    if(stamp === null){ stamp = cur(); return; }
-    if(cur() !== stamp) location.reload();
+    if(e.persisted || shown) check();
+    if(born === null) born = cur();
+    shown = true;
   });
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && born !== null && born !== '' && cur() === '') location.reload();
+  });
+  window.addEventListener('unload', function(){});
 })();
 </script>
 </body>
