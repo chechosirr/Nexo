@@ -49,6 +49,9 @@
   + '#nx-finbar button{flex:1;border:1px solid #e5b4b4;background:#fdf1f1;color:#b3261e;border-radius:10px;padding:9px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}'
   + '#nx-closed{display:none;padding:22px 16px;text-align:center;background:#fff;border-top:1px solid #c7d6ea}'
   + '#nx-closed.open{display:block}'
+  + '#nx-againbar{display:none;gap:8px;padding:9px 10px;border-top:1px solid #c7d6ea;background:#fff}'
+  + '#nx-againbar.open{display:flex}'
+  + '#nx-againbar button{flex:1;border:1px solid #e5b4b4;background:#fdf1f1;color:#b3261e;border-radius:10px;padding:9px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}'
   + '#nx-closed b{font-size:16px;color:#111}'
   + '#nx-closed p{color:#47617e;font-size:13.5px;margin:8px 0 14px}'
   + '#nx-closed button{border:0;border-radius:999px;padding:11px 20px;font-family:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)}'
@@ -168,7 +171,8 @@
     + '<div id="nx-viewbar"><span>Conversación finalizada · solo lectura</span><button id="nx-view-hist" type="button">← Mis chats</button></div>'
     + '<div id="nx-hist"><button id="nx-hist-back" type="button">← Volver al chat</button><div id="nx-hist-list"></div></div>'
     + '<div id="nx-finbar"><button id="nx-fin-btn" type="button">Finalizar chat</button></div>'
-    + '<div id="nx-closed"><b>Chat finalizado. Gracias por escribirnos.</b><p>Si necesitas algo más, puedes empezar un chat nuevo.</p><button id="nx-again" type="button">Iniciar un chat nuevo</button></div>'
+    + '<div id="nx-closed"><b>Chat finalizado. Gracias por escribirnos.</b><p>Si necesitas algo más, puedes empezar un chat nuevo.</p></div>'
+    + '<div id="nx-againbar"><button id="nx-again" type="button">Iniciar un chat nuevo</button></div>'
     + '<form id="nx-ch-form"><input id="nx-ch-input" type="text" placeholder="Escribe tu mensaje…" autocomplete="off">'
     + '<button id="nx-ch-send" type="submit">Enviar</button></form>';
   document.body.appendChild(panel);
@@ -182,6 +186,7 @@
   var sendBtn = panel.querySelector('#nx-ch-send');
   var finbarEl = panel.querySelector('#nx-finbar');
   var closedEl = panel.querySelector('#nx-closed');
+  var againbarEl = panel.querySelector('#nx-againbar');
   var histEl = panel.querySelector('#nx-hist');
   var histListEl = panel.querySelector('#nx-hist-list');
   var viewbarEl = panel.querySelector('#nx-viewbar');
@@ -220,6 +225,7 @@
     if(started) formEl.style.display = (!finalizada && !viewing && !histOpen) ? 'flex' : 'none';
     finbarEl.classList.toggle('open', !!(started && conv && !finalizada && !viewing && !histOpen));
     closedEl.classList.toggle('open', !!(started && finalizada && !viewing && !histOpen));
+    againbarEl.classList.toggle('open', !!(started && finalizada && !viewing && !histOpen));
     viewbarEl.classList.toggle('open', !!viewing);
   }
   function showClosed(){ finalizada = true; refreshBars(); }
