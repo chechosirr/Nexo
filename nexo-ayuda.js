@@ -44,6 +44,25 @@
   + '#nx-ch-input{flex:1;min-width:0;border:1.5px solid #b7cadd;border-radius:999px;padding:11px 15px;font-family:inherit;font-size:15px;color:#111;outline:none}'
   + '#nx-ch-send{border:0;border-radius:999px;padding:11px 18px;font-family:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)}'
   + '#nx-ch-send:disabled{opacity:.55;cursor:default}'
+  + '#nx-finbar{display:none;gap:8px;padding:9px 10px;border-top:1px solid #c7d6ea;background:#fff}'
+  + '#nx-finbar.open{display:flex}'
+  + '#nx-finbar button{flex:1;border:1px solid #e5b4b4;background:#fdf1f1;color:#b3261e;border-radius:10px;padding:9px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}'
+  + '#nx-closed{display:none;padding:22px 16px;text-align:center;background:#fff;border-top:1px solid #c7d6ea}'
+  + '#nx-closed.open{display:block}'
+  + '#nx-closed b{font-size:16px;color:#111}'
+  + '#nx-closed p{color:#47617e;font-size:13.5px;margin:8px 0 14px}'
+  + '#nx-closed button{border:0;border-radius:999px;padding:11px 20px;font-family:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)}'
+  + '#nx-hist{flex:1;overflow-y:auto;padding:12px;background:#eef3fa;display:none;flex-direction:column;gap:9px}'
+  + '#nx-hist.open{display:flex}'
+  + '.nx-hi{text-align:left;background:#fff;border:1px solid #c7d6ea;border-radius:14px;padding:11px 13px;font-family:inherit;cursor:pointer;width:100%}'
+  + '.nx-hi .d{font-size:11.5px;color:#47617e}'
+  + '.nx-hi .p{font-size:14px;color:#111;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+  + '.nx-tag{font-size:10.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-left:7px;background:#e3ebf5;color:#47617e}'
+  + '.nx-tag.on{background:#d9f2dc;color:#1c5c26}'
+  + '#nx-viewbar{display:none;align-items:center;gap:8px;padding:8px 12px;background:#fff;border-bottom:1px solid #c7d6ea;font-size:12.5px;color:#47617e}'
+  + '#nx-viewbar.open{display:flex}'
+  + '#nx-viewbar button{margin-left:auto;background:#e3ebf5;border:0;border-radius:8px;padding:6px 10px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;color:#142c47}'
+  + '#nx-hist-back{align-self:flex-start;background:none;border:0;color:#142c47;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;padding:2px 0}'
   + '#nx-bienvenida{position:fixed;inset:0;z-index:2000;background:linear-gradient(160deg,#17334f,#0a1a2c);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;cursor:pointer}'
   + '#nx-bienvenida .nx-bw-k{color:#8fb4da;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase}'
   + '#nx-bienvenida .nx-bw-t{color:#fff;font-weight:900;font-size:clamp(40px,10vw,76px);line-height:1.05}'
@@ -77,12 +96,22 @@
         .catch(function(){});
     }
   }catch(e){}
+  /* Registro local de conversaciones de ESTE dispositivo («Mis
+     chats»): cada conversación que el cliente usa queda anotada;
+     las finalizadas siguen en la lista para poder releerlas. */
+  var convIds = [];
+  try{ convIds = JSON.parse(lsGet('nexo_chat_convs') || '[]') || []; }catch(e){ convIds = []; }
+  function noteConv(id){ if(!id) return; if(convIds.indexOf(id) < 0){ convIds.push(id); if(convIds.length > 30) convIds = convIds.slice(-30); lsSet('nexo_chat_convs', JSON.stringify(convIds)); } }
+  if(conv) noteConv(conv);
+  var finalizada = false;   /* la conversación actual quedó cerrada */
+  var viewing = null;       /* conv abierta en solo lectura desde «Mis chats» */
+  var histOpen = false;     /* la vista «Mis chats» está abierta */
   function convKey(){ return acct ? 'nexo_chat_conv_acc' : 'nexo_chat_conv'; }
   function ensureAcctConv(){
     if(!acct || conv) return Promise.resolve();
     return fetch(CHAT_BASE + '/myconv', { headers: { 'Authorization': 'Bearer ' + acct.token } })
       .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(j){ if(j && j.conv){ conv = j.conv; lsSet('nexo_chat_conv_acc', conv); seen = 0; } })
+      .then(function(j){ if(j && j.conv){ conv = j.conv; noteConv(conv); lsSet('nexo_chat_conv_acc', conv); seen = 0; } })
       .catch(function(){});
   }
   var opening = false;
@@ -99,7 +128,7 @@
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){
         opening = false;
-        if(j && j.ok && j.conv){ conv = j.conv; lsSet(convKey(), conv); seen = 0; return pollNow(); }
+        if(j && j.ok && j.conv){ conv = j.conv; noteConv(conv); lsSet(convKey(), conv); seen = 0; refreshBars(); return pollNow(); }
       })
       .catch(function(){ opening = false; });
   }
@@ -136,6 +165,10 @@
     + '</div>'
     + '<div id="nx-ch-msgs"><div id="nx-ch-empty">Escríbenos tu mensaje y te respondemos en este mismo chat.</div></div>'
     + '<div id="nx-ch-status"></div>'
+    + '<div id="nx-viewbar"><span>Conversación finalizada · solo lectura</span><button id="nx-view-hist" type="button">← Mis chats</button></div>'
+    + '<div id="nx-hist"><button id="nx-hist-back" type="button">← Volver al chat</button><div id="nx-hist-list"></div></div>'
+    + '<div id="nx-finbar"><button id="nx-fin-btn" type="button">Finalizar chat</button></div>'
+    + '<div id="nx-closed"><b>Chat finalizado. Gracias por escribirnos.</b><p>Si necesitas algo más, puedes empezar un chat nuevo.</p><button id="nx-again" type="button">Iniciar un chat nuevo</button></div>'
     + '<form id="nx-ch-form"><input id="nx-ch-input" type="text" placeholder="Escribe tu mensaje…" autocomplete="off">'
     + '<button id="nx-ch-send" type="submit">Enviar</button></form>';
   document.body.appendChild(panel);
@@ -147,6 +180,11 @@
   var formEl = panel.querySelector('#nx-ch-form');
   var inputEl = panel.querySelector('#nx-ch-input');
   var sendBtn = panel.querySelector('#nx-ch-send');
+  var finbarEl = panel.querySelector('#nx-finbar');
+  var closedEl = panel.querySelector('#nx-closed');
+  var histEl = panel.querySelector('#nx-hist');
+  var histListEl = panel.querySelector('#nx-hist-list');
+  var viewbarEl = panel.querySelector('#nx-viewbar');
 
   function setStatus(msg){
     if(msg){ statusEl.textContent = msg; statusEl.style.display = 'block'; }
@@ -170,12 +208,23 @@
   }
   function refreshNameGate(){
     var needName = !visitorName && !acct;
-    nameBox.style.display = needName ? 'flex' : 'none';
-    msgsEl.style.display = needName ? 'none' : 'flex';
+    nameBox.style.display = (needName && !histOpen && !viewing) ? 'flex' : 'none';
+    msgsEl.style.display = (needName || histOpen) ? 'none' : 'flex';
     formEl.style.display = needName ? 'none' : 'flex';
+    refreshBars();
   }
+  /* Barras según estado: «Finalizar chat» solo con la conversación
+     viva abierta; el cierre sustituye al formulario al finalizar. */
+  function refreshBars(){
+    var started = !!visitorName || !!acct;
+    if(started) formEl.style.display = (!finalizada && !viewing && !histOpen) ? 'flex' : 'none';
+    finbarEl.classList.toggle('open', !!(started && conv && !finalizada && !viewing && !histOpen));
+    closedEl.classList.toggle('open', !!(started && finalizada && !viewing && !histOpen));
+    viewbarEl.classList.toggle('open', !!viewing);
+  }
+  function showClosed(){ finalizada = true; refreshBars(); }
   function pollNow(){
-    if(!conv) return Promise.resolve();
+    if(!conv || viewing) return Promise.resolve();
     return fetch(CHAT_BASE + '/poll?conv=' + encodeURIComponent(conv) + '&after=' + seen)
       .then(function(r){
         if(r.status === 404){
@@ -194,6 +243,7 @@
         (j.messages || []).forEach(addMsg);
         if(typeof j.total === 'number') seen = j.total;
         else seen += (j.messages || []).length;
+        if(j.finalizada) showClosed();
       })
       .catch(function(){ /* red caída: el siguiente sondeo reintenta solo */ });
   }
@@ -204,7 +254,80 @@
   }
   function stopPolling(){ if(pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
 
+  /* ----- Finalizar chat / chat nuevo / «Mis chats» (registro) ----- */
+  function doFinalizar(){
+    if(!conv || finalizada) return;
+    fetch(CHAT_BASE + '/finalizar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conv: conv }) })
+      .catch(function(){})
+      .then(function(){ showClosed(); });
+  }
+  function newChat(){
+    finalizada = false; viewing = null; seen = 0;
+    try{ localStorage.removeItem(convKey()); }catch(e){}
+    conv = null;
+    msgsEl.innerHTML = '<div id="nx-ch-empty">Escríbenos tu mensaje y te respondemos en este mismo chat.</div>';
+    emptyEl = panel.querySelector('#nx-ch-empty');
+    histOpen = false; histEl.classList.remove('open');
+    refreshNameGate();
+    if(acct){ ensureAcctConv().then(function(){ if(!conv) return ensureOpen(); }).then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
+    else if(visitorName){ ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
+  }
+  function fmtFecha(ts){
+    if(!ts) return '';
+    var d = new Date(ts < 1e12 ? ts * 1000 : ts);
+    if(isNaN(d)) return '';
+    try{ return d.toLocaleDateString('es', { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('es', { hour: 'numeric', minute: '2-digit' }); }catch(e){ return ''; }
+  }
+  function loadHist(){
+    histListEl.innerHTML = '<div style="color:#47617e;font-size:14px;text-align:center;padding:14px 6px">Cargando…</div>';
+    var p = acct
+      ? fetch(CHAT_BASE + '/myhistory', { headers: { 'Authorization': 'Bearer ' + acct.token } }).then(function(r){ return r.json(); })
+      : fetch(CHAT_BASE + '/myhistory', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: convIds }) }).then(function(r){ return r.json(); });
+    p.then(function(j){
+      var chats = (j && j.chats) || [];
+      if(!chats.length){ histListEl.innerHTML = '<div style="color:#47617e;font-size:14px;text-align:center;padding:14px 6px">Todavía no tienes chats guardados.</div>'; return; }
+      histListEl.innerHTML = '';
+      chats.forEach(function(it){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'nx-hi';
+        var tag = it.finalizada ? '<span class="nx-tag">Finalizada</span>' : (it.activa ? '<span class="nx-tag on">Activa</span>' : '<span class="nx-tag">Anterior</span>');
+        b.innerHTML = '<span class="d">' + esc(fmtFecha(it.updated || it.created)) + '</span>' + tag + '<div class="p">' + esc((it.last_f === 'v' ? 'Tú: ' : '') + (it.last || '')) + '</div>';
+        b.addEventListener('click', function(){ openHistItem(it); });
+        histListEl.appendChild(b);
+      });
+    }).catch(function(){ histListEl.innerHTML = '<div style="color:#47617e;font-size:14px;text-align:center;padding:14px 6px">No se pudo cargar tu registro.</div>'; });
+  }
+  function openHistory(){
+    histOpen = true; viewing = null;
+    panel.classList.add('open');
+    histEl.classList.add('open');
+    refreshNameGate();
+    loadHist();
+    startPolling();
+  }
+  function closeHistToChat(){
+    histOpen = false; viewing = null;
+    histEl.classList.remove('open');
+    seen = 0; msgsEl.innerHTML = '';
+    refreshNameGate();
+    if(conv) pollNow();
+  }
+  function openHistItem(it){
+    if(it.conv === conv && !it.finalizada){ closeHistToChat(); return; }
+    viewing = it.conv; histOpen = false;
+    histEl.classList.remove('open');
+    msgsEl.style.display = 'flex';
+    viewbarEl.querySelector('span').textContent = it.finalizada ? 'Conversación finalizada · solo lectura' : 'Conversación anterior · solo lectura';
+    refreshBars();
+    msgsEl.innerHTML = '';
+    fetch(CHAT_BASE + '/poll?conv=' + encodeURIComponent(it.conv) + '&after=0')
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j && j.ok){ (j.messages || []).forEach(addMsg); } })
+      .catch(function(){});
+  }
+
   function openChat(){
+    histOpen = false; viewing = null;
+    histEl.classList.remove('open');
     panel.classList.add('open');
     refreshNameGate();
     if(visitorName){ if(conv) startPolling(); else ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
@@ -214,6 +337,11 @@
   }
   function closeChat(){ panel.classList.remove('open'); stopPolling(); }
   window.nxOpenChat = openChat;
+  window.nxOpenHistory = openHistory;
+  panel.querySelector('#nx-fin-btn').addEventListener('click', doFinalizar);
+  panel.querySelector('#nx-again').addEventListener('click', newChat);
+  panel.querySelector('#nx-hist-back').addEventListener('click', closeHistToChat);
+  panel.querySelector('#nx-view-hist').addEventListener('click', openHistory);
   panel.querySelector('.nx-ch-x').addEventListener('click', closeChat);
 
   panel.querySelector('#nx-ch-start').addEventListener('click', function(){
@@ -239,12 +367,15 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
-    }).then(function(r){ if(!r.ok) throw new Error('send ' + r.status); return r.json(); })
-      .then(function(j){
+    }).then(function(r){ return r.json().then(function(j){ return { status: r.status, j: j }; }); })
+      .then(function(res){
+        if(res.status === 409){ inputEl.value = ''; setStatus(''); showClosed(); return; }
+        var j = res.j;
         if(!j || !j.ok) throw new Error('send');
-        if(j.conv && j.conv !== conv){ conv = j.conv; lsSet(convKey(), conv); }
+        if(j.conv && j.conv !== conv){ conv = j.conv; noteConv(conv); lsSet(convKey(), conv); }
         inputEl.value = '';
         setStatus('');
+        refreshBars();
         return pollNow(); /* trae el saludo automático y el propio mensaje */
       })
       .catch(function(){
@@ -264,6 +395,15 @@
       e.preventDefault();
       menu.classList.remove('open');
       openChat();
+    });
+    /* «Mis chats»: el registro de conversaciones del cliente */
+    var aH = document.createElement('a');
+    aH.href = '#'; aH.textContent = 'Mis chats'; aH.className = 'nx-menu-hist';
+    if(logoutA) menu.insertBefore(aH, logoutA); else menu.appendChild(aH);
+    aH.addEventListener('click', function(e){
+      e.preventDefault();
+      menu.classList.remove('open');
+      openHistory();
     });
   }
   /* enlaces marcados en otras páginas del preview (p. ej. Políticas) */
