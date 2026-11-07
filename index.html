@@ -140,6 +140,45 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 #q-btn{display:inline-flex!important;align-items:center;justify-content:center}
 #q-btn svg{display:block}
 </style>
+<script>
+/* Apertura del sitio con sesión de ADMINISTRADOR (pedido de Sergio):
+   el admin NO aterriza en el escaparate («Explorar»); entra directo a
+   admin.html, que sin ?tab= abre en su pantalla fija «Bienvenido,
+   señor.» con el header normal de NEXO (el mismo patrón que Rager).
+   Sesión normal o sin sesión: no se toca nada. Si el token está por
+   vencer, se renueva primero, igual que hace el resto del sitio, y
+   cualquier fallo de red deja el flujo normal intacto. */
+(function(){
+  try{
+    var s = JSON.parse(localStorage.getItem('nexo_session') || 'null');
+    if(!s || !s.access_token || !s.user || !s.user.id) return;
+    var SB = 'https://ywtmzkzcxnntvxvjcger.supabase.co';
+    var ANON = 'sb_publishable_hm3dr-gmYE1loU-yXiZkow_uompYxYl';
+    function check(tok){
+      fetch(SB + '/rest/v1/profiles?user_id=eq.' + encodeURIComponent(s.user.id) + '&select=es_admin', {
+        headers: { 'apikey': ANON, 'Authorization': 'Bearer ' + tok }
+      }).then(function(r){ return r.ok ? r.json() : []; })
+        .then(function(rows){
+          if(rows && rows[0] && rows[0].es_admin === true){ location.replace('admin.html'); }
+        }).catch(function(){});
+    }
+    var exp = 0;
+    if(s.expires_at) exp = s.expires_at * 1000;
+    else { try{ exp = JSON.parse(atob(s.access_token.split('.')[1])).exp * 1000; }catch(e){} }
+    if(exp && Date.now() >= exp - 120000 && s.refresh_token){
+      fetch(SB + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST', headers: { 'apikey': ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: s.refresh_token })
+      }).then(function(r){ return r.json(); })
+        .then(function(ns){
+          if(ns && ns.access_token){ try{ localStorage.setItem('nexo_session', JSON.stringify(ns)); }catch(e){} check(ns.access_token); }
+        }).catch(function(){});
+    } else {
+      check(s.access_token);
+    }
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 <script>
