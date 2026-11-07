@@ -85,6 +85,24 @@
       .then(function(j){ if(j && j.conv){ conv = j.conv; lsSet('nexo_chat_conv_acc', conv); seen = 0; } })
       .catch(function(){});
   }
+  var opening = false;
+  /* El saludo existe DESDE que el cliente entra al chat (orden de
+     Sergio): al entrar —con sesion, directo; el visitante, al tocar
+     «Empezar chat»— la conversacion se crea en el servidor con su
+     saludo ya puesto, sin esperar a su primer mensaje. */
+  function ensureOpen(){
+    if(conv || opening) return Promise.resolve();
+    if(!visitorName && !acct) return Promise.resolve();
+    opening = true;
+    var body = acct ? { auth: acct.token } : { name: visitorName, contact: visitorContact };
+    return fetch(CHAT_BASE + '/open', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        opening = false;
+        if(j && j.ok && j.conv){ conv = j.conv; lsSet(convKey(), conv); seen = 0; return pollNow(); }
+      })
+      .catch(function(){ opening = false; });
+  }
   if(acct) ensureAcctConv();
   var seen = 0;              /* mensajes ya pintados (parámetro after del poll) */
   var pollTimer = null;
@@ -189,8 +207,8 @@
   function openChat(){
     panel.classList.add('open');
     refreshNameGate();
-    if(visitorName) startPolling();
-    else if(acct){ if(conv) startPolling(); else ensureAcctConv().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
+    if(visitorName){ if(conv) startPolling(); else ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
+    else if(acct){ if(conv) startPolling(); else ensureAcctConv().then(function(){ if(!panel.classList.contains('open')) return; if(conv) startPolling(); else ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }); }
     var f = (visitorName || acct) ? inputEl : panel.querySelector('#nx-name-in');
     if(f) setTimeout(function(){ try{ f.focus(); }catch(e){} }, 60);
   }
@@ -205,7 +223,7 @@
     var c = panel.querySelector('#nx-contact-in').value.trim();
     if(c){ visitorContact = c; lsSet('nexo_chat_contact', c); }
     refreshNameGate();
-    startPolling();
+    ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); });
     inputEl.focus();
   });
 
