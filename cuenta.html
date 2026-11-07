@@ -77,6 +77,7 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
 header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:50vh;display:flex!important;flex-direction:column;justify-content:space-evenly;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .25s ease,transform .25s ease,visibility .25s;overflow:hidden;z-index:290}
+html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
@@ -136,7 +137,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
       <a href="index.html">Inicio</a>
       <a href="cuenta.html" onclick="return goMiCuenta()">Mi cuenta</a>
       <a href="comprador/perfil.html?ver=carrito">Carrito</a>
-          <a href="#" id="menu-logout" style="display:none;color:#ff7b7b" onclick="return doLogout()">Cerrar sesión</a>
+          <a href="#" id="menu-logout" style="display:none;color:#ff201f" onclick="return doLogout()">Cerrar sesión</a>
 </nav>
   </div>
 </header>
@@ -159,7 +160,7 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
         <label>Contraseña</label>
         <div class="passwrap"><input id="in-pass" type="password" placeholder="••••••••" autocomplete="current-password"><button type="button" class="eye" data-for="in-pass">Ver</button></div>
         <button class="btn" id="btn-in">Entrar</button>
-        <a href="#" class="forgot" id="link-forgot">¿Olvidaste tu contraseña?</a>
+        <a href="#" class="forgot" id="link-forgot">Olvidé mi contraseña</a>
       </div>
       <div id="form-up" class="hidden">
         <label>Tu nombre</label>
@@ -571,10 +572,10 @@ Array.prototype.forEach.call(document.querySelectorAll('.eye'), function(b){
 document.getElementById('link-forgot').onclick = function(){
   hideErr();
   var email = document.getElementById('in-email').value.trim();
-  if(!email || email.indexOf('@') < 0){ showErr('Escribe tu correo arriba y vuelve a tocar "¿Olvidaste tu contraseña?".'); return false; }
+  if(!email || email.indexOf('@') < 0){ showErr('Escribe tu correo arriba y vuelve a tocar «Olvidé mi contraseña».'); return false; }
   fetch(SUPABASE_URL + '/auth/v1/recover', {
     method: 'POST', headers: headers(),
-    body: JSON.stringify({ email: email, redirect_to: 'https://chechosirr.github.io/Nexo/restablecer.html' })
+    body: JSON.stringify({ email: email, redirect_to: location.href.split('#')[0].split('?')[0].replace(/cuenta\.html$/, 'restablecer.html') })
   }).then(function(){
     var m = document.getElementById('okmsg');
     m.textContent = 'Si ese correo tiene cuenta, te enviamos un enlace para crear una contraseña nueva. Revisa tu correo (y el spam).';
@@ -585,9 +586,9 @@ document.getElementById('link-forgot').onclick = function(){
 document.getElementById('menu-btn').onclick = function(e){ e.stopPropagation(); document.getElementById('menu').classList.toggle('open'); };
 document.addEventListener('click', function(){ var m = document.getElementById('menu'); if(m) m.classList.remove('open'); });
 function routeMiCuenta(tipo, slug){
-  if(tipo === 'vendedor' && slug){ location.href = '/Nexo/vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
-  else if(tipo === 'vendedor'){ location.href = '/Nexo/vendedor/cuenta.html'; }
-  else { location.href = '/Nexo/comprador/perfil.html'; }
+  if(tipo === 'vendedor' && slug){ location.href = 'vendedor/index.html?s=' + encodeURIComponent(slug) + '&edit=1'; }
+  else if(tipo === 'vendedor'){ location.href = 'vendedor/cuenta.html'; }
+  else { location.href = 'comprador/perfil.html'; }
 }
 function goMiCuenta(){
   try{
@@ -600,7 +601,7 @@ function goMiCuenta(){
     fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + uid + '&select=tipo,es_admin', { headers: H })
     .then(function(r){ return r.json(); })
     .then(function(rows){
-      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = '/Nexo/admin.html'; return; }
+      if(rows && rows[0] && rows[0].es_admin){ try{ localStorage.removeItem('nexo_tipo'); localStorage.removeItem('nexo_slug'); }catch(e){} location.href = 'admin.html'; return; }
       var t = (rows && rows[0] && rows[0].tipo) || 'comprador';
       try{ localStorage.setItem('nexo_tipo', t); }catch(e){}
       if(t === 'vendedor'){
@@ -614,7 +615,7 @@ function goMiCuenta(){
       } else {
         routeMiCuenta(t, null);
       }
-    }).catch(function(){ location.href = '/Nexo/cuenta.html'; });
+    }).catch(function(){ location.href = 'cuenta.html'; });
     return false;
   }catch(e){ return true; }
 }
@@ -624,7 +625,7 @@ function doLogout(){
     localStorage.removeItem('nexo_tipo');
     localStorage.removeItem('nexo_slug');
   }catch(e){}
-  location.href = '/Nexo/index.html';
+  location.href = 'index.html';
   return false;
 }
 (function(){
@@ -637,6 +638,8 @@ function doLogout(){
   }catch(e){}
 })();
 </script>
+<script>window.NX_AYUDA_OPTS={fixedButton:false};</script>
+<script src="nexo-ayuda.js"></script>
 <script>function nxBack(){try{if(window.history.length>1){history.back();return;}}catch(e){}var a=document.querySelector('header.top .logo');window.location.href=a?a.getAttribute('href'):'index.html';}</script>
 </body>
 </html>

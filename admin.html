@@ -127,6 +127,7 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
 header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:50vh;display:flex!important;flex-direction:column;justify-content:space-evenly;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .25s ease,transform .25s ease,visibility .25s;overflow:hidden;z-index:290}
+html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
@@ -138,19 +139,26 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 /* Lupa bien centrada en su botón (pedido de Sergio) */
 .qgo{display:inline-flex!important;align-items:center;justify-content:center}
 .qgo svg{display:block}
+/* ===== Inicio del administrador: página «Bienvenido, señor.» ===== */
+#admin-home{position:fixed;inset:0;z-index:35;background:#0a1826;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}#admin-home .welcome-hero{background:none;border:none;box-shadow:none;border-radius:0;padding:0;margin:0}#admin-home .welcome-txt{font-size:clamp(46px,11vw,88px)}#admin-home.hidden{display:none}
+.welcome-hero{background:linear-gradient(180deg,#17334f,#0c1e33);border:1px solid #2b4d74;border-radius:22px;padding:54px 22px 44px;text-align:center;margin:6px 0 22px}
+.welcome-txt{font-weight:900;font-size:clamp(34px,8vw,56px);letter-spacing:.01em;color:#f2f7fd}
+.who-line{color:#b9cfe4;margin:16px 0 4px;font-size:14.5px}
+.welcome-hint{color:#7e97ad;margin:0;font-size:14px}
+body.is-admin .tabs{display:none}
 </style>
 </head>
 <body>
 <header class="top">
  <button class="nx-back" aria-label="Volver" onclick="nxBack()">&#8592;</button>
-  <a class="logo" href="index.html">Nexo</a>
+  <a class="logo" href="admin.html">Nexo</a>
   <div class="menuwrap">
     <button id="menubtn" aria-label="Menú">☰</button>
     <nav class="ddnav" id="ddnav">
       <a href="index.html">Inicio</a>
       <a href="index.html">Tienda</a>
       <a href="comprador/perfil.html">Mi cuenta</a>
-      <a href="#" id="logout" style="color:#ff7b7b">Cerrar sesión</a>
+      <a href="#" id="logout" style="color:#ff201f">Cerrar sesión</a>
     </nav>
   </div>
 </header>
@@ -161,8 +169,17 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 </div>
 
 <main class="hidden" id="panel">
-  <h1 style="margin:0">Panel de administrador</h1>
-  <p class="sub" id="who">—</p>
+  <!-- Página de inicio del administrador: «Bienvenido, señor.»
+       Las secciones se eligen SOLO desde el menú ☰; en el cuerpo ya
+       no hay parrilla de botones de navegación ni botón grande de Chat
+       (la parrilla .tabs queda únicamente para cuentas de comprador). -->
+  <div id="admin-home" class="hidden">
+    <div class="welcome-hero">
+      <div class="welcome-txt">Bienvenido, señor.</div>
+      <p class="who-line" id="who">—</p>
+      <p class="welcome-hint">Elige una sección en el menú ☰.</p>
+    </div>
+  </div>
   <div class="tabs">
     <button data-tab="resumen" class="on">Resumen</button>
     <button data-tab="revendedores">Revendedores</button>
@@ -822,14 +839,26 @@ function renderBuyers(){
  });
 }
 
+/* Navegación por secciones SIN parrilla de botones para el
+   administrador: su página de inicio es «Bienvenido, señor.»
+   (#admin-home) y las secciones se abren desde el menú ☰ con
+   admin.html?tab=<sección>. La parrilla .tabs solo la usan las
+   cuentas de comprador (para el admin se oculta con body.is-admin). */
+function showSection(t){
+ ['resumen','pedidos','ventas','revendedores','compradores','historial','inventario'].forEach(function(x){
+ document.getElementById('tab-' + x).classList.toggle('hidden', x !== t);
+ });
+ var home = document.getElementById('admin-home');
+ if(home) home.classList.toggle('hidden', !!t);
+ document.body.style.overflow = t ? '' : (document.body.classList.contains('is-admin') ? 'hidden' : '');
+ if(t === 'pedidos'){ renderPedidos(); adminAlertsMaybe(); }
+}
+window.__showSection = showSection;
 Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(b){
  b.onclick = function(){
  Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(x){ x.classList.remove('on'); });
  b.classList.add('on');
- ['resumen','pedidos','ventas','revendedores','compradores','historial','inventario'].forEach(function(t){
- document.getElementById('tab-' + t).classList.toggle('hidden', t !== b.getAttribute('data-tab'));
- });
- if(b.getAttribute('data-tab') === 'pedidos'){ renderPedidos(); adminAlertsMaybe(); }
+ showSection(b.getAttribute('data-tab'));
  };
 });
 
@@ -843,6 +872,8 @@ Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function
  document.getElementById('who').textContent = 'Sesión de ' + (p.nombre || (S.user && S.user.email) || 'administrador');
  document.getElementById('gate').classList.add('hidden');
  document.getElementById('panel').classList.remove('hidden');
+ if(p.es_admin){ document.body.classList.add('is-admin'); }
+ if(window.__showSection){ var _tab = new URLSearchParams(location.search).get('tab') || ''; window.__showSection(p.es_admin ? _tab : (_tab || 'resumen')); }
  cargar().catch(function(){ gateFail('No se pudieron cargar los datos. Revisa tu conexión.'); document.getElementById('gate').classList.remove('hidden'); document.getElementById('panel').classList.add('hidden'); });
  }).catch(function(){ gateFail('No se pudo comprobar el acceso (¿ya corriste el SQL de administrador en Supabase?).'); });
 })();
@@ -869,6 +900,8 @@ Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function
   armSearch('hist-q', function(){ renderHistorial(); });
 })();
 </script>
+<script>window.NX_AYUDA_OPTS={fixedButton:false};</script>
+<script src="nexo-ayuda.js"></script>
 <script>function nxBack(){try{if(window.history.length>1){history.back();return;}}catch(e){}var a=document.querySelector('header.top .logo');window.location.href=a?a.getAttribute('href'):'index.html';}</script>
 </body>
 </html>
