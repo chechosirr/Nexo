@@ -56,6 +56,36 @@
   var conv = lsGet('nexo_chat_conv') || null;
   var visitorName = lsGet('nexo_chat_name') || '';
   var visitorContact = lsGet('nexo_chat_contact') || '';
+  /* Cliente CON sesión (Supabase, clave nexo_session): entra
+     DIRECTO al chat, sin el formulario de visitante, y sus
+     mensajes van con su token para que el servidor asocie la
+     conversación a su cuenta. Su conversación se guarda aparte. */
+  var acct = null;
+  try{
+    var _sbS = JSON.parse(lsGet('nexo_session') || 'null');
+    if(_sbS && _sbS.access_token && _sbS.user && _sbS.user.id){
+      acct = {
+        name: (_sbS.user.user_metadata && (_sbS.user.user_metadata.nombre || _sbS.user.user_metadata.name)) || _sbS.user.email || 'Cliente',
+        email: _sbS.user.email || '',
+        token: _sbS.access_token
+      };
+      conv = lsGet('nexo_chat_conv_acc') || null;
+      fetch(SUPABASE_URL + '/rest/v1/profiles?user_id=eq.' + encodeURIComponent(_sbS.user.id) + '&select=nombre', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + acct.token }
+      }).then(function(r){ return r.ok ? r.json() : []; })
+        .then(function(rows){ if(rows && rows[0] && rows[0].nombre) acct.name = rows[0].nombre; })
+        .catch(function(){});
+    }
+  }catch(e){}
+  function convKey(){ return acct ? 'nexo_chat_conv_acc' : 'nexo_chat_conv'; }
+  function ensureAcctConv(){
+    if(!acct || conv) return Promise.resolve();
+    return fetch(CHAT_BASE + '/myconv', { headers: { 'Authorization': 'Bearer ' + acct.token } })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if(j && j.conv){ conv = j.conv; lsSet('nexo_chat_conv_acc', conv); seen = 0; } })
+      .catch(function(){});
+  }
+  if(acct) ensureAcctConv();
   var seen = 0;              /* mensajes ya pintados (parámetro after del poll) */
   var pollTimer = null;
   var sending = false;
@@ -121,7 +151,7 @@
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
   function refreshNameGate(){
-    var needName = !visitorName;
+    var needName = !visitorName && !acct;
     nameBox.style.display = needName ? 'flex' : 'none';
     msgsEl.style.display = needName ? 'none' : 'flex';
     formEl.style.display = needName ? 'none' : 'flex';
@@ -160,7 +190,8 @@
     panel.classList.add('open');
     refreshNameGate();
     if(visitorName) startPolling();
-    var f = visitorName ? inputEl : panel.querySelector('#nx-name-in');
+    else if(acct){ if(conv) startPolling(); else ensureAcctConv().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
+    var f = (visitorName || acct) ? inputEl : panel.querySelector('#nx-name-in');
     if(f) setTimeout(function(){ try{ f.focus(); }catch(e){} }, 60);
   }
   function closeChat(){ panel.classList.remove('open'); stopPolling(); }
@@ -181,11 +212,11 @@
   formEl.addEventListener('submit', function(e){
     e.preventDefault();
     var text = inputEl.value.trim();
-    if(!text || sending || !visitorName) return;
+    if(!text || sending || (!visitorName && !acct)) return;
     sending = true; sendBtn.disabled = true;
-    var body = { name: visitorName, text: text };
-    if(visitorContact) body.contact = visitorContact;
-    if(conv) body.conv = conv;
+    var body;
+    if(acct){ body = { text: text, auth: acct.token }; if(conv) body.conv = conv; }
+    else { body = { name: visitorName, text: text }; if(visitorContact) body.contact = visitorContact; if(conv) body.conv = conv; }
     fetch(CHAT_BASE + '/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -193,7 +224,7 @@
     }).then(function(r){ if(!r.ok) throw new Error('send ' + r.status); return r.json(); })
       .then(function(j){
         if(!j || !j.ok) throw new Error('send');
-        if(j.conv && j.conv !== conv){ conv = j.conv; lsSet('nexo_chat_conv', conv); }
+        if(j.conv && j.conv !== conv){ conv = j.conv; lsSet(convKey(), conv); }
         inputEl.value = '';
         setStatus('');
         return pollNow(); /* trae el saludo automático y el propio mensaje */
