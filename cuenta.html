@@ -313,6 +313,7 @@ function nxPlusCode(lat, lng){
   }
   return code;
 }
+var _leafletQ = null;
 function ensureLeaflet(cb){
   if(window.L){ cb(); return; }
   if(_leafletQ){ _leafletQ.push(cb); return; }
@@ -388,15 +389,26 @@ function tryInitUpMap(){
   ensureLeaflet(initUpPinMap);
 }
 document.getElementById('up-loc').onclick = function(){
+  var btn = this;
   if(!navigator.geolocation){ showErr('Tu teléfono no permitió la ubicación automática. Mueve el pin en el mapa.'); return; }
+  var done = false, prev = btn.textContent;
+  btn.textContent = 'Buscando tu ubicación…';
+  var wd = setTimeout(function(){
+    if(done) return; done = true; btn.textContent = prev;
+    showErr('Tu teléfono no respondió con la ubicación. Revisa que la ubicación esté activada y que le hayas dado permiso, o mueve el pin en el mapa hasta tu casa.');
+  }, 13000);
   navigator.geolocation.getCurrentPosition(function(pos){
+    if(done) return; done = true; clearTimeout(wd); btn.textContent = prev; hideErr();
     var lat = pos.coords.latitude, lng = pos.coords.longitude;
     ensureLeaflet(function(){
       initUpPinMap();
       if(_upMap && _upMarker){ _upMap.setView([lat, lng], 16); _upMarker.setLatLng([lat, lng]); _upMarker.setOpacity(1); }
       setUpPinTentative(lat, lng);
     });
-  }, function(){ showErr('No se pudo obtener tu ubicación. Mueve el pin en el mapa hasta tu casa.'); }, { enableHighAccuracy: true, timeout: 10000 });
+  }, function(){
+    if(done) return; done = true; clearTimeout(wd); btn.textContent = prev;
+    showErr('No se pudo obtener tu ubicación. Mueve el pin en el mapa hasta tu casa.');
+  }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
 };
 document.getElementById('up-confirm-pin').onclick = function(){ if(_upPin){ _upPin.confirmed = true; updateUpPinUI(); } };
 document.getElementById('up-clear-pin').onclick = function(){ _upPin = null; if(_upMarker) _upMarker.setOpacity(0.45); updateUpPinUI(); };
