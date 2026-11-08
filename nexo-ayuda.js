@@ -52,6 +52,12 @@
   + '#nx-againbar{display:none;gap:8px;padding:9px 10px;border-top:1px solid #c7d6ea;background:#fff}'
   + '#nx-againbar.open{display:flex}'
   + '#nx-againbar button{flex:1;border:1px solid #b9cfe6;background:#eef3fa;color:#1d4568;border-radius:10px;padding:9px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}'
+  + '#nx-lobby{display:none;padding:22px 16px;background:#fff;flex:1;flex-direction:column;gap:16px}'
+  + '#nx-lobby.open{display:flex}'
+  + '#nx-lobby p{font-size:14.5px;line-height:1.55;color:#142c47;margin:0;text-align:center}'
+  + '#nx-lobby button{border:1px solid #b9cfe6;background:#eef3fa;color:#1d4568;border-radius:10px;padding:12px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;width:100%}'
+  + '#nx-histbar{display:flex;margin-top:auto;padding-top:10px}'
+  + '#nx-histbar button{flex:1;border:1px solid #b9cfe6;background:#eef3fa;color:#1d4568;border-radius:10px;padding:9px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}'
   + '#nx-closed b{font-size:16px;color:#111}'
   + '#nx-closed p{color:#47617e;font-size:13.5px;margin:8px 0 14px}'
   + '#nx-closed button{border:0;border-radius:999px;padding:11px 20px;font-family:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)}'
@@ -107,6 +113,7 @@
   function noteConv(id){ if(!id) return; if(convIds.indexOf(id) < 0){ convIds.push(id); if(convIds.length > 30) convIds = convIds.slice(-30); lsSet('nexo_chat_convs', JSON.stringify(convIds)); } }
   if(conv) noteConv(conv);
   var finalizada = false;   /* la conversación actual quedó cerrada */
+  var lobby = false;        /* vestíbulo de Ayuda: aún no se crea ningún chat */
   var viewing = null;       /* conv abierta en solo lectura desde «Mis chats» */
   var histOpen = false;     /* la vista «Mis chats» está abierta */
   function convKey(){ return acct ? 'nexo_chat_conv_acc' : 'nexo_chat_conv'; }
@@ -148,7 +155,7 @@
     btn.setAttribute('aria-label','Ayuda');
     btn.textContent = '💬 Ayuda';
     document.body.appendChild(btn);
-    btn.addEventListener('click', function(){ openChat(); });
+    btn.addEventListener('click', function(){ openAyuda(); });
   }
 
   /* ---------- panel del chat ---------- */
@@ -159,6 +166,8 @@
   panel.innerHTML =
       '<div class="nx-ch-head"><div><b>Ayuda · Nexo</b><small>Te respondemos aquí mismo</small></div>'
     + '<button class="nx-ch-x" type="button" aria-label="Cerrar">✕</button></div>'
+    + '<div id="nx-lobby"><p>Para hablar con nosotros, toca el botón <b>«Iniciar un chat nuevo»</b>: ahí se abre tu conversación y te respondemos aquí mismo.</p>'
+    + '<button id="nx-lobby-btn" type="button">Iniciar un chat nuevo</button></div>'
     + '<div id="nx-ch-name">'
     +   '<label for="nx-name-in">¿Cómo te llamas?</label>'
     +   '<input id="nx-name-in" type="text" autocomplete="name" placeholder="Tu nombre">'
@@ -169,7 +178,8 @@
     + '<div id="nx-ch-msgs"><div id="nx-ch-empty">Escríbenos tu mensaje y te respondemos en este mismo chat.</div></div>'
     + '<div id="nx-ch-status"></div>'
     + '<div id="nx-viewbar"><span>Conversación finalizada · solo lectura</span><button id="nx-view-hist" type="button">← Mis chats</button></div>'
-    + '<div id="nx-hist"><button id="nx-hist-back" type="button">← Volver al chat</button><div id="nx-hist-list"></div></div>'
+    + '<div id="nx-hist"><button id="nx-hist-back" type="button">← Volver al chat</button><div id="nx-hist-list"></div>'
+    + '<div id="nx-histbar"><button id="nx-hist-new" type="button">Iniciar un chat nuevo</button></div></div>'
     + '<div id="nx-finbar"><button id="nx-fin-btn" type="button">Finalizar chat</button></div>'
     + '<div id="nx-closed"><b>Chat finalizado. Gracias por escribirnos.</b><p>Si necesitas algo más, puedes empezar un chat nuevo.</p></div>'
     + '<div id="nx-againbar"><button id="nx-again" type="button">Iniciar un chat nuevo</button></div>'
@@ -190,6 +200,7 @@
   var histEl = panel.querySelector('#nx-hist');
   var histListEl = panel.querySelector('#nx-hist-list');
   var viewbarEl = panel.querySelector('#nx-viewbar');
+  var lobbyEl = panel.querySelector('#nx-lobby');
 
   function setStatus(msg){
     if(msg){ statusEl.textContent = msg; statusEl.style.display = 'block'; }
@@ -212,6 +223,15 @@
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
   function refreshNameGate(){
+    if(lobby){
+      nameBox.style.display = 'none';
+      msgsEl.style.display = 'none';
+      formEl.style.display = 'none';
+      lobbyEl.classList.add('open');
+      refreshBars();
+      return;
+    }
+    lobbyEl.classList.remove('open');
     var needName = !visitorName && !acct;
     nameBox.style.display = (needName && !histOpen && !viewing) ? 'flex' : 'none';
     msgsEl.style.display = (needName || histOpen) ? 'none' : 'flex';
@@ -221,6 +241,7 @@
   /* Barras según estado: «Finalizar chat» solo con la conversación
      viva abierta; el cierre sustituye al formulario al finalizar. */
   function refreshBars(){
+    if(lobby){ finbarEl.classList.remove('open'); closedEl.classList.remove('open'); againbarEl.classList.remove('open'); viewbarEl.classList.remove('open'); return; }
     var started = !!visitorName || !!acct;
     if(started) formEl.style.display = (!finalizada && !viewing && !histOpen) ? 'flex' : 'none';
     finbarEl.classList.toggle('open', !!(started && conv && !finalizada && !viewing && !histOpen));
@@ -303,7 +324,7 @@
     }).catch(function(){ histListEl.innerHTML = '<div style="color:#47617e;font-size:14px;text-align:center;padding:14px 6px">No se pudo cargar tu registro.</div>'; });
   }
   function openHistory(){
-    histOpen = true; viewing = null;
+    histOpen = true; viewing = null; lobby = false;
     panel.classList.add('open');
     histEl.classList.add('open');
     refreshNameGate();
@@ -331,19 +352,40 @@
       .catch(function(){});
   }
 
-  function openChat(){
-    histOpen = false; viewing = null;
-    histEl.classList.remove('open');
-    panel.classList.add('open');
+  function beginChat(){
     refreshNameGate();
     if(visitorName){ if(conv) startPolling(); else ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }
     else if(acct){ if(conv) startPolling(); else ensureAcctConv().then(function(){ if(!panel.classList.contains('open')) return; if(conv) startPolling(); else ensureOpen().then(function(){ if(panel.classList.contains('open')) startPolling(); }); }); }
     var f = (visitorName || acct) ? inputEl : panel.querySelector('#nx-name-in');
     if(f) setTimeout(function(){ try{ f.focus(); }catch(e){} }, 60);
   }
+  function openChat(){
+    histOpen = false; viewing = null;
+    histEl.classList.remove('open');
+    panel.classList.add('open');
+    lobby = false;
+    beginChat();
+  }
+  /* Entrada «Ayuda» (orden de Sergio): picar Ayuda NO crea ningún
+     chat; primero se enseña este vestíbulo y la conversación solo
+     se crea o se abre cuando el cliente toca «Iniciar un chat
+     nuevo». Las demás entradas al chat no pasan por aquí. */
+  function openAyuda(){
+    histOpen = false; viewing = null;
+    histEl.classList.remove('open');
+    panel.classList.add('open');
+    lobby = true;
+    refreshNameGate();
+    var b = panel.querySelector('#nx-lobby-btn');
+    if(b) setTimeout(function(){ try{ b.focus(); }catch(e){} }, 60);
+  }
+  function lobbyStart(){ lobby = false; beginChat(); }
   function closeChat(){ panel.classList.remove('open'); stopPolling(); }
   window.nxOpenChat = openChat;
+  window.nxOpenAyuda = openAyuda;
   window.nxOpenHistory = openHistory;
+  panel.querySelector('#nx-lobby-btn').addEventListener('click', lobbyStart);
+  panel.querySelector('#nx-hist-new').addEventListener('click', newChat);
   panel.querySelector('#nx-fin-btn').addEventListener('click', doFinalizar);
   panel.querySelector('#nx-again').addEventListener('click', newChat);
   panel.querySelector('#nx-hist-back').addEventListener('click', closeHistToChat);
@@ -400,7 +442,7 @@
     aA.addEventListener('click', function(e){
       e.preventDefault();
       menu.classList.remove('open');
-      openChat();
+      openAyuda();
     });
     /* «Mis chats»: el registro de conversaciones del cliente */
     var aH = document.createElement('a');
@@ -414,12 +456,12 @@
   }
   /* enlaces marcados en otras páginas del preview (p. ej. Políticas) */
   Array.prototype.forEach.call(document.querySelectorAll('[data-nx-ayuda]'), function(el){
-    el.addEventListener('click', function(e){ e.preventDefault(); openChat(); });
+    el.addEventListener('click', function(e){ e.preventDefault(); openAyuda(); });
   });
 
   /* abrir directo con index.html#ayuda (tras la apertura de 2,1 s) */
   if(location.hash === '#ayuda'){
-    setTimeout(openChat, 2400);
+    setTimeout(openAyuda, 2400);
   }
 
   /* ---------- experiencia de administrador (SOLO es_admin=true) ---------- */
