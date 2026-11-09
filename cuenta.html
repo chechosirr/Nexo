@@ -76,7 +76,7 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
-header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .25s ease,transform .25s ease,visibility .25s;overflow-y:auto;overflow-x:hidden;z-index:290}
+header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
 html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -126,6 +126,16 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
 <style>
 .nx-codepill{display:inline-block;background:#e8eef7;border:1.5px solid #b7cadd;color:var(--acc);font-weight:800;font-size:13.5px;border-radius:999px;padding:3px 11px;cursor:pointer;font-family:inherit;vertical-align:middle}
 .nx-codepill:active{transform:scale(.96)}
+</style>
+<style id="nx-trans">
+/* Cambios de pantalla suaves (pedido de Sergio, 2026-11-08):
+   ninguna pantalla entra de golpe \u2014 fundido con leve
+   desplazamiento, ~500 ms y easing suave. La transici\u00f3n va
+   sobre el contenido ya listo (sin esperas falsas ni pantallas
+   en blanco); el header no se anima: fijo y original siempre. */
+@keyframes nxEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+main,#wall{animation:nxEnter .5s ease}
+.nx-enter{animation:nxEnter .5s ease}
 </style>
 </head>
 <body>
@@ -294,8 +304,8 @@ var qp = new URLSearchParams(location.search);
 if(qp.get('tipo') === 'vendedor') setTipo('vendedor'); else setTipo('comprador');
 
 var tabIn = document.getElementById('tab-in'), tabUp = document.getElementById('tab-up');
-tabIn.onclick = function(){ tabIn.classList.add('on'); tabUp.classList.remove('on'); document.getElementById('form-in').classList.remove('hidden'); document.getElementById('form-up').classList.add('hidden'); hideErr(); };
-tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); document.getElementById('form-up').classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr(); tryInitUpMap(); };
+tabIn.onclick = function(){ tabIn.classList.add('on'); tabUp.classList.remove('on'); var f = document.getElementById('form-in'); f.classList.remove('hidden'); document.getElementById('form-up').classList.add('hidden'); hideErr(); f.classList.remove('nx-enter'); void f.offsetWidth; f.classList.add('nx-enter'); };
+tabUp.onclick = function(){ tabUp.classList.add('on'); tabIn.classList.remove('on'); var f = document.getElementById('form-up'); f.classList.remove('hidden'); document.getElementById('form-in').classList.add('hidden'); hideErr(); f.classList.remove('nx-enter'); void f.offsetWidth; f.classList.add('nx-enter'); tryInitUpMap(); };
 
 /* Pin de ubicación al crear la cuenta (pedido de Sergio): el comprador
    fija su casa, la confirma y esa dirección nace como su PRINCIPAL. */

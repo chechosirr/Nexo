@@ -82,7 +82,7 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
-header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .25s ease,transform .25s ease,visibility .25s;overflow-y:auto;overflow-x:hidden;z-index:290}
+header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
 html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -91,6 +91,16 @@ header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
 header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
 #btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
 #btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
+</style>
+<style id="nx-trans">
+/* Cambios de pantalla suaves (pedido de Sergio, 2026-11-08):
+   ninguna pantalla entra de golpe \u2014 fundido con leve
+   desplazamiento, ~500 ms y easing suave. La transici\u00f3n va
+   sobre el contenido ya listo (sin esperas falsas ni pantallas
+   en blanco); el header no se anima: fijo y original siempre. */
+@keyframes nxEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+main,#wall{animation:nxEnter .5s ease}
+.nx-enter{animation:nxEnter .5s ease}
 </style>
 </head>
 <body>
@@ -107,7 +117,6 @@ header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.
           <a href="#" id="menu-logout" style="display:none;color:#ff201f" onclick="return doLogout()">Cerrar sesión</a>
 </nav>
   </div>
-    <a id="btn-volver" href="../cuenta.html" onclick="return goMiCuenta()" style="background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%);color:#ffffff;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;padding:9px 18px;font-family:inherit">← Volver</a>
   </div>
 </header>
 <main id="main"><p class="empty">Cargando tu panel…</p></main>
@@ -143,13 +152,15 @@ function h(token, json){
   return x;
 }
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* Entrada suave de la vista (fundido + leve subida, ~500 ms):
+   los cambios de pantalla no caen de golpe (pedido de Sergio). */
+function nxAnimateIn(el){ if(!el) return; el.classList.remove('nx-enter'); void el.offsetWidth; el.classList.add('nx-enter'); }
 function money(n){ return '$' + Number(n).toFixed(2); }
 
 function renderAjustes(){
-  var mw = document.querySelector('.menu-wrap');
-  if(mw) mw.style.display = 'none';
-  var volver = document.getElementById('btn-volver');
-  if(volver) volver.href = 'index.html?s=' + encodeURIComponent(seller.slug);
+  /* El header NO cambia en esta sección (pedido de Sergio): el
+     ☰ se queda y no hay pastilla «Volver» a la derecha; la ← de
+     la izquierda vuelve a la pantalla anterior (el panel). */
   document.getElementById('main').innerHTML =
     '<div class="sec"><h2 style="color:#111111;font-size:24px;margin:0 0 4px">Ajustes de cuenta</h2>'
     + '<p style="font-size:13px;color:#5b7186;margin:0 0 8px">Actualiza tu correo electrónico y tu contraseña.</p>'
@@ -165,6 +176,7 @@ function renderAjustes(){
   var delBtn = document.getElementById('btn-delacc'); if(delBtn) delBtn.onclick = deleteMyAccountPanel;
   wireChangePass(function(){ return session.user.email; }, function(j){ session = j; try{ localStorage.setItem('nexo_session', JSON.stringify(j)); }catch(e){} });
   wireEmail(function(){ return session.access_token; }, function(){ return session.user.email; });
+  nxAnimateIn(document.getElementById('main'));
 }
 function boot(){
   session = getSession();
@@ -238,6 +250,7 @@ function render(){
   document.getElementById('btn-delacc').onclick = deleteMyAccountPanel;
   wireChangePass(function(){ return session.user.email; }, function(j){ session = j; try{ localStorage.setItem('nexo_session', JSON.stringify(j)); }catch(e){} });
   wireEmail(function(){ return session.access_token; }, function(){ return session.user.email; });
+  nxAnimateIn(document.getElementById('main'));
 }
 function werr(m){ var e = document.getElementById('w-err'); e.textContent = m; e.style.display = 'block'; }
 function uploadImage(file, kind){
