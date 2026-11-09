@@ -511,7 +511,7 @@ document.getElementById('btn-up').onclick = function(){
   if(!name){ showErr('Escribe tu nombre.'); return; }
   if(!email || pass.length < 6){ showErr('Escribe un correo válido y una contraseña de mínimo 6 caracteres.'); return; }
   var pass2 = document.getElementById('up-pass2').value;
-  if(pass !== pass2){ showErr('Las contraseñas no coinciden. Escríbela dos veces igual.'); return; }
+  if(pass !== pass2){ showErr('Las contraseñas no coinciden.'); return; }
   var empresa = document.getElementById('up-empresa').value.trim();
   if(tipo === 'vendedor' && !empresa){ showErr('Escribe el nombre de tu empresa (es obligatorio para vendedores).'); return; }
   var ciu = document.getElementById('up-ciudad').value.trim();
