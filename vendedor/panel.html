@@ -298,7 +298,7 @@ function loadReviews(){
       var avg = rows.reduce(function(a, r){ return a + r.rating; }, 0) / rows.length;
       el.innerHTML = '<p style="margin-bottom:14px"><b style="font-size:26px">' + avg.toFixed(1) + '</b> ' + starsHTML(avg) + ' <small style="color:var(--mut)">(' + rows.length + ')</small></p>'
         + rows.slice(0, 10).map(function(r){
-            return '<div style="border-top:1px solid var(--line);padding:12px 0"><b style="font-size:14px">' + esc(r.nombre || 'Comprador') + '</b> <small style="color:var(--mut)">' + new Date(r.created_at).toLocaleDateString('es') + '</small><div>' + starsHTML(r.rating) + '</div><p style="font-size:14px;color:#d4d9e2;margin-top:6px">' + esc(r.comentario || '') + '</p></div>';
+            return '<div style="border-top:1px solid var(--line);padding:12px 0"><b style="font-size:14px">' + esc(r.nombre || 'Comprador') + '</b> <small style="color:var(--mut)">' + new Date(r.created_at).toLocaleDateString('es') + '</small><div>' + starsHTML(r.rating) + '</div><p style="font-size:14px;color:#111111;margin-top:6px">' + esc(r.comentario || '') + '</p></div>';
           }).join('');
     }).catch(function(){ el.innerHTML = '<p class="empty">No se pudieron cargar.</p>'; });
 }
