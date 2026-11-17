@@ -1,1 +1,7 @@
-{"rate": 36.6243, "code": "NIO", "fuente": "Banco Central de Nicaragua", "fecha": "2026-11-17"}
+{
+ "rate": 37.9062,
+ "code": "NIO",
+ "fuente": "Tasa PayPal: oficial BCN + 3.5% de conversi\u00f3n",
+ "base_bcn": 36.6243,
+ "fecha": "2026-11-17"
+}

@@ -172,7 +172,7 @@ function api(path, token){
 }
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function money(n){ return '$' + Number(n).toFixed(2); }
-var TASA_NIO = 36.6243; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
+var TASA_NIO = 37.9062; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
 function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function moneyD(n){ return nio(n); }
 fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
