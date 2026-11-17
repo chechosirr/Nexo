@@ -78,6 +78,7 @@ header.top{flex-wrap:wrap;gap:10px}
 .menu a:hover{background:rgba(0,0,0,.05)}
 body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 #q-btn{background:#1d4568 !important;border-color:#1d4568 !important;color:#fff !important}
+.usd{font-size:.76em;color:var(--mut);font-weight:700;white-space:nowrap}
 </style>
 
 <style>
@@ -183,6 +184,12 @@ function api(path){
   }).then(function(r){ if(!r.ok) throw new Error('API ' + r.status); return r.json(); });
 }
 function money(n){ return '$' + Number(n).toFixed(2); }
+var TASA_NIO = 36.6243; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
+function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function moneyD(n){ return nio(n); }
+fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
+  if(j && j.rate && Math.abs(Number(j.rate) - TASA_NIO) > 0.0001){ TASA_NIO = Number(j.rate); render(); }
+}).catch(function(){});
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('nexo_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
 
@@ -193,7 +200,7 @@ function cardHTML(p){
     + '<span class="cat">' + esc(p.categoria || 'General') + '</span></div>'
     + '<div class="card-body"><div class="card-title">' + esc(p.titulo) + '</div></a>'
     + '<div class="card-seller">por <a href="../vendedor/?s=' + esc(s.slug || '') + '">' + esc(s.nombre || '') + '</a></div>'
-    + '<div class="card-price">' + money(p.precio) + '</div>'
+    + '<div class="card-price">' + moneyD(p.precio) + '</div>'
     + '<a class="buy" href="../producto/?id=' + p.id + '">Ver</a></div></div>';
 }
 function cats(){

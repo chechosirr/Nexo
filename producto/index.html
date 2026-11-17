@@ -77,6 +77,7 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .menu a:last-child{border-bottom:0}
 .menu a:hover{background:rgba(0,0,0,.05)}
 body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
+.usd{font-size:.76em;color:var(--mut);font-weight:700;white-space:nowrap}
 </style>
 
 <style>
@@ -171,6 +172,12 @@ function api(path, token){
 }
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function money(n){ return '$' + Number(n).toFixed(2); }
+var TASA_NIO = 36.6243; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
+function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function moneyD(n){ return nio(n); }
+fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
+  if(j && j.rate && Math.abs(Number(j.rate) - TASA_NIO) > 0.0001){ TASA_NIO = Number(j.rate); render(); }
+}).catch(function(){});
 function buyerSession(){ try { var s = JSON.parse(localStorage.getItem('nexo_session')); return (s && s.access_token) ? s : null; } catch(e){ return null; } }
 function starsHTML(r){ var s = ''; for(var i = 1; i <= 5; i++) s += i <= Math.round(r) ? '★' : '☆'; return '<span class="stars">' + s + '</span>'; }
 
@@ -204,7 +211,7 @@ function render(){
     + '<div class="pd-info"><h1>' + esc(p.titulo) + '</h1>'
     + '<div class="pd-seller">Vendido por <a href="../vendedor/?s=' + esc(s.slug || '') + '">' + esc(s.nombre || '') + '</a>' + (s.verificado ? ' ✓' : '') + '</div>'
     + (REVIEWS.length ? '<div>' + starsHTML(avg) + ' <small style="color:var(--mut)">' + avg.toFixed(1) + ' · ' + REVIEWS.length + ' reseña(s)</small></div>' : '<small style="color:var(--mut)">Sin reseñas aún</small>')
-    + '<div class="pd-price">' + money(p.precio) + '</div>'
+    + '<div class="pd-price">' + moneyD(p.precio) + '</div>'
     + (function(){
         var ts = p.tallas ? String(p.tallas).split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
         if(!ts.length) return '';

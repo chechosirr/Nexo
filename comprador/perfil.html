@@ -92,6 +92,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 .passwrap input{padding-right:74px}
 .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#1f4e79;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;padding:6px 8px}
 
+.usd{font-size:.76em;color:var(--mut);font-weight:700;white-space:nowrap}
 </style>
 
 <style>
@@ -188,6 +189,13 @@ function h(token){
 }
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function money(n){ return '$' + Number(n).toFixed(2); }
+var TASA_NIO = 36.6243; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
+function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function moneyD(n){ return nio(n); }
+function moneyT(n){ return nio(n); }
+fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
+  if(j && j.rate && Math.abs(Number(j.rate) - TASA_NIO) > 0.0001){ TASA_NIO = Number(j.rate); if(cart && cart.length) render(); }
+}).catch(function(){});
 
 function deleteMyAccountBuyer(){
   if(!session || !session.access_token){ alert('Entra a tu cuenta primero.'); return; }
@@ -224,8 +232,9 @@ function renderPayPalButtons(total){
       style: { layout: 'vertical', color: 'silver', shape: 'pill', label: 'buynow' },
       createOrder: function(data, actions){
         trackCodeCompra = genTrack();
+        var totalNow = calcFees(cartSubtotal()).total; _paidTotal = totalNow;
         return actions.order.create({
-          purchase_units: [{ custom_id: trackCodeCompra, amount: { value: total.toFixed(2), currency_code: 'USD' }, description: 'Rastreo: ' + trackCodeCompra + ' · Compra en Nexo' + (_prof && _prof.direccion ? ' · Entrega: ' + _prof.direccion + (_prof.ciudad ? ', ' + _prof.ciudad : '') : '') }]
+          purchase_units: [{ custom_id: trackCodeCompra, amount: { value: totalNow.toFixed(2), currency_code: 'USD' }, description: 'Rastreo: ' + trackCodeCompra + ' · Compra en Nexo' + (_prof && _prof.direccion ? ' · Entrega: ' + _prof.direccion + (_prof.ciudad ? ', ' + _prof.ciudad : '') : '') }]
         });
       },
       onApprove: function(data, actions){
@@ -234,7 +243,7 @@ function renderPayPalButtons(total){
           var gWa = waOrderURL();
           var gNom = (details.payer.name || {}).given_name || '';
           saveOrders(data.orderID, trackCodeCompra);
-          try{ localStorage.setItem('nexo_gracias', JSON.stringify({ tipo: 'carrito', codigo: trackCodeCompra, nombre: gNom, total: money(total), items: gLines, paypal: data.orderID, wa: gWa, extra: 'Coordinamos el envío con cada vendedor.' })); }catch(e){}
+          try{ localStorage.setItem('nexo_gracias', JSON.stringify({ tipo: 'carrito', codigo: trackCodeCompra, nombre: gNom, total: nio(_paidTotal || total), items: gLines, paypal: data.orderID, wa: gWa, extra: 'Coordinamos el envío con cada vendedor.' })); }catch(e){}
           clearCart();
           location.href = '../gracias.html';
         });
@@ -262,10 +271,11 @@ var _prof = null;
 // cuando loadShipForm() termina de cargar _prof (carga asíncrona).
 function waOrderURL(){
   var nm = (session && session.user && session.user.user_metadata && session.user.user_metadata.nombre) || 'Comprador';
-  var lines = cart.map(function(it){ return '• ' + it.products.titulo + (it.talla ? ' · Talla ' + it.talla : '') + ' x' + it.qty + ' (' + money(Number(it.products.precio) * it.qty) + ') — ' + it.products.sellers.nombre; });
-  var subtotal = cart.reduce(function(s, it){ return s + Number(it.products.precio) * it.qty; }, 0);
-  var total = calcFees(subtotal).total;
-  var msg = 'Hola Nexo, mi pedido:\n' + lines.join('\n') + '\nTotal: ' + money(total) + (trackCodeCompra ? '\nCódigo de rastreo: ' + trackCodeCompra : '');
+  var lines = cart.map(function(it){ return '• ' + it.products.titulo + (it.talla ? ' · Talla ' + it.talla : '') + ' x' + it.qty + ' (' + moneyT(Number(it.products.precio) * it.qty) + ') — ' + it.products.sellers.nombre + '\nhttps://chechosirr.github.io/Nexo/producto/?id=' + it.products.id; });
+  var subtotal = cartSubtotal();
+  var fees = calcFees(subtotal);
+  var total = fees.total;
+  var msg = 'Hola Nexo, mi pedido:\n' + lines.join('\n') + '\n\nSubtotal: ' + moneyT(subtotal) + '\nTasa de servicio: ' + moneyT(fees.service) + '\nCargo por procesamiento: ' + moneyT(fees.processing) + '\nTotal: ' + moneyT(total) + (trackCodeCompra ? '\nCódigo de rastreo: ' + trackCodeCompra : '');
   var p = _prof || {};
   var dir = [p.direccion, [p.ciudad, p.departamento].filter(Boolean).join(', '), p.pais].filter(Boolean);
   if(dir.length || p.telefono){
@@ -383,6 +393,7 @@ function applyDirToProf(){
   }
   var wb = document.getElementById('wa-order');
   if(wb) wb.href = waOrderURL();
+  refreshTotals();
   renderCheckoutDir();
 }
 function mirrorPrincipal(a){
@@ -761,16 +772,42 @@ function boot(){
   });
 }
 function loadCart(){
-  fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + session.user.id + '&select=*,products!inner(id,titulo,precio,imagen_url,seller_id,sellers!inner(nombre,paypal_email))&order=created_at.desc',
+  fetch(SUPABASE_URL + '/rest/v1/cart_items?user_id=eq.' + session.user.id + '&select=*,products!inner(id,titulo,precio,imagen_url,seller_id,sellers!inner(nombre,paypal_email,ubicacion))&order=created_at.desc',
     { headers: h(session.access_token) })
     .then(function(r){ return r.json(); })
     .then(function(rows){ cart = rows || []; render(); })
     .catch(function(){ document.getElementById('main').innerHTML = '<p class="empty">No se pudo cargar. Revisa tu conexión.</p>'; });
 }
 var SERGIO_PAYPAL = "Sergioromero97531@gmail.com";
-var SERVICE_FEE = 1.00;   // $1 fijo por transacción (modelo aprobado por Sergio)
+var SERVICE_FEE = 1.00;      // $1 de Nexo por transacción
+var DELIVERY_CIUDAD = 2.00;  // delivery dentro de la ciudad del vendedor
+var DELIVERY_FUERA = 5.00;   // delivery a otra ciudad
+var PP_PCT = 0.054, PP_FIJO = 0.30;  // lo que PayPal cobra por recibir el pago
+var _paidTotal = 0;
+function normCity(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(); }
+function sellerCityOf(it){ var u = (it.products && it.products.sellers && it.products.sellers.ubicacion) || ''; return normCity(u.split(',')[0]); }
+function cartSubtotal(){ return cart.reduce(function(s, it){ return s + Number(it.products.precio) * it.qty; }, 0); }
 function calcFees(subtotal){
-  return { service: SERVICE_FEE, shipping: 0, total: subtotal + SERVICE_FEE };
+  var buyerCity = normCity(_prof && _prof.ciudad);
+  var seen = {}, delivery = 0;
+  cart.forEach(function(it){
+    var key = (it.products && (it.products.seller_id || (it.products.sellers && it.products.sellers.nombre))) || '?';
+    if(seen[key]) return; seen[key] = 1;
+    var sc = sellerCityOf(it);
+    delivery += (buyerCity && sc && sc === buyerCity) ? DELIVERY_CIUDAD : DELIVERY_FUERA;
+  });
+  var service = SERVICE_FEE + delivery;
+  var base = subtotal + service;
+  var total = Math.round(((base + PP_FIJO) / (1 - PP_PCT)) * 100) / 100;
+  var processing = Math.round((total - base) * 100) / 100;
+  return { service: service, delivery: delivery, processing: processing, shipping: 0, total: total };
+}
+function refreshTotals(){
+  if(!cart.length) return;
+  var fees = calcFees(cartSubtotal());
+  var a = document.getElementById('fee-service'); if(a) a.innerHTML = moneyD(fees.service);
+  var b = document.getElementById('fee-proc'); if(b) b.innerHTML = moneyD(fees.processing);
+  var c = document.getElementById('fee-total'); if(c) c.innerHTML = moneyD(fees.total);
 }
 function initAccordions(){
   Array.prototype.forEach.call(document.querySelectorAll('#main .sec'), function(sec){
@@ -805,18 +842,19 @@ function render(){
     html += cart.map(function(it){
       var p = it.products;
       return '<div class="item">' + (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="">' : '')
-        + '<div class="info"><b>' + esc(p.titulo) + '</b><small>' + esc(p.sellers.nombre) + (it.talla ? ' · Talla ' + esc(it.talla) : '') + ' · ' + money(p.precio) + ' c/u</small><br>'
+        + '<div class="info"><b>' + esc(p.titulo) + '</b><small>' + esc(p.sellers.nombre) + (it.talla ? ' · Talla ' + esc(it.talla) : '') + ' · ' + moneyD(p.precio) + ' c/u</small><br>'
         + '<button class="rm" data-rm="' + it.id + '">quitar</button></div>'
         + '<div class="qty"><button data-dec="' + it.id + '">−</button><b>' + it.qty + '</b><button data-inc="' + it.id + '">+</button></div>'
-        + '<span class="pa">' + money(Number(p.precio) * it.qty) + '</span></div>';
+        + '<span class="pa">' + moneyD(Number(p.precio) * it.qty) + '</span></div>';
     }).join('')
-    + '<div class="total"><span>Subtotal</span><span>' + money(subtotal) + '</span></div>'
-    + '<div class="total" style="font-size:14px;color:var(--mut)"><span>Tasa de servicio</span><span>' + money(fees.service) + '</span></div>'
-    + '<div class="total"><span>Total</span><span>' + money(total) + '</span></div>'
+    + '<div class="total"><span>Subtotal</span><span>' + moneyD(subtotal) + '</span></div>'
+    + '<div class="total" style="font-size:14px;color:var(--mut)"><span>Tasa de servicio</span><span id="fee-service">' + moneyD(fees.service) + '</span></div>'
+    + '<div class="total" style="font-size:14px;color:var(--mut)"><span>Cargo por procesamiento</span><span id="fee-proc">' + moneyD(fees.processing) + '</span></div>'
+    + '<div class="total"><span>Total</span><span id="fee-total">' + moneyD(total) + '</span></div>'
     + '<div id="checkout-dir"></div>'
     + '<div id="paypal-button-container" style="margin-top:6px"></div>'
     + '<a class="btn btn-wa" id="wa-order" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>'
-    + '<p style="font-size:12px;color:var(--mut);margin-top:10px;text-align:center">Incluye $1.00 de tasa de servicio. Pagas el total por PayPal en una sola transacción y coordinamos el envío con rastreo.</p>';
+    + '<p style="font-size:12px;color:var(--mut);margin-top:10px;text-align:center">La tasa de servicio incluye ' + nio(SERVICE_FEE) + ' de Nexo más el delivery: ' + nio(DELIVERY_CIUDAD) + ' dentro de la ciudad del vendedor y ' + nio(DELIVERY_FUERA) + ' a otra ciudad. Pagas el total por PayPal en una sola transacción y coordinamos el envío con rastreo.</p>';
   }
   html += '</div></div>' + '<div class="sec"><h2>Mi historial</h2><div id="hist-list"><p class="empty">Cargando…</p></div></div>'
     + '<div class="sec"><h2>Mis reseñas</h2><div id="my-revs"><p class="empty">Cargando…</p></div></div>'
