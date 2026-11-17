@@ -64,9 +64,9 @@ header.top{flex-wrap:wrap;gap:10px}
 }
 
 /* ===== azul metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.hl,.logo em{background:#7fb0e0!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:#1f4e79!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:#1f4e79!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .card-price{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#111111!important}
 
 .menu-wrap{position:relative;margin-left:auto}
@@ -90,7 +90,7 @@ body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 </style>
 
 <style>
-.qbtn{border:1.5px solid #c7d6ea;background:linear-gradient(180deg,#24567f,#1d4568);color:#141416;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem;white-space:nowrap}
+.qbtn{border:1.5px solid #c7d6ea;background:#1f4e79;color:#141416;border-radius:999px;padding:9px 18px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem;white-space:nowrap}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style id="nx-header">
@@ -100,14 +100,14 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
-header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
+header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:#142c47!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
 html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a#menu-logout,header.top .ddnav a#logout,#menu-logout,#logout{color:#ff201f!important}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
 header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
-#btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
+#btn-buy,.add-cart,button[data-add],.buy{background:#1f4e79!important;color:#ffffff!important;border:0!important}
 #btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
 </style>
 <style id="nx-search-fix">
@@ -234,7 +234,7 @@ function render(){
       html += '<div class="sec"><div class="sec-head"><h2>Empresas <span class="hl">(' + sellList.length + ')</span></h2></div>'
         + '<div class="grid">' + sellList.map(function(s){
             return '<a href="../vendedor/?s=' + esc(s.slug) + '" style="display:flex;align-items:center;gap:12px;background:#ffffff;border:1px solid #c7d6ea;border-radius:14px;padding:14px;text-decoration:none">'
-              + '<div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#2e5f8a,#5f89b5);display:grid;place-content:center;color:#fff;font-size:20px;font-weight:800;flex:0 0 auto">' + esc(s.nombre.charAt(0).toUpperCase()) + '</div>'
+              + '<div style="width:48px;height:48px;border-radius:12px;background:#1f4e79;display:grid;place-content:center;color:#fff;font-size:20px;font-weight:800;flex:0 0 auto">' + esc(s.nombre.charAt(0).toUpperCase()) + '</div>'
               + '<div style="color:#111111;font-weight:700;font-size:15px">' + esc(s.nombre) + '</div></a>';
           }).join('') + '</div></div>';
     }

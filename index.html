@@ -48,7 +48,7 @@ main{max-width:1180px;margin:0 auto;padding:10px 18px 70px}
 .chips{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;padding:10px 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:#111111!important}
-.chip.on{background:var(--acc);color:#ffffff;border-color:var(--acc)}
+.chip.on{background:var(--acc);color:#ffffff!important;border-color:var(--acc)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .18s,border-color .18s;display:flex;flex-direction:column}
 .card:hover{transform:translateY(-4px);border-color:#274b73}
@@ -65,12 +65,12 @@ main{max-width:1180px;margin:0 auto;padding:10px 18px 70px}
 .sellers{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
 .seller-card{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-decoration:none;transition:transform .18s,border-color .18s}
 .seller-card:hover{transform:translateY(-3px);border-color:#274b73}
-.avatar{flex:0 0 56px;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--acc2),var(--acc));display:grid;place-content:center;font-weight:900;font-size:22px;color:#ffffff;overflow:hidden}
+.avatar{flex:0 0 56px;width:56px;height:56px;border-radius:16px;background:var(--acc);display:grid;place-content:center;font-weight:900;font-size:22px;color:#ffffff;overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .seller-card b{font-size:15px;display:flex;align-items:center;gap:6px}
 .verif{color:var(--acc);font-size:14px}
 .seller-card small{color:var(--mut);font-size:12px}
-.how{margin-top:40px;background:linear-gradient(135deg,#10263e,#0a1a2c);border:1px solid var(--line);border-radius:22px;padding:30px 26px}
+.how{margin-top:40px;background:#142c47;border:1px solid var(--line);border-radius:22px;padding:30px 26px}
 .how h2{font-size:22px;margin-bottom:18px;color:#ffffff!important}
 .how h2 .hl{color:#ffffff!important}
 .steps{display:grid;gap:16px}
@@ -98,9 +98,9 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--mut);font-
 .sell-strip{padding:18px}}
 
 /* ===== azul metálico ===== */
-.hl,.logo em{background:linear-gradient(120deg,#7fb0e0 0%,#3d7ab5 35%,#a9cdf2 55%,#1f4e79 80%,#5f97c4 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
-.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:linear-gradient(135deg,#3d7ab5 0%,#24567f 30%,#1d4568 50%,#2a5f8f 70%,#122a44 100%)!important;color:#ffffff!important;border:0!important}
-.card-price,.pd-price{background:linear-gradient(120deg,#2a5f8f,#1f4e79 40%,#3d7ab5 60%,#122a44)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.hl,.logo em{background:#7fb0e0!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.btn:not(.btn-ghost):not(.btn-wa),.buy,.hero-search button{background:#1f4e79!important;color:#ffffff!important;border:0!important}
+.card-price,.pd-price{background:#1f4e79!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .card-price{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#111111!important}
 body{display:flex;flex-direction:column;min-height:100vh}footer{margin-top:auto}
 #q-btn{background:#1d4568 !important;border-color:#1d4568 !important;color:#fff !important}
@@ -125,14 +125,14 @@ header.top .logo em,header.top .logo span{background:none!important;color:transp
 .nx-back{background:none;border:0;color:#fff;font-size:25px;line-height:1;cursor:pointer;padding:8px 10px;font-family:inherit;position:relative;z-index:5}
 #menu-btn,#menubtn{background:none!important;border:0!important;color:#fff!important;font-size:23px;padding:8px 10px;cursor:pointer}
 header.top{z-index:300}
-header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:linear-gradient(180deg,#17334f,#0c1e33)!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
+header.top .menu,header.top .ddnav{position:fixed!important;left:0!important;right:0!important;top:56px!important;width:auto!important;min-width:0!important;height:auto;min-height:50vh;max-height:calc(100dvh - 56px);display:flex!important;flex-direction:column;justify-content:flex-start;padding:8px 6px;background:#142c47!important;border:0!important;border-bottom:1px solid #2b4d74!important;border-radius:0 0 22px 22px!important;box-shadow:0 30px 60px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-16px);transition:opacity .5s ease,transform .5s ease,visibility .5s;overflow-y:auto;overflow-x:hidden;z-index:290}
 html.nx-is-admin header.top .menu,html.nx-is-admin header.top .ddnav,body.is-admin header.top .menu,body.is-admin header.top .ddnav{height:auto;max-height:calc(100dvh - 56px);justify-content:flex-start;overflow-y:auto}
 header.top .menu.open,header.top .ddnav.open{opacity:1;visibility:visible;transform:none}
 header.top .menu a,header.top .ddnav a{display:block;padding:16px 22px;color:#eaf3ff!important;font-size:18px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
 header.top .menu a#menu-logout,header.top .ddnav a#logout,#menu-logout,#logout{color:#ff201f!important}
 header.top .menu a:last-child,header.top .ddnav a:last-child{border-bottom:0}
 header.top .menu a:hover,header.top .ddnav a:hover{background:rgba(120,170,230,.13)}
-#btn-buy,.add-cart,button[data-add],.buy{background:linear-gradient(160deg,#1d4568,#122a44)!important;color:#ffffff!important;border:0!important}
+#btn-buy,.add-cart,button[data-add],.buy{background:#1f4e79!important;color:#ffffff!important;border:0!important}
 #btn-cart{border:1.5px solid #1d4568!important;color:#1d4568!important;background:transparent!important}
 </style>
 <style>.nexo-splash-name{font-family:'Caveat Brush',cursive!important;background:none!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff;letter-spacing:0!important;font-weight:400!important;font-size:clamp(72px,21vw,150px)!important}</style>
