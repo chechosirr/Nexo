@@ -174,7 +174,7 @@ function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace
 function money(n){ return '$' + Number(n).toFixed(2); }
 var TASA_NIO = 37.9062; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
 function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function moneyD(n){ return nio(n); }
+function moneyD(n){ return money(n); }
 fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
   if(j && j.rate && Math.abs(Number(j.rate) - TASA_NIO) > 0.0001){ TASA_NIO = Number(j.rate); render(); }
 }).catch(function(){});

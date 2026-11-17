@@ -191,8 +191,8 @@ function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace
 function money(n){ return '$' + Number(n).toFixed(2); }
 var TASA_NIO = 37.9062; /* Tipo de cambio oficial BCN (respaldo; se actualiza solo con tasa.json) */
 function nio(n){ return 'C$' + (Number(n) * TASA_NIO).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function moneyD(n){ return nio(n); }
-function moneyT(n){ return nio(n); }
+function moneyD(n){ return money(n); }
+function moneyT(n){ return money(n); }
 fetch('../tasa.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){
   if(j && j.rate && Math.abs(Number(j.rate) - TASA_NIO) > 0.0001){ TASA_NIO = Number(j.rate); if(cart && cart.length) render(); }
 }).catch(function(){});
@@ -243,7 +243,7 @@ function renderPayPalButtons(total){
           var gWa = waOrderURL();
           var gNom = (details.payer.name || {}).given_name || '';
           saveOrders(data.orderID, trackCodeCompra);
-          try{ localStorage.setItem('nexo_gracias', JSON.stringify({ tipo: 'carrito', codigo: trackCodeCompra, nombre: gNom, total: nio(_paidTotal || total), items: gLines, paypal: data.orderID, wa: gWa, extra: 'Coordinamos el envío con cada vendedor.' })); }catch(e){}
+          try{ localStorage.setItem('nexo_gracias', JSON.stringify({ tipo: 'carrito', codigo: trackCodeCompra, nombre: gNom, total: money(_paidTotal || total), items: gLines, paypal: data.orderID, wa: gWa, extra: 'Coordinamos el envío con cada vendedor.' })); }catch(e){}
           clearCart();
           location.href = '../gracias.html';
         });
@@ -854,7 +854,7 @@ function render(){
     + '<div id="checkout-dir"></div>'
     + '<div id="paypal-button-container" style="margin-top:6px"></div>'
     + '<a class="btn btn-wa" id="wa-order" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>'
-    + '<p style="font-size:12px;color:var(--mut);margin-top:10px;text-align:center">La tasa de servicio incluye ' + nio(SERVICE_FEE) + ' de Nexo más el delivery: ' + nio(DELIVERY_CIUDAD) + ' dentro de la ciudad del vendedor y ' + nio(DELIVERY_FUERA) + ' a otra ciudad. Pagas el total por PayPal en una sola transacción y coordinamos el envío con rastreo.</p>';
+    + '<p style="font-size:12px;color:var(--mut);margin-top:10px;text-align:center">La tasa de servicio incluye ' + money(SERVICE_FEE) + ' de Nexo más el delivery: ' + money(DELIVERY_CIUDAD) + ' dentro de la ciudad del vendedor y ' + money(DELIVERY_FUERA) + ' a otra ciudad. Pagas el total por PayPal en una sola transacción y coordinamos el envío con rastreo.</p>';
   }
   html += '</div></div>' + '<div class="sec"><h2>Mi historial</h2><div id="hist-list"><p class="empty">Cargando…</p></div></div>'
     + '<div class="sec"><h2>Mis reseñas</h2><div id="my-revs"><p class="empty">Cargando…</p></div></div>'
